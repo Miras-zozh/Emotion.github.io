@@ -3,8 +3,9 @@ document.addEventListener('DOMContentLoaded', () => {
   // !!! ВАЖНО: ЗАМЕНИТЕ ЭТИ ДАННЫЕ НА СВОИ !!!
   const SUPABASE_URL = 'https://iajtzxdhjkcycgvbetax.supabase.co';
   const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ';
-
-  const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  
+  const { createClient } = supabase;
+  const supabaseClient=createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let emotions = [];
   let currentLang = 'ru';
@@ -194,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Загрузка эмоций из Supabase
   async function loadEmotions() {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('emotions')
       .select('*')
       .order('created_at', { ascending: false });
@@ -238,7 +239,7 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('emotions')
       .insert([newEmotion])
       .select('*'); // Чтобы сразу получить добавленную запись
@@ -260,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // Реалтайм подписка на изменения в Supabase
-  supabase
+  supabaseClient
     .channel('public:emotions')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'emotions' }, payload => {
       console.log('Изменение в базе данных:', payload);
