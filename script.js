@@ -2,11 +2,11 @@
 document.addEventListener('DOMContentLoaded', () => {
   // !!! ВАЖНО: ЗАМЕНИТЕ ЭТИ ДАННЫЕ НА СВОИ !!!
   const ADMIN_PASSWORD='aaadddsss';
-  const SUPABASE_URL = 'https://iajtzxdhjkcycgvbetax.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ';
-  
+  const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+  const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+
   const { createClient } = supabase;
-  const supabaseClient=createClient(SUPABASE_URL, SUPABASE_KEY);
+  const supabaseClient = createClient(SUPABASE_URL, SUPABASE_KEY);
 
   let emotions = [];
   let currentLang = 'ru';
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
   const menuList = document.getElementById('menuList');
   const menuButtons = menuList.querySelectorAll('button');
 
-  // Создаем контейнер для эмоций
+  // Контейнер для карточек
   const emotionList = document.createElement('div');
   emotionList.id = 'emotionList';
 
@@ -36,7 +36,68 @@ document.addEventListener('DOMContentLoaded', () => {
     return colors[Math.floor(Math.random() * colors.length)];
   }
 
-  // Отрисовка эмоций с переворотом
+  // Создание карточки с рандомной формой и позицией
+  function createEmotionCard(emotion) {
+    const card = document.createElement('div');
+
+    // Выбираем случайную форму
+    const shapes = ['rectangle', 'circle', 'triangle', 'star'];
+    const shape = shapes[Math.floor(Math.random() * shapes.length)];
+    card.classList.add('emotion-card', shape);
+
+    // Рандомное позиционирование
+    const containerWidth = emotionList.clientWidth || 900; // fallback ширина
+    const containerHeight = emotionList.clientHeight || 800; // fallback высота
+
+    const cardWidth = shape === 'triangle' ? 250 : 250;
+    const cardHeight = shape === 'triangle' ? 180 : 180;
+
+    const randomLeft = Math.random() * (containerWidth - cardWidth);
+    const randomTop = Math.random() * (containerHeight - cardHeight);
+
+    card.style.left = ${randomLeft}px;
+    card.style.top = ${randomTop}px;
+
+    // Для треугольника контент не отображаем (сложно)
+    if (shape === 'triangle') {
+      // Можно добавить подсказку или иконку, если нужно
+      return card;
+    }
+
+    // Создаём внутренние элементы карточки (front и back)
+    const inner = document.createElement('div');
+    inner.className = 'card-inner';
+
+    const front = document.createElement('div');
+    front.className = 'card-front';
+    front.textContent = emotion.names[currentLang] || '';
+
+    const back = document.createElement('div');
+    back.className = 'card-back';
+    back.innerHTML = `
+      <div><b>${
+        {ru:'Описание', kz:'Сипаттамасы', de:'Beschreibung', en:'Description'}[currentLang]
+      }:</b> ${emotion.descriptions[currentLang] || ''}</div>
+      <div><b>${
+        {ru:'Примеры', kz:'Мысалдар', de:'Beispiele', en:'Examples'}[currentLang]
+      }:</b> ${(emotion.examples[currentLang] || []).join('; ')}</div>
+      <div><b>${
+        {ru:'Синонимы', kz:'Синонимдер', de:'Synonyme', en:'Synonyms'}[currentLang]
+      }:</b> ${(emotion.synonyms[currentLang] || []).join(', ')}</div>
+    `;
+
+    inner.appendChild(front);
+    inner.appendChild(back);
+    card.appendChild(inner);
+
+    card.addEventListener('click', () => {
+      card.classList.toggle('flipped');
+    });
+
+    return card;
+  }
+
+  // Отрисовка эмоций
   async function renderEmotions() {
     emotionList.innerHTML = '';
 
@@ -52,41 +113,24 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     emotions.forEach(emotion => {
-      const card = document.createElement('div');
-      card.className = 'emotion-card';
-      card.style.background = getRandomColor();
-
-      const inner = document.createElement('div');
-      inner.className = 'card-inner';
-
-      const front = document.createElement('div');
-      front.className = 'card-front';
-      front.textContent = emotion.names[currentLang] || '';
-
-      const back = document.createElement('div');
-      back.className = 'card-back';
-      back.innerHTML = `
-        <div><b>${
-          {ru:'Описание', kz:'Сипаттамасы', de:'Beschreibung', en:'Description'}[currentLang]
-        }:</b> ${emotion.descriptions[currentLang] || ''}</div>
-        <div><b>${
-          {ru:'Примеры', kz:'Мысалдар', de:'Beispiele', en:'Examples'}[currentLang]
-        }:</b> ${(emotion.examples[currentLang] || []).join('; ')}</div>
-        <div><b>${
-          {ru:'Синонимы', kz:'Синонимдер', de:'Synonyme', en:'Synonyms'}[currentLang]
-        }:</b> ${(emotion.synonyms[currentLang] || []).join(', ')}</div>
-      `;
-
-      inner.appendChild(front);
-      inner.appendChild(back);
-      card.appendChild(inner);
-
-      card.addEventListener('click', () => {
-        card.classList.toggle('flipped');
-      });
-
+      const card = createEmotionCard(emotion);
       emotionList.appendChild(card);
     });
+  }
+
+  // Загрузка эмоций из Supabase
+  async function loadEmotions() {
+    const { data, error } = await supabaseClient
+      .from('emotions')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (error) {
+      console.error('Ошибка загрузки эмоций:', error);
+      alert('Ошибка загрузки эмоций: ' + error.message);
+    } else {
+      emotions = data;
+    }
   }
 
   // Обновление активной кнопки языка
@@ -194,21 +238,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Загрузка эмоций из Supabase
-  async function loadEmotions() {
-    const { data, error } = await supabaseClient
-      .from('emotions')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) {
-      console.error('Ошибка загрузки эмоций:', error);
-      alert('Ошибка загрузки эмоций: ' + error.message);
-    } else {
-      emotions = data;
-    }
-  }
-
   // Обработка отправки формы добавления эмоции
   emotionForm.addEventListener('submit', async (e) => {
     e.preventDefault();
@@ -243,13 +272,13 @@ document.addEventListener('DOMContentLoaded', () => {
     const { data, error } = await supabaseClient
       .from('emotions')
       .insert([newEmotion])
-      .select('*'); // Чтобы сразу получить добавленную запись
+      .select('*');
 
     if (error) {
       console.error('Ошибка добавления эмоции:', error);
       alert('Ошибка добавления эмоции: ' + error.message);
     } else {
-      emotions.unshift(data[0]); // Добавляем в начало массива для обновления списка
+      emotions.unshift(data[0]);
       renderEmotions();
       emotionForm.reset();
       alert({
@@ -261,14 +290,14 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Реалтайм подписка на изменения в Supabase
+  // Реалтайм подписка на изменения
   supabaseClient
     .channel('public:emotions')
     .on('postgres_changes', { event: '*', schema: 'public', table: 'emotions' }, payload => {
       console.log('Изменение в базе данных:', payload);
-      loadEmotions().then(renderEmotions); // Перезагружаем и перерисовываем
+      loadEmotions().then(renderEmotions);
     })
-    .subscribe()
+    .subscribe();
 
   // Инициализация
   updateActiveLangButton();
