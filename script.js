@@ -55,8 +55,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const randomLeft = Math.random() * (containerWidth - cardWidth);
     const randomTop = Math.random() * (containerHeight - cardHeight);
 
-    card.style.left = ${randomLeft}px;
-    card.style.top = ${randomTop}px;
+    card.style.left = '${randomLeft}px';
+    card.style.top = '${randomTop}px';
 
     // Для треугольника контент не отображаем (сложно)
     if (shape === 'triangle') {
