@@ -132,20 +132,121 @@ h1 {
 
 /* Карточка с переворотом */
 .emotion-card {
-  perspective: 1000px;
+  /* Общие стили карточки */
+  position: absolute;
+  width: 250px;
+  height: 180px;
   cursor: pointer;
-  max-width: 250px;
-  margin: auto;
+  user-select: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* плавные переходы */
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  box-shadow: 0 6px 15px rgba(255, 165, 0, 0.5);
+  color: #3a2e00;
 }
 
-.card-inner {
+.emotion-card:hover {
+  transform: scale(1.05); /* небольшое увеличение при наведении */
+  box-shadow: 0 0 20px #ff6a00cc; /* свечение при наведении */
+}
+
+/* Контейнер для карточек - позиционируем относительно */
+#emotionList {
   position: relative;
   width: 100%;
+  height: 800px; /* фиксированная высота для позиционирования */
+  margin: 0 auto;
+}
+
+/* Карточка с абсолютным позиционированием */
+.emotion-card {
+  position: absolute;
+  width: 250px;
   height: 180px;
+  cursor: pointer;
+  user-select: none;
   transition: transform 0.6s;
   transform-style: preserve-3d;
-  border-radius: 30px;
   box-shadow: 0 6px 15px rgba(255, 165, 0, 0.5);
+  color: #3a2e00;
+}
+
+/* Форма - прямоугольник (по умолчанию) */
+.emotion-card.rectangle .card-inner {
+  border-radius: 30px;
+}
+
+/* Форма - круг */
+.emotion-card.circle {
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+/* Форма - треугольник */
+.emotion-card.triangle {
+  width: 0;
+  height: 0;
+  border-left: 125px solid transparent;
+  border-right: 125px solid transparent;
+  border-bottom: 180px solid #f8b500;
+  background: none !important;
+  box-shadow: none !important;
+  cursor: pointer;
+  position: absolute;
+}
+.emotion-card.triangle .card-inner,
+.emotion-card.triangle .card-front,
+.emotion-card.triangle .card-back {
+  display: none; /* скрываем внутренности, т.к. треугольник сложный для контента */
+}
+
+/* Форма - звезда */
+.emotion-card.star {
+  clip-path: polygon(
+    50% 0%,
+    61% 35%,
+    98% 35%,
+    68% 57%,
+    79% 91%,
+    50% 70%,
+    21% 91%,
+    32% 57%,
+    2% 35%,
+    39% 35%
+  );
+  background: linear-gradient(135deg, #fbc2eb 0%, #a6c0fe 100%);
+  border-radius: 10px;
+  box-shadow: 0 6px 15px rgba(255, 165, 0, 0.5);
+  color: #3a2e00;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  font-weight: 800;
+  font-size: 1.4rem;
+  user-select: none;
+}
+
+/* Карточка внутренности (для прямоугольника, круга и звезды) */
+.card-inner {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 20px 18px 22px;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  color: #3a2e00;
+  font-weight: 800;
+  font-size: 1.6rem;
+  text-align: center;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
 }
 
 .emotion-card.flipped .card-inner {
@@ -155,8 +256,8 @@ h1 {
 .card-front, .card-back {
   position: absolute;
   width: 100%;
-  height: 180px;
-  border-radius: 30px;
+  height: 100%;
+  border-radius: inherit;
   backface-visibility: hidden;
   -webkit-backface-visibility: hidden;
   display: flex;
@@ -172,6 +273,8 @@ h1 {
   font-weight: 800;
   font-size: 1.6rem;
   text-align: center;
+  position: relative;
+  z-index: 2;
 }
 
 .card-back {
@@ -179,14 +282,9 @@ h1 {
   transform: rotateY(180deg);
   font-size: 0.95rem;
   overflow-y: auto;
-}
-
-.card-back b {
-  font-weight: 700;
-}
-
-.card-back div {
-  margin-bottom: 8px;
+  position: relative;
+  z-index: 1;
+  padding: 15px;
 }
 
 /* Модальное окно */
@@ -317,4 +415,14 @@ h1 {
   #emotionForm button {
     grid-column: span 1;
   }
+}
+
+/* Add this to your existing CSS */
+.emotion-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease; /* плавные переходы */
+}
+
+.emotion-card:hover {
+    transform: scale(1.05); /* небольшое увеличение при наведении */
+    box-shadow: 0 0 20px #ff6a00cc; /* свечение при наведении */
 }
