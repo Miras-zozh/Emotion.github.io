@@ -67,7 +67,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .order('created_at', { ascending: true });
 
     if (error) {
-      existingDetailsList.innerHTML = <p style="color:red;">Ошибка: ${error.message}</p>;
+      existingDetailsList.innerHTML = '<p style="color:red;">Ошибка: ${error.message}</p>';
       return;
     }
 
