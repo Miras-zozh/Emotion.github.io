@@ -1,15 +1,15 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Эмоции в стиле "Головоломка"</title>
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <!-- Языковой переключатель -->
   <div class="top-lang-selector">
-    <button data-lang="ru">Рус</button>
+    <button data-lang="ru" class="active">Рус</button>
     <button data-lang="kz">Каз</button>
     <button data-lang="de">Deu</button>
     <button data-lang="en">Eng</button>
@@ -18,7 +18,7 @@
   <!-- Кнопка админа -->
   <button id="adminLoginBtn" class="admin-btn">Войти как админ</button>
 
-  <!-- Меню (пример, если оно есть) -->
+  <!-- Меню -->
   <div id="sideMenu">
     <button id="menuToggleBtn">Меню</button>
     <div id="menuList" style="display:none;">
@@ -28,7 +28,7 @@
   </div>
 
   <!-- Заголовок -->
-  <h1>Эмоции в стиле "Головоломка"</h1>
+  <h1>Эмоции</h1>
 
   <!-- Основной контент -->
   <div id="contentArea"></div>
@@ -38,17 +38,25 @@
     <div class="modal-content">
       <span class="close-modal">&times;</span>
       <h2 id="modalEmotionName"></h2>
+
+      <h3 id="existingDetailsHeader">Существующие детали:</h3>
+      <div id="existingDetailsList">
+        <p>Загрузка деталей...</p>
+      </div>
+      <hr />
+      <h3>Добавить новую деталь:</h3>
+
       <form id="detailsForm">
-        <input type="text" id="detailName" placeholder="Наименование эмоции" required>
-        <input type="text" id="comparisonObject" placeholder="Объект сравнения (стимул)">
-        <input type="text" id="submodel" placeholder="Субмодель">
-        <input type="text" id="semanticRole" placeholder="Семантическая роль">
+        <input type="text" id="detailName" placeholder="Наименование эмоции" required />
+        <input type="text" id="comparisonObject" placeholder="Объект сравнения (стимул)" />
+        <input type="text" id="submodel" placeholder="Субмодель" />
+        <input type="text" id="semanticRole" placeholder="Семантическая роль" />
         <textarea id="features" placeholder="Признаки"></textarea>
         <textarea id="examples" placeholder="Примеры"></textarea>
         <textarea id="verbs" placeholder="Глаголы"></textarea>
         <textarea id="participants" placeholder="Другие обязательные участники"></textarea>
         <textarea id="notes" placeholder="Примечание"></textarea>
-        <button type="submit">Сохранить</button>
+        <button type="submit">Добавить новую деталь</button>
       </form>
     </div>
   </div>
