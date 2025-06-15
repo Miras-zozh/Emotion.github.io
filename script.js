@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     formModal.classList.add('visible');
     detailsForm.reset();
-    document.getElementById('formModalTitle').textContent =  'Добавить запись для ${emotions.find(e => e.id === currentEmotionId).name}';
+    document.getElementById('formModalTitle').textContent =  `Добавить запись для "${emotions.find(e => e.id === currentEmotionId).name}"`;
     emotionIdInput.value = currentEmotionId;
   }
 
