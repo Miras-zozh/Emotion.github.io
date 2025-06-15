@@ -1,123 +1,60 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <script src="https://unpkg.com/@supabase/supabase-js@2.0.0/dist/umd/supabase.min.js"></script>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Эмоции в стиле "Головоломка"</title>
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-  <h1>Эмоции в стиле "Головоломка"</h1>
-
-  <!-- Языковой переключатель справа -->
-  <div class="top-lang-selector" aria-label="Выбор языка">
-    <button data-lang="ru" class="active" aria-pressed="true">Рус</button>
-    <button data-lang="kz" aria-pressed="false">Қаз</button>
-    <button data-lang="de" aria-pressed="false">Deu</button>
-    <button data-lang="en" aria-pressed="false">Eng</button>
+  <!-- Языковой переключатель -->
+  <div class="top-lang-selector">
+    <button data-lang="ru">Рус</button>
+    <button data-lang="kz">Каз</button>
+    <button data-lang="de">Deu</button>
+    <button data-lang="en">Eng</button>
   </div>
 
-  <!-- Кнопка входа админа слева -->
-  <button id="adminLoginBtn" aria-haspopup="dialog" aria-controls="adminModal">Войти как админ</button>
+  <!-- Кнопка админа -->
+  <button id="adminLoginBtn" class="admin-btn">Войти как админ</button>
 
-  <!-- Левое меню -->
-  <nav id="sideMenu" aria-label="Меню сайта">
-    <button id="menuToggleBtn" aria-expanded="false" aria-controls="menuList">Меню</button>
-    <div id="menuList" role="menu" style="display:none; flex-direction:column; margin-top:6px;">
-      <button role="menuitem" data-section="emotions" class="active">Эмоции</button>
-      <button role="menuitem" data-section="about">Что такое эмоции</button>
+  <!-- Меню (пример, если оно есть) -->
+  <div id="sideMenu">
+    <button id="menuToggleBtn">Меню</button>
+    <div id="menuList" style="display:none;">
+      <button data-section="emotions" class="active">Эмоции</button>
+      <button data-section="about">О проекте</button>
     </div>
-  </nav>
+  </div>
 
-  <!-- Контент -->
-  <main id="contentArea" tabindex="-1" style="margin-left:160px; max-width:900px; margin-top:40px; color:white; text-shadow:1px 1px 3px #000000cc;">
-    <!-- Контент будет динамически подгружаться -->
-  </main>
+  <!-- Заголовок -->
+  <h1>Эмоции в стиле "Головоломка"</h1>
 
-  <!-- Модальное окно -->
-  <div id="adminModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" tabindex="-1">
-    <div id="adminModalContent">
-      <h2 id="modalTitle">Вход администратора</h2>
+  <!-- Основной контент -->
+  <div id="contentArea"></div>
 
-      <section id="passwordSection">
-        <label for="adminPasswordInput">Введите пароль</label>
-        <input type="password" id="adminPasswordInput" autocomplete="off" />
-        <button id="passwordSubmitBtn">Войти</button>
-      </section>
-
-      <form id="emotionForm" aria-label="Форма добавления эмоций">
-        <label for="name-ru">Название (RU)</label>
-        <input type="text" id="name-ru" name="name-ru" required autocomplete="off" />
-
-        <label for="name-kz">Название (KZ)</label>
-        <input type="text" id="name-kz" name="name-kz" required autocomplete="off" />
-
-        <label for="name-de">Название (DE)</label>
-        <input type="text" id="name-de" name="name-de" required autocomplete="off" />
-
-        <label for="name-en">Название (EN)</label>
-        <input type="text" id="name-en" name="name-en" required autocomplete="off" />
-
-        <label for="desc-ru">Описание (RU)</label>
-        <textarea id="desc-ru" name="desc-ru" rows="2" required></textarea>
-
-        <label for="desc-kz">Описание (KZ)</label>
-        <textarea id="desc-kz" name="desc-kz" rows="2" required></textarea>
-
-        <label for="desc-de">Описание (DE)</label>
-        <textarea id="desc-de" name="desc-de" rows="2" required></textarea>
-
-        <label for="desc-en">Описание (EN)</label>
-        <textarea id="desc-en" name="desc-en" rows="2" required></textarea>
-
-        <label for="examples-ru">Примеры (RU, через запятую)</label>
-        <textarea id="examples-ru" name="examples-ru" rows="2" required></textarea>
-
-        <label for="examples-kz">Мысалдар (KZ, үтір арқылы)</label>
-        <textarea id="examples-kz" name="examples-kz" rows="2" required></textarea>
-
-        <label for="examples-de">Beispiele (DE, Komma getrennt)</label>
-        <textarea id="examples-de" name="examples-de" rows="2" required></textarea>
-
-        <label for="examples-en">Examples (EN, comma separated)</label>
-        <textarea id="examples-en" name="examples-en" rows="2" required></textarea>
-
-        <label for="synonyms-ru">Синонимы (RU, через запятую)</label>
-        <input type="text" id="synonyms-ru" name="synonyms-ru" required autocomplete="off" />
-
-        <label for="synonyms-kz">Синонимдер (KZ, үтір арқылы)</label>
-        <input type="text" id="synonyms-kz" name="synonyms-kz" required autocomplete="off" />
-
-        <label for="synonyms-de">Synonyme (DE, Komma getrennt)</label>
-        <input type="text" id="synonyms-de" name="synonyms-de" required autocomplete="off" />
-
-        <label for="synonyms-en">Synonyms (EN, comma separated)</label>
-        <input type="text" id="synonyms-en" name="synonyms-en" required autocomplete="off" />
-
-        <button type="submit">Добавить эмоцию</button>
+  <!-- Модальное окно деталей эмоции -->
+  <div id="detailsModal" class="modal">
+    <div class="modal-content">
+      <span class="close-modal">&times;</span>
+      <h2 id="modalEmotionName"></h2>
+      <form id="detailsForm">
+        <input type="text" id="detailName" placeholder="Наименование эмоции" required>
+        <input type="text" id="comparisonObject" placeholder="Объект сравнения (стимул)">
+        <input type="text" id="submodel" placeholder="Субмодель">
+        <input type="text" id="semanticRole" placeholder="Семантическая роль">
+        <textarea id="features" placeholder="Признаки"></textarea>
+        <textarea id="examples" placeholder="Примеры"></textarea>
+        <textarea id="verbs" placeholder="Глаголы"></textarea>
+        <textarea id="participants" placeholder="Другие обязательные участники"></textarea>
+        <textarea id="notes" placeholder="Примечание"></textarea>
+        <button type="submit">Сохранить</button>
       </form>
     </div>
   </div>
-  <div id="detailsModal" class="modal">
-  <div class="modal-content">
-    <span class="close">&times;</span>
-    <h2>Детали эмоции</h2>
-    <form id="detailsForm">
-      <input type="text" id="detailName" placeholder="Наименование эмоции" required>
-      <input type="text" id="comparisonObject" placeholder="Объект сравнения">
-      <input type="text" id="submodel" placeholder="Субмодель">
-      <input type="text" id="semanticRole" placeholder="Семантическая роль">
-      <textarea id="features" placeholder="Признаки"></textarea>
-      <textarea id="examples" placeholder="Примеры"></textarea>
-      <textarea id="verbs" placeholder="Глаголы"></textarea>
-      <textarea id="participants" placeholder="Другие участники"></textarea>
-      <textarea id="notes" placeholder="Примечание"></textarea>
-      <button type="submit">Сохранить</button>
-    </form>
-  </div>
-</div>
+
+  <!-- Подключение Supabase -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js" defer></script>
 </body>
 </html>
