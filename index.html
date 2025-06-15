@@ -3,49 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Эмоции в стиле "Головоломка"</title>
+  <title>Эмоции</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- Языковой переключатель -->
   <div class="top-lang-selector">
     <button data-lang="ru" class="active">Рус</button>
     <button data-lang="kz">Каз</button>
     <button data-lang="de">Deu</button>
     <button data-lang="en">Eng</button>
   </div>
-
-  <!-- Кнопка админа -->
-  <button id="adminLoginBtn" class="admin-btn">Войти как админ</button>
-
-  <!-- Меню -->
-  <div id="sideMenu">
-    <button id="menuToggleBtn">Меню</button>
-    <div id="menuList" style="display:none;">
-      <button data-section="emotions" class="active">Эмоции</button>
-      <button data-section="about">О проекте</button>
-    </div>
-  </div>
-
-  <!-- Заголовок -->
-  <h1>Эмоции</h1>
-
-  <!-- Основной контент -->
+  <h1>Эмоции в стиле "Головоломка"</h1>
   <div id="contentArea"></div>
 
-  <!-- Модальное окно деталей эмоции -->
+  <!-- Модальное окно -->
   <div id="detailsModal" class="modal">
     <div class="modal-content">
       <span class="close-modal">&times;</span>
       <h2 id="modalEmotionName"></h2>
-
-      <h3 id="existingDetailsHeader">Существующие детали:</h3>
-      <div id="existingDetailsList">
-        <p>Загрузка деталей...</p>
-      </div>
+      <div id="existingDetailsList"></div>
       <hr />
-      <h3>Добавить новую деталь:</h3>
-
+      <h3>Добавить новую запись:</h3>
       <form id="detailsForm">
         <input type="text" id="detailName" placeholder="Наименование эмоции" required />
         <input type="text" id="comparisonObject" placeholder="Объект сравнения (стимул)" />
@@ -56,12 +34,11 @@
         <textarea id="verbs" placeholder="Глаголы"></textarea>
         <textarea id="participants" placeholder="Другие обязательные участники"></textarea>
         <textarea id="notes" placeholder="Примечание"></textarea>
-        <button type="submit">Добавить новую деталь</button>
+        <button type="submit">Добавить</button>
       </form>
     </div>
   </div>
 
-  <!-- Подключение Supabase -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="script.js" defer></script>
 </body>
