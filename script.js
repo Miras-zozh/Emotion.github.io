@@ -1,128 +1,107 @@
+ const dataBtn = document.getElementById('dataBtn');
+  const mainContent = document.getElementById('mainContent');
 
-document.addEventListener('DOMContentLoaded', () => {
-  // !!! ВАЖНО: ЗАМЕНИТЕ ЭТИ ДАННЫЕ НА СВОИ !!!
-  const ADMIN_PASSWORD='aaadddsss';
-  const SUPABASE_URL = 'https://iajtzxdhjkcycgvbetax.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ';
-  
-  const { createClient } = supabase;
-  const supabaseClient=createClient(SUPABASE_URL, SUPABASE_KEY);
-
-  // --- Эмоции фиксированные ---
-  const EMOTIONS = [
-    { id: 'joy', names: { ru: 'Радость', kz: 'Қуаныш', de: 'Freude', en: 'Joy' }},
-    { id: 'fear', names: { ru: 'Страх', kz: 'Қорқыныш', de: 'Angst', en: 'Fear' }},
-    { id: 'anger', names: { ru: 'Злость', kz: 'Ашу', de: 'Wut', en: 'Anger' }},
-    { id: 'envy', names: { ru: 'Зависть', kz: 'Қызғаныш', de: 'Neid', en: 'Envy' }},
-    { id: 'happiness', names: { ru: 'Счастье', kz: 'Бақыт', de: 'Glück', en: 'Happiness' }},
-    { id: 'sadness', names: { ru: 'Грусть', kz: 'Мұң', de: 'Traurigkeit', en: 'Sadness' }},
+  const emotions = [
+    { id: 'joy', name: 'Радость' },
+    { id: 'fear', name: 'Страх' },
+    { id: 'anger', name: 'Злость' },
+    { id: 'envy', name: 'Зависть' },
+    { id: 'happiness', name: 'Счастье' },
+    { id: 'sadness', name: 'Грусть' },
   ];
 
-  let currentLang = 'ru';
-  let currentEmotion = null;
-
-  const contentArea = document.getElementById('contentArea');
-  const langButtons = document.querySelectorAll('.top-lang-selector button');
-  const detailsModal = document.getElementById('detailsModal');
-  const detailsForm = document.getElementById('detailsForm');
-  const modalEmotionName = document.getElementById('modalEmotionName');
-  const existingDetailsList = document.getElementById('existingDetailsList');
-  const closeModalBtn = document.querySelector('.close-modal');
-
-  // --- Рендер карточек ---
-  function renderEmotions() {
-    contentArea.innerHTML = '';
-    EMOTIONS.forEach(emotion => {
-      const card = document.createElement('div');
-      card.className = 'emotion-card';
-      card.textContent = emotion.names[currentLang] || emotion.names.ru;
-      card.addEventListener('click', () => openDetailsModal(emotion));
-      contentArea.appendChild(card);
+  // Показываем список эмоций
+  function showEmotionList() {
+    mainContent.innerHTML = '';
+    const ul = document.createElement('ul');
+    ul.className = 'emotion-list';
+    emotions.forEach(emotion => {
+      const li = document.createElement('li');
+      li.textContent = emotion.name;
+      li.addEventListener('click', () => showEmotionData(emotion));
+      ul.appendChild(li);
     });
+    mainContent.appendChild(ul);
   }
 
-  // --- Открытие модального окна ---
-  async function openDetailsModal(emotion) {
-    currentEmotion = emotion;
-    modalEmotionName.textContent = emotion.names[currentLang] || emotion.names.ru;
-    detailsForm.reset();
+  // Показываем данные для выбранной эмоции
+  async function showEmotionData(emotion) {
+    mainContent.innerHTML = '';
 
-    // Загрузка деталей только для выбранной эмоции
-    existingDetailsList.innerHTML = '<p>Загрузка...</p>';
-    const { data, error } = await supabaseClient
+    // Кнопка назад
+    const backBtn = document.createElement('div');
+    backBtn.textContent = '← Назад к списку эмоций';
+    backBtn.className = 'back-btn';
+    backBtn.addEventListener('click', showEmotionList);
+    mainContent.appendChild(backBtn);
+
+    // Заголовок
+    const h2 = document.createElement('h2');
+    h2.textContent = Данные для эмоции: ${emotion.name};
+    mainContent.appendChild(h2);
+
+    // Таблица
+    const table = document.createElement('table');
+    const thead = document.createElement('thead');
+    const headerRow = document.createElement('tr');
+    const columns = [
+      'Наименование эмоции',
+      'Объект сравнения (стимул)',
+      'Субмодель',
+      'Семантическая роль',
+      'Признаки',
+      'Примеры',
+      'Глаголы',
+      'Другие обязательные участники',
+      'Примечание'
+    ];
+    columns.forEach(col => {
+      const th = document.createElement('th');
+      th.textContent = col;
+      headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+    table.appendChild(thead);
+
+    const tbody = document.createElement('tbody');
+    table.appendChild(tbody);
+
+    mainContent.appendChild(table);
+
+    // Загрузка данных из Supabase
+    const { data, error } = await supabase
       .from('emotion_details')
       .select('*')
       .eq('emotion_id', emotion.id)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: true });
 
     if (error) {
-      existingDetailsList.innerHTML = '<p style="color:red;">Ошибка загрузки</p>';
-    } else if (data && data.length > 0) {
-      existingDetailsList.innerHTML = '';
-      data.forEach(detail => {
-        const el = document.createElement('div');
-        el.className = 'detail-item';
-        el.innerHTML = `
-          <strong>${detail.name || ''}</strong>
-          <span>Объект: ${detail.comparison_object || ''}</span>
-          <span>Субмодель: ${detail.submodel || ''}</span>
-          <span>Семантическая роль: ${detail.semantic_role || ''}</span>
-          <span>Признаки: ${detail.features || ''}</span>
-          <span>Примеры: ${detail.examples || ''}</span>
-          <span>Глаголы: ${detail.verbs || ''}</span>
-          <span>Участники: ${detail.participants || ''}</span>
-          <span>Примечание: ${detail.notes || ''}</span>
-          <small>Добавлено: ${new Date(detail.created_at).toLocaleDateString()}</small>
-        `;
-        existingDetailsList.appendChild(el);
-      });
-    } else {
-      existingDetailsList.innerHTML = '<p>Пока нет записей для этой эмоции.</p>';
+      tbody.innerHTML = <tr><td colspan="${columns.length}" style="color:red;">Ошибка загрузки данных: ${error.message}</td></tr>;
+      return;
     }
 
-    detailsModal.classList.add('active');
+    if (!data || data.length === 0) {
+      tbody.innerHTML = <tr><td colspan="${columns.length}">Данные отсутствуют.</td></tr>;
+      return;
+    }
+
+    data.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.name || ''}</td>
+        <td>${row.comparison_object || ''}</td>
+        <td>${row.submodel || ''}</td>
+        <td>${row.semantic_role || ''}</td>
+        <td>${row.features || ''}</td>
+        <td>${row.examples || ''}</td>
+        <td>${row.verbs || ''}</td>
+        <td>${row.participants || ''}</td>
+        <td>${row.notes || ''}</td>
+      `;
+      tbody.appendChild(tr);
+    });
   }
 
-  // --- Добавление новой детали ---
-  detailsForm.addEventListener('submit', async (e) => {
-    e.preventDefault();
-    if (!currentEmotion) return;
-    const newDetail = {
-      emotion_id: currentEmotion.id,
-      name: detailsForm.detailName.value,
-      comparison_object: detailsForm.comparisonObject.value,
-      submodel: detailsForm.submodel.value,
-      semantic_role: detailsForm.semanticRole.value,
-      features: detailsForm.features.value,
-      examples: detailsForm.examples.value,
-      verbs: detailsForm.verbs.value,
-      participants: detailsForm.participants.value,
-      notes: detailsForm.notes.value,
-      created_at: new Date().toISOString()
-    };
-    const { error } = await supabaseClient.from('emotion_details').insert([newDetail]);
-    if (!error) {
-      detailsForm.reset();
-      openDetailsModal(currentEmotion);
-    } else {
-      alert('Ошибка добавления: ' + error.message);
-    }
-  });
-
-  // --- Закрытие модального окна ---
-  closeModalBtn.addEventListener('click', () => {
-    detailsModal.classList.remove('active');
-  });
-
-  // --- Переключение языка ---
-  langButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-      currentLang = btn.dataset.lang;
-      langButtons.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
-      renderEmotions();
-    });
-  });
-
-  // --- Запуск ---
-  renderEmotions();
+  // Обработчик кнопки "Данные"
+  dataBtn.addEventListener('click', showEmotionList);
 });
