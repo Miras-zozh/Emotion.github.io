@@ -8,42 +8,77 @@ document.addEventListener('DOMContentLoaded', () => {
   const { createClient } = supabase;
   const supabaseClient=createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // --- Переменные состояния ---
+   // --- Переменные состояния ---
   let currentLang = 'ru';
   let emotions = [];
-  let currentEmotion = null;
+  let currentEmotion = null; // Текущая эмоция, детали которой просматриваются/добавляются
 
   // --- Элементы интерфейса ---
   const contentArea = document.getElementById('contentArea');
   const langButtons = document.querySelectorAll('.top-lang-selector button');
+  const adminLoginBtn = document.getElementById('adminLoginBtn');
+  const adminModal = document.getElementById('adminModal'); // Если используется
   const detailsModal = document.getElementById('detailsModal');
   const detailsForm = document.getElementById('detailsForm');
   const modalEmotionName = document.getElementById('modalEmotionName');
-  const closeModalBtns = document.querySelectorAll('.close-modal, .close');
+  const existingDetailsList = document.getElementById('existingDetailsList'); // Новый элемент
+  const closeModalBtns = document.querySelectorAll('.close-modal, .close'); // Универсальный селектор для всех кнопок закрытия модалок
 
   // --- Языки ---
   const langNames = { ru: 'Рус', kz: 'Каз', de: 'Deu', en: 'Eng' };
 
-  // --- Загрузка эмоций ---
+  // --- Инициализация приложения ---
+  (async () => {
+    // Установим активный язык по умолчанию
+    langButtons.forEach(btn => {
+      if (btn.dataset.lang === currentLang) {
+        btn.classList.add('active');
+      }
+    });
+
+    await loadEmotions();
+    renderEmotions();
+  })();
+
+  // --- Загрузка эмоций из Supabase ---
   async function loadEmotions() {
     const { data, error } = await supabaseClient
       .from('emotions')
       .select('*')
-      .order('created_at', { ascending: true });
-    emotions = data || [];
+      .order('created_at', { ascending: true }); // Сортируем для стабильного порядка
+
+    if (error) {
+      console.error('Ошибка загрузки эмоций:', error.message);
+    } else {
+      emotions = data || [];
+    }
   }
 
-  // --- Рендер карточек ---
+  // --- Рендер карточек эмоций ---
   function renderEmotions() {
-    contentArea.innerHTML = '';
+    contentArea.innerHTML = ''; // Очищаем контейнер перед рендером
+    if (emotions.length === 0) {
+      contentArea.innerHTML = '<p style="color: white; text-align: center;">Эмоции пока не добавлены.</p>';
+      return;
+    }
+
     emotions.forEach(emotion => {
       const card = document.createElement('div');
       card.className = 'emotion-card';
+
       card.innerHTML = `
-        <div class="card-front">${emotion.names?.[currentLang] || ''}</div>
-        <div class="card-back">${emotion.descriptions?.[currentLang] || ''}</div>
+        <div class="card-inner">
+          <div class="card-front">
+            ${emotion.names?.[currentLang] || 'Название не указано'}
+          </div>
+          <div class="card-back">
+            ${emotion.descriptions?.[currentLang] || 'Описание не указано'}
+          </div>
+        </div>
       `;
+
       card.addEventListener('click', () => openDetailsModal(emotion));
+
       contentArea.appendChild(card);
     });
   }
@@ -52,34 +87,45 @@ document.addEventListener('DOMContentLoaded', () => {
   async function openDetailsModal(emotion) {
     currentEmotion = emotion;
     modalEmotionName.textContent = emotion.names?.[currentLang] || '';
+
     detailsForm.reset();
 
-    // Загрузка существующих деталей (если есть)
-    const { data } = await supabaseClient
+    // Загрузка и отображение существующих деталей
+    const { data: existingDetails, error: fetchError } = await supabaseClient
       .from('emotion_details')
       .select('*')
       .eq('emotion_id', emotion.id)
-      .single();
+      .order('created_at', { ascending: false });
 
-    if (data) {
-      detailsForm.detailName.value = data.name || '';
-      detailsForm.comparisonObject.value = data.comparison_object || '';
-      detailsForm.submodel.value = data.submodel || '';
-      detailsForm.semanticRole.value = data.semantic_role || '';
-      detailsForm.features.value = data.features || '';
-      detailsForm.examples.value = data.examples || '';
-      detailsForm.verbs.value = data.verbs || '';
-      detailsForm.participants.value = data.participants || '';
-      detailsForm.notes.value = data.notes || '';
+    if (fetchError) {
+      console.error('Ошибка загрузки существующих деталей:', fetchError.message);
+      existingDetailsList.innerHTML = '<p style="color: red;">Ошибка загрузки деталей.</p>';
+    } else if (existingDetails && existingDetails.length > 0) {
+      existingDetailsList.innerHTML = '';
+      existingDetails.forEach(detail => {
+        const detailItem = document.createElement('div');
+        detailItem.className = 'detail-item';
+        detailItem.innerHTML = `
+          <strong>${detail.name || 'Без названия'}</strong>
+          <span>Объект: ${detail.comparison_object || 'Нет'}</span>
+          <span>Признаки: ${detail.features || 'Нет'}</span>
+          <span>Примечание: ${detail.notes || 'Нет'}</span>
+          <small>Добавлено: ${new Date(detail.created_at).toLocaleDateString()}</small>
+        `;
+        existingDetailsList.appendChild(detailItem);
+      });
+    } else {
+      existingDetailsList.innerHTML = '<p>Пока нет добавленных деталей для этой эмоции. Добавьте первую!</p>';
     }
 
     detailsModal.classList.add('active');
   }
 
-  // --- Сохранение деталей ---
-  detailsForm.addEventListener('submit', async (e) => {
+  // --- Обработчик отправки формы деталей ---
+  detailsForm.addEventListener('submit', async e => {
     e.preventDefault();
-    const detailData = {
+
+    const newDetail = {
       emotion_id: currentEmotion.id,
       name: detailsForm.detailName.value,
       comparison_object: detailsForm.comparisonObject.value,
@@ -91,21 +137,26 @@ document.addEventListener('DOMContentLoaded', () => {
       participants: detailsForm.participants.value,
       notes: detailsForm.notes.value
     };
-    const { error } = await supabaseClient
-      .from('emotion_details')
-      .upsert([detailData], { onConflict: 'emotion_id' });
+
+    const { error } = await supabaseClient.from('emotion_details').insert([newDetail]);
+
     if (!error) {
-      alert('Детали сохранены!');
-      detailsModal.classList.remove('active');
+      alert('Новая деталь успешно добавлена!');
+      detailsForm.reset();
+      openDetailsModal(currentEmotion);
     } else {
-      alert('Ошибка: ' + error.message);
+      console.error('Ошибка добавления детали:', error.message);
+      alert('Ошибка добавления детали: ' + error.message);
     }
   });
 
-  // --- Закрытие модального окна ---
-  closeModalBtns.forEach(btn => btn.addEventListener('click', () => {
-    detailsModal.classList.remove('active');
-  }));
+  // --- Закрытие модальных окон ---
+  closeModalBtns.forEach(btn =>
+    btn.addEventListener('click', () => {
+      detailsModal.classList.remove('active');
+      if (adminModal) adminModal.classList.remove('active');
+    })
+  );
 
   // --- Переключение языка ---
   langButtons.forEach(btn => {
@@ -115,10 +166,4 @@ document.addEventListener('DOMContentLoaded', () => {
       renderEmotions();
     });
   });
-
-  // --- Инициализация ---
-  (async () => {
-    await loadEmotions();
-    renderEmotions();
-  })();
 });
