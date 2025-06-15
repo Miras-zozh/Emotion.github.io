@@ -5,7 +5,6 @@ body {
   background: linear-gradient(120deg, #00c3ff 0%, #ffff1c 100%);
   overflow-x: hidden;
 }
-
 h1 {
   color: #fff;
   text-align: center;
@@ -13,7 +12,6 @@ h1 {
   font-size: 2.5rem;
   text-shadow: 2px 4px 10px #00000055;
 }
-
 .top-lang-selector {
   position: fixed;
   top: 18px;
@@ -37,73 +35,11 @@ h1 {
 .top-lang-selector button:hover {
   background: #ee0979cc;
 }
-
-.admin-btn {
-  position: fixed;
-  top: 18px;
-  left: 24px;
-  background: linear-gradient(45deg, #ff6a00cc, #ee0979cc);
-  color: #fff;
-  border: none;
-  border-radius: 14px;
-  padding: 10px 24px;
-  font-size: 1.1rem;
-  font-weight: 700;
-  cursor: pointer;
-  z-index: 1001;
-  box-shadow: 0 0 10px #ee0979cc;
-  transition: transform 0.2s;
-}
-.admin-btn:hover {
-  transform: scale(1.07);
-  box-shadow: 0 0 20px #ff6a00cc;
-}
-
-#sideMenu {
-  position: fixed;
-  top: 70px;
-  left: 24px;
-  z-index: 1001;
-}
-#menuToggleBtn {
-  background: #ee0979;
-  color: #fff;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 18px;
-  font-weight: 700;
-  cursor: pointer;
-}
-#menuList {
-  background: #fff9f9cc;
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(243, 105, 180, 0.4);
-  margin-top: 6px;
-  display: flex;
-  flex-direction: column;
-}
-#menuList button {
-  background: #fceabb;
-  border: none;
-  padding: 10px 14px;
-  cursor: pointer;
-  font-weight: 600;
-  border-radius: 8px;
-  margin-bottom: 6px;
-  transition: background 0.3s;
-}
-#menuList button.active,
-#menuList button:hover {
-  background: #f8b500;
-  color: #3a2e00;
-}
-
 #contentArea {
   margin: 0 auto;
   margin-top: 40px;
   max-width: 1200px;
   min-height: 600px;
-  position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
@@ -111,8 +47,6 @@ h1 {
   gap: 30px;
   padding-bottom: 80px;
 }
-
-/* Карточки эмоций */
 .emotion-card {
   width: 220px;
   height: 220px;
@@ -120,7 +54,6 @@ h1 {
   border-radius: 32px;
   box-shadow: 0 8px 32px rgba(255, 165, 0, 0.3), 0 2px 8px #fff8;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
   font-size: 2rem;
@@ -130,53 +63,17 @@ h1 {
   transition: transform 0.3s, box-shadow 0.3s;
   user-select: none;
   position: relative;
-  perspective: 900px;
 }
 .emotion-card:hover {
   transform: scale(1.07) rotateZ(-2deg);
   box-shadow: 0 12px 40px #ff6a00bb, 0 2px 8px #fff8;
 }
-.emotion-card .card-front,
-.emotion-card .card-back {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  backface-visibility: hidden;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 18px;
-  border-radius: inherit;
-  font-size: 2rem;
-}
-.emotion-card .card-front {
-  background: inherit;
-  z-index: 2;
-}
-.emotion-card .card-back {
-  background: linear-gradient(135deg, #f8b500 0%, #fceabb 100%);
-  transform: rotateY(180deg);
-  font-size: 1.1rem;
-}
-.emotion-card.flipped .card-front {
-  transform: rotateY(180deg);
-}
-.emotion-card.flipped .card-back {
-  transform: rotateY(0deg);
-  z-index: 3;
-}
-
-/* Модальное окно */
 .modal {
   display: none;
   position: fixed;
   z-index: 2000;
-  left: 0;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  background: rgba(0, 0, 0, 0.7);
+  left: 0; top: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.7);
   justify-content: center;
   align-items: center;
 }
@@ -187,13 +84,12 @@ h1 {
   background: #fff;
   border-radius: 20px;
   padding: 32px 26px 26px 26px;
-  max-width: 520px;
+  max-width: 700px;
   width: 96%;
   box-shadow: 0 8px 40px #ee0979cc;
   position: relative;
 }
-.close-modal,
-.close {
+.close-modal {
   position: absolute;
   top: 14px;
   right: 20px;
@@ -206,8 +102,7 @@ h1 {
   flex-direction: column;
   gap: 12px;
 }
-#detailsForm input,
-#detailsForm textarea {
+#detailsForm input, #detailsForm textarea {
   width: calc(100% - 20px);
   padding: 10px;
   margin-bottom: 10px;
@@ -231,16 +126,6 @@ h1 {
 #detailsForm button:hover {
   background-color: #45a049;
 }
-
-/* Стили для списка существующих деталей */
-#existingDetailsHeader {
-  margin-top: 20px;
-  margin-bottom: 10px;
-  color: #333;
-  font-size: 1.3rem;
-  border-bottom: 1px solid #eee;
-  padding-bottom: 5px;
-}
 #existingDetailsList {
   max-height: 250px;
   overflow-y: auto;
@@ -250,19 +135,13 @@ h1 {
   margin-bottom: 20px;
   background-color: #fcfcfc;
 }
-#existingDetailsList p {
-  color: #666;
-  text-align: center;
-  font-style: italic;
-  margin: 10px 0;
-}
 .detail-item {
   background-color: #fff;
   border: 1px solid #eee;
   border-radius: 6px;
   padding: 10px 15px;
   margin-bottom: 10px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 .detail-item strong {
   display: block;
@@ -283,8 +162,6 @@ hr {
   border-top: 1px dashed #ccc;
   margin: 20px 0;
 }
-
-/* Адаптивность */
 @media (max-width: 700px) {
   #contentArea {
     gap: 18px;
