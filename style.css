@@ -172,8 +172,11 @@ h1 {
   display: none;
   position: fixed;
   z-index: 2000;
-  left: 0; top: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7);
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
   justify-content: center;
   align-items: center;
 }
@@ -189,7 +192,8 @@ h1 {
   box-shadow: 0 8px 40px #ee0979cc;
   position: relative;
 }
-.close-modal, .close {
+.close-modal,
+.close {
   position: absolute;
   top: 14px;
   right: 20px;
@@ -202,28 +206,82 @@ h1 {
   flex-direction: column;
   gap: 12px;
 }
-#detailsForm input, #detailsForm textarea {
+#detailsForm input,
+#detailsForm textarea {
+  width: calc(100% - 20px);
   padding: 10px;
-  border-radius: 8px;
-  border: 1.5px solid #f3a6a6;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
   font-size: 1rem;
   font-family: inherit;
   resize: vertical;
 }
 #detailsForm button {
-  background: linear-gradient(45deg, #ff6a00, #ee0979);
-  color: #fff;
+  background-color: #4caf50;
+  color: white;
+  padding: 12px 20px;
   border: none;
-  border-radius: 12px;
-  padding: 12px 0;
-  font-size: 1.1rem;
-  font-weight: 700;
+  border-radius: 5px;
   cursor: pointer;
-  margin-top: 10px;
-  transition: transform 0.2s;
+  font-size: 1.1rem;
+  margin-top: 15px;
+  width: 100%;
 }
 #detailsForm button:hover {
-  transform: scale(1.05);
+  background-color: #45a049;
+}
+
+/* Стили для списка существующих деталей */
+#existingDetailsHeader {
+  margin-top: 20px;
+  margin-bottom: 10px;
+  color: #333;
+  font-size: 1.3rem;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
+}
+#existingDetailsList {
+  max-height: 250px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 20px;
+  background-color: #fcfcfc;
+}
+#existingDetailsList p {
+  color: #666;
+  text-align: center;
+  font-style: italic;
+  margin: 10px 0;
+}
+.detail-item {
+  background-color: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 10px 15px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+.detail-item strong {
+  display: block;
+  font-size: 1.1em;
+  color: #555;
+  margin-bottom: 5px;
+}
+.detail-item span {
+  display: block;
+  font-size: 0.9em;
+  color: #777;
+}
+.detail-item:last-child {
+  margin-bottom: 0;
+}
+hr {
+  border: none;
+  border-top: 1px dashed #ccc;
+  margin: 20px 0;
 }
 
 /* Адаптивность */
