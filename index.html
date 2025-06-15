@@ -3,40 +3,14 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Эмоции</title>
+  <title>Эмоции — Табличный просмотр</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="top-lang-selector">
-    <button data-lang="ru" class="active">Рус</button>
-    <button data-lang="kz">Каз</button>
-    <button data-lang="de">Deu</button>
-    <button data-lang="en">Eng</button>
-  </div>
-  <h1>Эмоции в стиле "Головоломка"</h1>
-  <div id="contentArea"></div>
+  <button id="dataBtn" class="main-btn">Данные</button>
 
-  <!-- Модальное окно -->
-  <div id="detailsModal" class="modal">
-    <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2 id="modalEmotionName"></h2>
-      <div id="existingDetailsList"></div>
-      <hr />
-      <h3>Добавить новую запись:</h3>
-      <form id="detailsForm">
-        <input type="text" id="detailName" placeholder="Наименование эмоции" required />
-        <input type="text" id="comparisonObject" placeholder="Объект сравнения (стимул)" />
-        <input type="text" id="submodel" placeholder="Субмодель" />
-        <input type="text" id="semanticRole" placeholder="Семантическая роль" />
-        <textarea id="features" placeholder="Признаки"></textarea>
-        <textarea id="examples" placeholder="Примеры"></textarea>
-        <textarea id="verbs" placeholder="Глаголы"></textarea>
-        <textarea id="participants" placeholder="Другие обязательные участники"></textarea>
-        <textarea id="notes" placeholder="Примечание"></textarea>
-        <button type="submit">Добавить</button>
-      </form>
-    </div>
+  <div id="mainContent">
+    <!-- Здесь будет список эмоций или таблица -->
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
