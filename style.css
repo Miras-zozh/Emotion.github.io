@@ -1,174 +1,66 @@
 body {
-  margin: 0;
-  min-height: 100vh;
-  font-family: 'Segoe UI', 'Comic Sans MS', cursive, sans-serif;
-  background: linear-gradient(120deg, #00c3ff 0%, #ffff1c 100%);
-  overflow-x: hidden;
+  font-family: Arial, sans-serif;
+  padding: 20px;
+  background: #f0f0f0;
 }
-h1 {
-  color: #fff;
-  text-align: center;
-  margin-top: 60px;
-  font-size: 2.5rem;
-  text-shadow: 2px 4px 10px #00000055;
-}
-.top-lang-selector {
-  position: fixed;
-  top: 18px;
-  right: 24px;
-  z-index: 1001;
-  display: flex;
-  gap: 10px;
-}
-.top-lang-selector button {
-  border: none;
-  border-radius: 12px;
-  background: #ff8a00cc;
-  color: white;
-  font-weight: 700;
-  padding: 8px 16px;
-  font-size: 1rem;
+
+.main-btn {
+  padding: 10px 20px;
+  font-size: 1.2rem;
   cursor: pointer;
+  margin-bottom: 20px;
+}
+
+#mainContent {
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.emotion-list {
+  list-style: none;
+  padding: 0;
+}
+
+.emotion-list li {
+  padding: 12px 20px;
+  margin-bottom: 10px;
+  background: #fff;
+  cursor: pointer;
+  border-radius: 6px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  font-weight: bold;
+  font-size: 1.1rem;
   transition: background 0.3s;
 }
-.top-lang-selector button.active,
-.top-lang-selector button:hover {
-  background: #ee0979cc;
+
+.emotion-list li:hover {
+  background: #e0e0e0;
 }
-#contentArea {
-  margin: 0 auto;
-  margin-top: 40px;
-  max-width: 1200px;
-  min-height: 600px;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 30px;
-  padding-bottom: 80px;
-}
-.emotion-card {
-  width: 220px;
-  height: 220px;
-  background: linear-gradient(135deg, #fceabb 0%, #f8b500 100%);
-  border-radius: 32px;
-  box-shadow: 0 8px 32px rgba(255, 165, 0, 0.3), 0 2px 8px #fff8;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 2rem;
-  font-weight: 800;
-  color: #3a2e00;
+
+.back-btn {
+  margin-bottom: 15px;
   cursor: pointer;
-  transition: transform 0.3s, box-shadow 0.3s;
-  user-select: none;
-  position: relative;
+  color: #007bff;
+  text-decoration: underline;
+  font-weight: 600;
 }
-.emotion-card:hover {
-  transform: scale(1.07) rotateZ(-2deg);
-  box-shadow: 0 12px 40px #ff6a00bb, 0 2px 8px #fff8;
-}
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 2000;
-  left: 0; top: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.7);
-  justify-content: center;
-  align-items: center;
-}
-.modal.active {
-  display: flex;
-}
-.modal-content {
-  background: #fff;
-  border-radius: 20px;
-  padding: 32px 26px 26px 26px;
-  max-width: 700px;
-  width: 96%;
-  box-shadow: 0 8px 40px #ee0979cc;
-  position: relative;
-}
-.close-modal {
-  position: absolute;
-  top: 14px;
-  right: 20px;
-  font-size: 2rem;
-  color: #ee0979;
-  cursor: pointer;
-}
-#detailsForm {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-#detailsForm input, #detailsForm textarea {
-  width: calc(100% - 20px);
-  padding: 10px;
-  margin-bottom: 10px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 1rem;
-  font-family: inherit;
-  resize: vertical;
-}
-#detailsForm button {
-  background-color: #4caf50;
-  color: white;
-  padding: 12px 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 1.1rem;
-  margin-top: 15px;
+
+table {
   width: 100%;
-}
-#detailsForm button:hover {
-  background-color: #45a049;
-}
-#existingDetailsList {
-  max-height: 250px;
-  overflow-y: auto;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  padding: 10px;
-  margin-bottom: 20px;
-  background-color: #fcfcfc;
-}
-.detail-item {
-  background-color: #fff;
-  border: 1px solid #eee;
+  border-collapse: collapse;
+  background: #fff;
   border-radius: 6px;
-  padding: 10px 15px;
-  margin-bottom: 10px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-.detail-item strong {
-  display: block;
-  font-size: 1.1em;
-  color: #555;
-  margin-bottom: 5px;
+
+th, td {
+  padding: 12px 15px;
+  border: 1px solid #ddd;
+  text-align: left;
 }
-.detail-item span {
-  display: block;
-  font-size: 0.9em;
-  color: #777;
-}
-.detail-item:last-child {
-  margin-bottom: 0;
-}
-hr {
-  border: none;
-  border-top: 1px dashed #ccc;
-  margin: 20px 0;
-}
-@media (max-width: 700px) {
-  #contentArea {
-    gap: 18px;
-  }
-  .emotion-card {
-    width: 150px;
-    height: 150px;
-    font-size: 1.2rem;
-  }
+
+th {
+  background: #f7f7f7;
+  font-weight: 700;
 }
