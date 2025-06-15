@@ -1,6 +1,11 @@
- const dataBtn = document.getElementById('dataBtn');
-  const mainContent = document.getElementById('mainContent');
+document.addEventListener('DOMContentLoaded', () => {
+  const SUPABASE_URL = 'https://iajtzxdhjkcycgvbetax.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ';
+  
+  const { createClient } = supabase;
+  const supabaseClient=createClient(SUPABASE_URL, SUPABASE_KEY);
 
+  // Эмоции (id для связи с данными)
   const emotions = [
     { id: 'joy', name: 'Радость' },
     { id: 'fear', name: 'Страх' },
@@ -10,81 +15,80 @@
     { id: 'sadness', name: 'Грусть' },
   ];
 
-  // Показываем список эмоций
-  function showEmotionList() {
-    mainContent.innerHTML = '';
-    const ul = document.createElement('ul');
-    ul.className = 'emotion-list';
-    emotions.forEach(emotion => {
-      const li = document.createElement('li');
-      li.textContent = emotion.name;
-      li.addEventListener('click', () => showEmotionData(emotion));
-      ul.appendChild(li);
+  // Элементы
+  const menuToggle = document.getElementById('menuToggle');
+  const menuList = document.getElementById('menuList');
+  const emotionItems = menuList.querySelectorAll('li[data-emotion]');
+  const addDataBtn = document.getElementById('addDataBtn');
+  const detailsModal = document.getElementById('detailsModal');
+  const addModal = document.getElementById('addModal');
+  const formModal = document.getElementById('formModal');
+
+  const closeDetailsBtn = detailsModal.querySelector('.close-modal');
+  const closeAddBtn = addModal.querySelector('.close-add-modal');
+  const closeFormBtn = formModal.querySelector('.close-form-modal');
+
+  const modalEmotionName = document.getElementById('modalEmotionName');
+  const existingDetailsList = document.getElementById('existingDetailsList');
+
+  const passwordForm = document.getElementById('passwordForm');
+  const adminPasswordInput = document.getElementById('adminPassword');
+
+  const detailsForm = document.getElementById('detailsForm');
+  const emotionIdInput = document.getElementById('emotionId');
+
+  let currentEmotionId = null;
+  let adminLoggedIn = false;
+
+  // Показать/скрыть меню
+  menuToggle.addEventListener('click', () => {
+    menuList.classList.toggle('visible');
+  });
+
+  // Выбор эмоции из меню
+  emotionItems.forEach(item => {
+    item.addEventListener('click', () => {
+      currentEmotionId = item.dataset.emotion;
+      openDetailsModal(currentEmotionId, item.textContent);
+      menuList.classList.remove('visible');
     });
-    mainContent.appendChild(ul);
-  }
+  });
 
-  // Показываем данные для выбранной эмоции
-  async function showEmotionData(emotion) {
-    mainContent.innerHTML = '';
+  // Открыть модалку с данными эмоции
+  async function openDetailsModal(emotionId, emotionName) {
+    modalEmotionName.textContent = emotionName;
+    existingDetailsList.innerHTML = '<p>Загрузка...</p>';
+    detailsModal.classList.add('visible');
 
-    // Кнопка назад
-    const backBtn = document.createElement('div');
-    backBtn.textContent = '← Назад к списку эмоций';
-    backBtn.className = 'back-btn';
-    backBtn.addEventListener('click', showEmotionList);
-    mainContent.appendChild(backBtn);
+    const { data, error } = await supabase
+      .from('emotion_details')
+      .select('*')
+      .eq('emotion_id', emotionId)
+      .order('created_at', { ascending: true });
 
-    // Заголовок
-    const h2 = document.createElement('h2');
-    h2.textContent = Данные для эмоции: ${emotion.name};
-    mainContent.appendChild(h2);
+    if (error) {
+      existingDetailsList.innerHTML = <p style="color:red;">Ошибка: ${error.message}</p>;
+      return;
+    }
 
-    // Таблица
+    if (!data || data.length === 0) {
+      existingDetailsList.innerHTML = '<p>Данные отсутствуют.</p>';
+      return;
+    }
+
+    // Создаем таблицу
     const table = document.createElement('table');
     const thead = document.createElement('thead');
     const headerRow = document.createElement('tr');
-    const columns = [
-      'Наименование эмоции',
-      'Объект сравнения (стимул)',
-      'Субмодель',
-      'Семантическая роль',
-      'Признаки',
-      'Примеры',
-      'Глаголы',
-      'Другие обязательные участники',
-      'Примечание'
-    ];
-    columns.forEach(col => {
+    ['Наименование', 'Объект сравнения', 'Субмодель', 'Семантическая роль', 'Признаки', 'Примеры', 'Глаголы', 'Участники', 'Примечание'].forEach(text => {
       const th = document.createElement('th');
-      th.textContent = col;
+      th.textContent = text;
       headerRow.appendChild(th);
     });
     thead.appendChild(headerRow);
     table.appendChild(thead);
 
     const tbody = document.createElement('tbody');
-    table.appendChild(tbody);
-
-    mainContent.appendChild(table);
-
-    // Загрузка данных из Supabase
-    const { data, error } = await supabase
-      .from('emotion_details')
-      .select('*')
-      .eq('emotion_id', emotion.id)
-      .order('created_at', { ascending: true });
-
-    if (error) {
-      tbody.innerHTML = <tr><td colspan="${columns.length}" style="color:red;">Ошибка загрузки данных: ${error.message}</td></tr>;
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      tbody.innerHTML = <tr><td colspan="${columns.length}">Данные отсутствуют.</td></tr>;
-      return;
-    }
-
     data.forEach(row => {
       const tr = document.createElement('tr');
       tr.innerHTML = `
@@ -100,8 +104,82 @@
       `;
       tbody.appendChild(tr);
     });
+    table.appendChild(tbody);
+    existingDetailsList.innerHTML = '';
+    existingDetailsList.appendChild(table);
   }
 
-  // Обработчик кнопки "Данные"
-  dataBtn.addEventListener('click', showEmotionList);
+  // Закрыть модалки
+  closeDetailsBtn.addEventListener('click', () => detailsModal.classList.remove('visible'));
+  closeAddBtn.addEventListener('click', () => addModal.classList.remove('visible'));
+  closeFormBtn.addEventListener('click', () => formModal.classList.remove('visible'));
+
+  // Кнопка "Добавить данные" — запрос пароля
+  addDataBtn.addEventListener('click', () => {
+    if (adminLoggedIn) {
+      openFormModal();
+    } else {
+      addModal.classList.add('visible');
+      adminPasswordInput.value = '';
+      adminPasswordInput.focus();
+    }
+  });
+
+  // Проверка пароля
+  passwordForm.addEventListener('submit', e => {
+    e.preventDefault();
+    const password = adminPasswordInput.value.trim();
+    // Здесь можно заменить на свой пароль
+    if (password === '123456') {
+      adminLoggedIn = true;
+      addModal.classList.remove('visible');
+      openFormModal();
+    } else {
+      alert('Неверный пароль!');
+      adminPasswordInput.value = '';
+      adminPasswordInput.focus();
+    }
+  });
+
+  // Открыть форму добавления данных
+  function openFormModal() {
+    if (!currentEmotionId) {
+      alert('Сначала выберите эмоцию слева!');
+      return;
+    }
+    formModal.classList.add('visible');
+    detailsForm.reset();
+    document.getElementById('formModalTitle').textContent = Добавить запись для "${emotions.find(e => e.id === currentEmotionId).name}";
+    emotionIdInput.value = currentEmotionId;
+  }
+
+  // Отправка формы добавления записи
+  detailsForm.addEventListener('submit', async e => {
+    e.preventDefault();
+    const detailData = {
+      emotion_id: emotionIdInput.value,
+      name: detailsForm.detailName.value,
+      comparison_object: detailsForm.comparisonObject.value,
+      submodel: detailsForm.submodel.value,
+      semantic_role: detailsForm.semanticRole.value,
+      features: detailsForm.features.value,
+      examples: detailsForm.examples.value,
+      verbs: detailsForm.verbs.value,
+      participants: detailsForm.participants.value,
+      notes: detailsForm.notes.value,
+      created_at: new Date().toISOString()
+    };
+    const { error } = await supabase.from('emotion_details').insert([detailData]);
+    if (error) {
+      alert('Ошибка при добавлении: ' + error.message);
+    } else {
+      alert('Запись успешно добавлена!');
+      formModal.classList.remove('visible');
+      // Обновить таблицу, если открыта для текущей эмоции
+      if (detailsModal.classList.contains('visible') && currentEmotionId === detailData.emotion_id) {
+        openDetailsModal(currentEmotionId, emotions.find(e => e.id === currentEmotionId).name);
+      }
+    }
+  });
+
 });
