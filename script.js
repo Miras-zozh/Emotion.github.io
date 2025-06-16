@@ -74,7 +74,7 @@ document.querySelectorAll('.emotion-card').forEach(card => {
     showFormBtn.classList.toggle('hidden', !isAdmin);
     addForm.classList.add('hidden');
     // Загрузка данных из Supabase
-    const { data, error } = await supabase.Client
+    const { data, error } = await supabaseClient
       .from('emotions')
       .select('*')
       .eq('emotion', currentEmotion);
