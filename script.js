@@ -118,7 +118,7 @@ addForm.onsubmit = async (e) => {
     verbs: formData.get('verbs'),
     note: formData.get('note'),
   };
-  const { error } = await supabase.from('emotions').insert([newRow]);
+  const { error } = await supabaseClient.from('emotions').insert([newRow]);
   if (!error) {
     allData.push(newRow);
     renderTable(allData);
