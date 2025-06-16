@@ -1,4 +1,4 @@
-const supabase = supabase.createClient('https://iajtzxdhjkcycgvbetax.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ');
+const supabaseClient = supabase.createClient('https://iajtzxdhjkcycgvbetax.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ');
 
 document.addEventListener('DOMContentLoaded', () => {
   // Инициализация клиента Supabase — ЗАМЕНИ СВОИМИ ДАННЫМИ!
@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
     existingDetailsList.innerHTML = '<p>Загрузка...</p>';
     detailsModal.classList.add('visible');
 
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('emotion_details')
       .select('*')
       .eq('emotion_id', emotionId)
@@ -168,7 +168,7 @@ document.addEventListener('DOMContentLoaded', () => {
       notes: detailsForm.notes.value,
       created_at: new Date().toISOString()
     };
-    const { error } = await supabase.from('emotion_details').insert([detailData]);
+    const { error } = await supabaseClient.from('emotion_details').insert([detailData]);
     if (error) {
       alert('Ошибка при добавлении: ' + error.message);
     } else {
