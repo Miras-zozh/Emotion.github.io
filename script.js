@@ -1,6 +1,8 @@
+const supabase = supabase.createClient('https://iajtzxdhjkcycgvbetax.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ');
+
 document.addEventListener('DOMContentLoaded', () => {
   // Инициализация клиента Supabase — ЗАМЕНИ СВОИМИ ДАННЫМИ!
-  const supabase = supabase.createClient('https://iajtzxdhjkcycgvbetax.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ');
+  
 
   // Эмоции (фиксированные)
   const emotions = [
