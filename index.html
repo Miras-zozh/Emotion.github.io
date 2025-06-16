@@ -1,90 +1,62 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Эмоции в стиле "Головоломка"</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>Эмоции</title>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Боковое меню с тремя точками -->
-  <div id="sideMenu">
-    <div id="menuToggle" title="Меню">&#8942;</div>
-    <nav id="menuList" class="hidden">
-      <h3>Эмоции</h3>
-      <ul>
-        <li data-emotion="joy">Радость</li>
-        <li data-emotion="fear">Страх</li>
-        <li data-emotion="anger">Злость</li>
-        <li data-emotion="envy">Зависть</li>
-        <li data-emotion="happiness">Счастье</li>
-        <li data-emotion="sadness">Грусть</li>
-      </ul>
-      <button id="addDataBtn">Добавить данные</button>
-    </nav>
+  <h1>Эмоции</h1>
+  <div class="emotions-container">
+    <div class="emotion-card" data-emotion="радость">😊 Радость</div>
+    <div class="emotion-card" data-emotion="грусть">😢 Грусть</div>
+    <div class="emotion-card" data-emotion="страх">😱 Страх</div>
+    <div class="emotion-card" data-emotion="гнев">😡 Гнев</div>
+    <div class="emotion-card" data-emotion="удивление">😮 Удивление</div>
+    <div class="emotion-card" data-emotion="отвращение">🤢 Отвращение</div>
   </div>
 
-  <!-- Основной контент -->
-  <main>
-    <section id="intro">
-      <h1>Эмоции в стиле "Головоломка"</h1>
-      <blockquote>
-        «Эмоции — это язык души, который понимает сердце.»
-      </blockquote>
-      <p>
-        Эмоции — сложный и прекрасный мир, который формирует наше восприятие и поведение.  
-        Изучая их, мы учимся понимать себя и окружающих.
-      </p>
-    </section>
-
-    <section id="contentArea">
-      <p>Выберите эмоцию слева, чтобы увидеть данные.</p>
-    </section>
-  </main>
-
-  <!-- Модальное окно для просмотра данных -->
-  <div id="detailsModal" class="modal hidden">
+  <!-- Модальное окно -->
+  <div id="modal" class="modal hidden">
     <div class="modal-content">
-      <span class="close-modal">&times;</span>
-      <h2 id="modalEmotionName"></h2>
-      <div id="existingDetailsList"></div>
-    </div>
-  </div>
-
-  <!-- Модальное окно для добавления данных -->
-  <div id="addModal" class="modal hidden">
-    <div class="modal-content">
-      <span class="close-add-modal">&times;</span>
-      <h2>Вход для добавления данных</h2>
-      <form id="passwordForm">
-        <input type="password" id="adminPassword" placeholder="Введите пароль" required />
-        <button type="submit">Войти</button>
+      <span id="close-modal" class="close">&times;</span>
+      <h2 id="modal-title"></h2>
+      <div class="filters">
+        <input type="text" id="filter-name" placeholder="Фильтр по наименованию">
+        <input type="text" id="filter-role" placeholder="Фильтр по роли">
+        <button id="reset-filters">Сбросить</button>
+      </div>
+      <table id="emotion-table">
+        <thead>
+          <tr>
+            <th>Наименование</th>
+            <th>Объект сравнения</th>
+            <th>Субмодель</th>
+            <th>Семантическая роль</th>
+            <th>Признаки</th>
+            <th>Примеры</th>
+            <th>Глаголы</th>
+            <th>Примечание</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <button id="show-form" class="add-btn">Добавить данные</button>
+      <form id="add-form" class="hidden">
+        <input type="text" name="name" placeholder="Наименование" required>
+        <input type="text" name="object" placeholder="Объект сравнения">
+        <input type="text" name="submodel" placeholder="Субмодель">
+        <input type="text" name="role" placeholder="Семантическая роль">
+        <input type="text" name="features" placeholder="Признаки">
+        <input type="text" name="examples" placeholder="Примеры">
+        <input type="text" name="verbs" placeholder="Глаголы">
+        <input type="text" name="note" placeholder="Примечание">
+        <button type="submit" class="submit-btn">Сохранить</button>
       </form>
     </div>
   </div>
 
-  <!-- Модальное окно для формы добавления записи -->
-  <div id="formModal" class="modal hidden">
-    <div class="modal-content">
-      <span class="close-form-modal">&times;</span>
-      <h2 id="formModalTitle">Добавить запись</h2>
-      <form id="detailsForm">
-        <input type="hidden" id="emotionId" />
-        <input type="text" id="detailName" placeholder="Наименование эмоции" required />
-        <input type="text" id="comparisonObject" placeholder="Объект сравнения (стимул)" />
-        <input type="text" id="submodel" placeholder="Субмодель" />
-        <input type="text" id="semanticRole" placeholder="Семантическая роль" />
-        <textarea id="features" placeholder="Признаки"></textarea>
-        <textarea id="examples" placeholder="Примеры"></textarea>
-        <textarea id="verbs" placeholder="Глаголы"></textarea>
-        <textarea id="participants" placeholder="Другие обязательные участники"></textarea>
-        <textarea id="notes" placeholder="Примечание"></textarea>
-        <button type="submit">Сохранить</button>
-      </form>
-    </div>
-  </div>
-
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
