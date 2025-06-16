@@ -227,3 +227,20 @@ body {
   transition: background 0.2s;
 }
 .submit-btn:hover { background: #ffd700; color: #222; }
+
+.delete-btn {
+  background: #ff6f61;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 6px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.delete-btn:hover {
+  background: #ffd700;
+  color: #222;
+}
+
