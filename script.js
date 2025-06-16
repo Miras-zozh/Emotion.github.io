@@ -1,11 +1,8 @@
 document.addEventListener('DOMContentLoaded', () => {
-  const SUPABASE_URL = 'https://iajtzxdhjkcycgvbetax.supabase.co';
-  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ';
-  
-  const { createClient } = supabase;
-  const supabaseClient=createClient(SUPABASE_URL, SUPABASE_KEY);
+  // Инициализация клиента Supabase — ЗАМЕНИ СВОИМИ ДАННЫМИ!
+  const supabase = supabase.createClient('https://iajtzxdhjkcycgvbetax.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ');
 
-  // Эмоции (id для связи с данными)
+  // Эмоции (фиксированные)
   const emotions = [
     { id: 'joy', name: 'Радость' },
     { id: 'fear', name: 'Страх' },
@@ -15,7 +12,10 @@ document.addEventListener('DOMContentLoaded', () => {
     { id: 'sadness', name: 'Грусть' },
   ];
 
-  // Элементы
+  let currentEmotionId = null;
+  let adminLoggedIn = false;
+
+  // Элементы DOM
   const menuToggle = document.getElementById('menuToggle');
   const menuList = document.getElementById('menuList');
   const emotionItems = menuList.querySelectorAll('li[data-emotion]');
@@ -37,9 +37,6 @@ document.addEventListener('DOMContentLoaded', () => {
   const detailsForm = document.getElementById('detailsForm');
   const emotionIdInput = document.getElementById('emotionId');
 
-  let currentEmotionId = null;
-  let adminLoggedIn = false;
-
   // Показать/скрыть меню
   menuToggle.addEventListener('click', () => {
     menuList.classList.toggle('visible');
@@ -54,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   });
 
-  // Открыть модалку с данными эмоции
+  // Открыть модальное окно с данными эмоции
   async function openDetailsModal(emotionId, emotionName) {
     modalEmotionName.textContent = emotionName;
     existingDetailsList.innerHTML = '<p>Загрузка...</p>';
@@ -67,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .order('created_at', { ascending: true });
 
     if (error) {
-      existingDetailsList.innerHTML = '<p style="color:red;">Ошибка: ${error.message}</p>';
+      existingDetailsList.innerHTML = <p style="color:red;">Ошибка: ${error.message}</p>;
       return;
     }
 
@@ -109,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
     existingDetailsList.appendChild(table);
   }
 
-  // Закрыть модалки
+  // Закрыть модальные окна
   closeDetailsBtn.addEventListener('click', () => detailsModal.classList.remove('visible'));
   closeAddBtn.addEventListener('click', () => addModal.classList.remove('visible'));
   closeFormBtn.addEventListener('click', () => formModal.classList.remove('visible'));
@@ -129,7 +126,7 @@ document.addEventListener('DOMContentLoaded', () => {
   passwordForm.addEventListener('submit', e => {
     e.preventDefault();
     const password = adminPasswordInput.value.trim();
-    // Здесь можно заменить на свой пароль
+    // Замените на свой пароль
     if (password === '123456') {
       adminLoggedIn = true;
       addModal.classList.remove('visible');
@@ -149,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
     formModal.classList.add('visible');
     detailsForm.reset();
-    document.getElementById('formModalTitle').textContent =  `Добавить запись для "${emotions.find(e => e.id === currentEmotionId).name}"`;
+    document.getElementById('formModalTitle').textContent = Добавить запись для "${emotions.find(e => e.id === currentEmotionId).name}";
     emotionIdInput.value = currentEmotionId;
   }
 
@@ -181,5 +178,4 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   });
-
 });
