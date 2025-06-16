@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 // ==== Supabase config ====
 const SUPABASE_URL = 'https://iajtzxdhjkcycgvbetax.supabase.co'; // Замените на свой
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ'; // Замените на свой
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 
 
@@ -74,7 +74,7 @@ document.querySelectorAll('.emotion-card').forEach(card => {
     showFormBtn.classList.toggle('hidden', !isAdmin);
     addForm.classList.add('hidden');
     // Загрузка данных из Supabase
-    const { data, error } = await supabase
+    const { data, error } = await supabase.Client
       .from('emotions')
       .select('*')
       .eq('emotion', currentEmotion);
