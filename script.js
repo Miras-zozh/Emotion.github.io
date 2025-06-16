@@ -1,183 +1,164 @@
-const supabaseClient = supabase.createClient('https://iajtzxdhjkcycgvbetax.supabase.co', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ');
 
 document.addEventListener('DOMContentLoaded', () => {
   // Инициализация клиента Supabase — ЗАМЕНИ СВОИМИ ДАННЫМИ!
-  
+// ==== Supabase config ====
+const SUPABASE_URL = 'https://iajtzxdhjkcycgvbetax.supabase.co'; // Замените на свой
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ'; // Замените на свой
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-  // Эмоции (фиксированные)
-  const emotions = [
-    { id: 'joy', name: 'Радость' },
-    { id: 'fear', name: 'Страх' },
-    { id: 'anger', name: 'Злость' },
-    { id: 'envy', name: 'Зависть' },
-    { id: 'happiness', name: 'Счастье' },
-    { id: 'sadness', name: 'Грусть' },
-  ];
+// ==== Admin password ====
+const ADMIN_PASSWORD = 'yourStrongPassword'; // Задайте свой пароль
 
-  let currentEmotionId = null;
-  let adminLoggedIn = false;
+let isAdmin = false;
+let currentEmotion = '';
+let allData = [];
 
-  // Элементы DOM
-  const menuToggle = document.getElementById('menuToggle');
-  const menuList = document.getElementById('menuList');
-  const emotionItems = menuList.querySelectorAll('li[data-emotion]');
-  const addDataBtn = document.getElementById('addDataBtn');
-  const detailsModal = document.getElementById('detailsModal');
-  const addModal = document.getElementById('addModal');
-  const formModal = document.getElementById('formModal');
+// ==== UI Elements ====
+const modal = document.getElementById('modal');
+const modalTitle = document.getElementById('modal-title');
+const closeModalBtn = document.getElementById('close-modal');
+const tableBody = document.querySelector('#emotion-table tbody');
+const showFormBtn = document.getElementById('show-form');
+const addForm = document.getElementById('add-form');
+const filterName = document.getElementById('filter-name');
+const filterRole = document.getElementById('filter-role');
+const resetFiltersBtn = document.getElementById('reset-filters');
 
-  const closeDetailsBtn = detailsModal.querySelector('.close-modal');
-  const closeAddBtn = addModal.querySelector('.close-add-modal');
-  const closeFormBtn = formModal.querySelector('.close-form-modal');
+const adminLoginBtn = document.getElementById('admin-login-btn');
+const adminModal = document.getElementById('admin-modal');
+const closeAdminModalBtn = document.getElementById('close-admin-modal');
+const adminLoginForm = document.getElementById('admin-login-form');
+const adminPasswordInput = document.getElementById('admin-password');
+const adminError = document.getElementById('admin-error');
 
-  const modalEmotionName = document.getElementById('modalEmotionName');
-  const existingDetailsList = document.getElementById('existingDetailsList');
-
-  const passwordForm = document.getElementById('passwordForm');
-  const adminPasswordInput = document.getElementById('adminPassword');
-
-  const detailsForm = document.getElementById('detailsForm');
-  const emotionIdInput = document.getElementById('emotionId');
-
-  // Показать/скрыть меню
-  menuToggle.addEventListener('click', () => {
-    menuList.classList.toggle('visible');
+// ==== Helpers ====
+function renderTable(data) {
+  tableBody.innerHTML = '';
+  data.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${row.name || ''}</td>
+      <td>${row.object || ''}</td>
+      <td>${row.submodel || ''}</td>
+      <td>${row.role || ''}</td>
+      <td>${row.features || ''}</td>
+      <td>${row.examples || ''}</td>
+      <td>${row.verbs || ''}</td>
+      <td>${row.note || ''}</td>
+    `;
+    tableBody.appendChild(tr);
   });
+}
 
-  // Выбор эмоции из меню
-  emotionItems.forEach(item => {
-    item.addEventListener('click', () => {
-      currentEmotionId = item.dataset.emotion;
-      openDetailsModal(currentEmotionId, item.textContent);
-      menuList.classList.remove('visible');
-    });
-  });
+function filterTable() {
+  let filtered = allData;
+  if (filterName.value) {
+    filtered = filtered.filter(r => (r.name || '').toLowerCase().includes(filterName.value.toLowerCase()));
+  }
+  if (filterRole.value) {
+    filtered = filtered.filter(r => (r.role || '').toLowerCase().includes(filterRole.value.toLowerCase()));
+  }
+  renderTable(filtered);
+}
 
-  // Открыть модальное окно с данными эмоции
-  async function openDetailsModal(emotionId, emotionName) {
-    modalEmotionName.textContent = emotionName;
-    existingDetailsList.innerHTML = '<p>Загрузка...</p>';
-    detailsModal.classList.add('visible');
+// ==== Event Listeners ====
 
-    const { data, error } = await supabaseClient
-      .from('emotion_details')
+// Открытие карточки эмоции
+document.querySelectorAll('.emotion-card').forEach(card => {
+  card.addEventListener('click', async () => {
+    currentEmotion = card.dataset.emotion;
+    modalTitle.textContent = card.textContent;
+    modal.classList.remove('hidden');
+    showFormBtn.classList.toggle('hidden', !isAdmin);
+    addForm.classList.add('hidden');
+    // Загрузка данных из Supabase
+    const { data, error } = await supabase
+      .from('emotions')
       .select('*')
-      .eq('emotion_id', emotionId)
-      .order('created_at', { ascending: true });
-
-    if (error) {
-      existingDetailsList.innerHTML = '<p style="color:red;">Ошибка: ${error.message}</p>';
-      return;
-    }
-
-    if (!data || data.length === 0) {
-      existingDetailsList.innerHTML = '<p>Данные отсутствуют.</p>';
-      return;
-    }
-
-    // Создаем таблицу
-    const table = document.createElement('table');
-    const thead = document.createElement('thead');
-    const headerRow = document.createElement('tr');
-    ['Наименование', 'Объект сравнения', 'Субмодель', 'Семантическая роль', 'Признаки', 'Примеры', 'Глаголы', 'Участники', 'Примечание'].forEach(text => {
-      const th = document.createElement('th');
-      th.textContent = text;
-      headerRow.appendChild(th);
-    });
-    thead.appendChild(headerRow);
-    table.appendChild(thead);
-
-    const tbody = document.createElement('tbody');
-    data.forEach(row => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.name || ''}</td>
-        <td>${row.comparison_object || ''}</td>
-        <td>${row.submodel || ''}</td>
-        <td>${row.semantic_role || ''}</td>
-        <td>${row.features || ''}</td>
-        <td>${row.examples || ''}</td>
-        <td>${row.verbs || ''}</td>
-        <td>${row.participants || ''}</td>
-        <td>${row.notes || ''}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-    table.appendChild(tbody);
-    existingDetailsList.innerHTML = '';
-    existingDetailsList.appendChild(table);
-  }
-
-  // Закрыть модальные окна
-  closeDetailsBtn.addEventListener('click', () => detailsModal.classList.remove('visible'));
-  closeAddBtn.addEventListener('click', () => addModal.classList.remove('visible'));
-  closeFormBtn.addEventListener('click', () => formModal.classList.remove('visible'));
-
-  // Кнопка "Добавить данные" — запрос пароля
-  addDataBtn.addEventListener('click', () => {
-    if (adminLoggedIn) {
-      openFormModal();
-    } else {
-      addModal.classList.add('visible');
-      adminPasswordInput.value = '';
-      adminPasswordInput.focus();
-    }
-  });
-
-  // Проверка пароля
-  passwordForm.addEventListener('submit', e => {
-    e.preventDefault();
-    const password = adminPasswordInput.value.trim();
-    // Замените на свой пароль
-    if (password === '123456') {
-      adminLoggedIn = true;
-      addModal.classList.remove('visible');
-      openFormModal();
-    } else {
-      alert('Неверный пароль!');
-      adminPasswordInput.value = '';
-      adminPasswordInput.focus();
-    }
-  });
-
-  // Открыть форму добавления данных
-  function openFormModal() {
-    if (!currentEmotionId) {
-      alert('Сначала выберите эмоцию слева!');
-      return;
-    }
-    formModal.classList.add('visible');
-    detailsForm.reset();
-    document.getElementById('formModalTitle').textContent = 'Добавить запись для "${emotions.find(e => e.id === currentEmotionId).name}"';
-    emotionIdInput.value = currentEmotionId;
-  }
-
-  // Отправка формы добавления записи
-  detailsForm.addEventListener('submit', async e => {
-    e.preventDefault();
-    const detailData = {
-      emotion_id: emotionIdInput.value,
-      name: detailsForm.detailName.value,
-      comparison_object: detailsForm.comparisonObject.value,
-      submodel: detailsForm.submodel.value,
-      semantic_role: detailsForm.semanticRole.value,
-      features: detailsForm.features.value,
-      examples: detailsForm.examples.value,
-      verbs: detailsForm.verbs.value,
-      participants: detailsForm.participants.value,
-      notes: detailsForm.notes.value,
-      created_at: new Date().toISOString()
-    };
-    const { error } = await supabaseClient.from('emotion_details').insert([detailData]);
-    if (error) {
-      alert('Ошибка при добавлении: ' + error.message);
-    } else {
-      alert('Запись успешно добавлена!');
-      formModal.classList.remove('visible');
-      // Обновить таблицу, если открыта для текущей эмоции
-      if (detailsModal.classList.contains('visible') && currentEmotionId === detailData.emotion_id) {
-        openDetailsModal(currentEmotionId, emotions.find(e => e.id === currentEmotionId).name);
-      }
-    }
+      .eq('emotion', currentEmotion);
+    allData = data || [];
+    renderTable(allData);
   });
 });
+
+// Закрытие модального окна
+closeModalBtn.onclick = () => modal.classList.add('hidden');
+
+// Открытие формы добавления
+showFormBtn.onclick = () => {
+  addForm.classList.remove('hidden');
+  showFormBtn.classList.add('hidden');
+};
+
+// Сброс фильтров
+resetFiltersBtn.onclick = () => {
+  filterName.value = '';
+  filterRole.value = '';
+  filterTable();
+};
+
+// Фильтрация таблицы
+filterName.oninput = filterTable;
+filterRole.oninput = filterTable;
+
+// Сохранение данных в Supabase
+addForm.onsubmit = async (e) => {
+  e.preventDefault();
+  const formData = new FormData(addForm);
+  const newRow = {
+    emotion: currentEmotion,
+    name: formData.get('name'),
+    object: formData.get('object'),
+    submodel: formData.get('submodel'),
+    role: formData.get('role'),
+    features: formData.get('features'),
+    examples: formData.get('examples'),
+    verbs: formData.get('verbs'),
+    note: formData.get('note'),
+  };
+  const { error } = await supabase.from('emotions').insert([newRow]);
+  if (!error) {
+    allData.push(newRow);
+    renderTable(allData);
+    addForm.reset();
+    addForm.classList.add('hidden');
+    showFormBtn.classList.remove('hidden');
+  } else {
+    alert('Ошибка при добавлении данных');
+  }
+};
+
+window.onclick = function(event) {
+  if (event.target === modal) modal.classList.add('hidden');
+  if (event.target === adminModal) adminModal.classList.add('hidden');
+};
+
+// ==== Admin Auth ====
+
+// Открыть окно входа
+adminLoginBtn.onclick = () => {
+  adminModal.classList.remove('hidden');
+  adminError.style.display = 'none';
+  adminPasswordInput.value = '';
+};
+
+// Закрыть окно входа
+closeAdminModalBtn.onclick = () => adminModal.classList.add('hidden');
+
+// Обработка входа
+adminLoginForm.onsubmit = (e) => {
+  e.preventDefault();
+  if (adminPasswordInput.value === ADMIN_PASSWORD) {
+    isAdmin = true;
+    adminModal.classList.add('hidden');
+    adminLoginBtn.textContent = 'Вы вошли как админ';
+    adminLoginBtn.disabled = true;
+    // Если модалка эмоции открыта — показать кнопку добавления
+    if (!modal.classList.contains('hidden')) {
+      showFormBtn.classList.remove('hidden');
+    }
+  } else {
+    adminError.style.display = 'block';
+  }
+};
+
