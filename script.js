@@ -6,8 +6,10 @@ const SUPABASE_URL = 'https://iajtzxdhjkcycgvbetax.supabase.co'; // Замени
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlhanR6eGRoamtjeWNndmJldGF4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDk1NzY0NjUsImV4cCI6MjA2NTE1MjQ2NX0.DShzKhj4VoLsCFVSbl07DgB7GdhiqVGAg6hgJl8pdXQ'; // Замените на свой
 const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
+
+
 // ==== Admin password ====
-const ADMIN_PASSWORD = 'yourStrongPassword'; // Задайте свой пароль
+const ADMIN_PASSWORD = '12344'; // Задайте свой пароль
 
 let isAdmin = false;
 let currentEmotion = '';
@@ -161,4 +163,5 @@ adminLoginForm.onsubmit = (e) => {
     adminError.style.display = 'block';
   }
 };
+
 
