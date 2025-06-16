@@ -47,10 +47,52 @@ function renderTable(data) {
       <td>${row.examples || ''}</td>
       <td>${row.verbs || ''}</td>
       <td>${row.note || ''}</td>
+      ${isAdmin ? `<td><button class="delete-btn" data-id="${row.id}">Удалить</button></td>` : ''}
     `;
     tableBody.appendChild(tr);
   });
+  // Навешиваем обработчик на все кнопки "Удалить"
+  if (isAdmin) {
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.onclick = async function() {
+        const id = this.dataset.id;
+        if (confirm('Удалить эту запись?')) {
+          const { error } = await supabaseClient
+            .from('emotions')
+            .delete()
+            .eq('id', id);
+          if (!error) {
+            // Удаляем строку из allData и перерисовываем таблицу
+            allData = allData.filter(r => String(r.id) !== String(id));
+            renderTable(allData);
+          } else {
+            alert('Ошибка при удалении');
+          }
+        }
+      };
+    });
+  }
 }
+
+function updateDeleteHeader() {
+  const deleteHeader = document.getElementById('delete-header');
+  if (deleteHeader) {
+    deleteHeader.style.display = isAdmin ? '' : 'none';
+  }
+}
+
+// ...после успешного логина админа:
+if (!modal.classList.contains('hidden')) {
+  showFormBtn.classList.remove('hidden');
+  updateDeleteHeader();
+}
+
+// ...и при открытии карточки эмоции:
+modal.classList.remove('hidden');
+showFormBtn.classList.toggle('hidden', !isAdmin);
+addForm.classList.add('hidden');
+updateDeleteHeader();
+
 
 function filterTable() {
   let filtered = allData;
