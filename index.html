@@ -7,6 +7,7 @@
 </head>
 <body>
   <h1>Эмоции</h1>
+  <button id="admin-login-btn" class="admin-btn">Вход для администратора</button>
   <div class="emotions-container">
     <div class="emotion-card" data-emotion="радость">😊 Радость</div>
     <div class="emotion-card" data-emotion="грусть">😢 Грусть</div>
@@ -16,7 +17,7 @@
     <div class="emotion-card" data-emotion="отвращение">🤢 Отвращение</div>
   </div>
 
-  <!-- Модальное окно -->
+  <!-- Модальное окно эмоции -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
@@ -41,7 +42,8 @@
         </thead>
         <tbody></tbody>
       </table>
-      <button id="show-form" class="add-btn">Добавить данные</button>
+      <button id="show-form" class="add-btn hidden">Добавить данные</button>
+      <!-- Форма добавления -->
       <form id="add-form" class="hidden">
         <input type="text" name="name" placeholder="Наименование" required>
         <input type="text" name="object" placeholder="Объект сравнения">
@@ -53,6 +55,19 @@
         <input type="text" name="note" placeholder="Примечание">
         <button type="submit" class="submit-btn">Сохранить</button>
       </form>
+    </div>
+  </div>
+
+  <!-- Модальное окно администратора -->
+  <div id="admin-modal" class="modal hidden">
+    <div class="modal-content" style="min-width:350px;max-width:400px;">
+      <span id="close-admin-modal" class="close">&times;</span>
+      <h2>Вход администратора</h2>
+      <form id="admin-login-form">
+        <input type="password" id="admin-password" placeholder="Пароль" required>
+        <button type="submit" class="submit-btn">Войти</button>
+      </form>
+      <p id="admin-error" style="color:#ff6f61;margin-top:10px;display:none;">Неверный пароль</p>
     </div>
   </div>
 
