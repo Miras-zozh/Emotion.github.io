@@ -1,45 +1,104 @@
 body {
   font-family: 'Segoe UI', Arial, sans-serif;
-  background: #f4f6fb;
+  background: linear-gradient(120deg, #fffbe6 0%, #ffe1e1 100%);
   margin: 0;
   padding: 0;
   color: #222;
 }
 
-h1 {
+.welcome {
+  max-width: 900px;
+  margin: 40px auto 0 auto;
+  background: #fffbe6;
+  border-radius: 24px;
+  box-shadow: 0 8px 32px rgba(255,111,97,0.10);
+  padding: 36px 42px 28px 42px;
   text-align: center;
-  margin-top: 30px;
-  font-weight: 700;
-  letter-spacing: 2px;
 }
+
+.welcome h1 {
+  font-size: 3.2rem;
+  font-weight: 900;
+  letter-spacing: 2px;
+  color: #ff6f61;
+  margin-bottom: 18px;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+}
+
+.welcome-text {
+  font-size: 1.25rem;
+  color: #444;
+  line-height: 1.7;
+  margin-bottom: 0;
+}
+
+.welcome-text blockquote {
+  font-style: italic;
+  color: #b86e00;
+  border-left: 4px solid #ffd700;
+  margin: 18px auto 0 auto;
+  padding-left: 16px;
+  font-size: 1.1em;
+  max-width: 600px;
+}
+
+.admin-btn {
+  position: fixed;
+  top: 25px;
+  right: 40px;
+  background: linear-gradient(90deg, #ff6f61 60%, #ffd700 100%);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 26px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 100;
+  box-shadow: 0 2px 12px rgba(255,111,97,0.10);
+  transition: background 0.2s;
+}
+.admin-btn:hover { background: #ffd700; color: #222; }
 
 .emotions-container {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 25px;
-  margin: 40px 0;
+  gap: 44px;
+  margin: 60px 0 0 0;
 }
 
 .emotion-card {
-  width: 160px;
-  height: 160px;
+  width: 220px;
+  height: 220px;
   background: linear-gradient(135deg, #ffd700 0%, #ff6f61 100%);
-  border-radius: 18px;
-  box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+  border-radius: 32px;
+  box-shadow: 0 8px 32px rgba(255,111,97,0.15);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 2.2rem;
-  font-weight: 600;
+  font-size: 5.5rem;
+  font-weight: 800;
   color: #fff;
   cursor: pointer;
   transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  text-shadow: 2px 4px 12px rgba(255, 223, 0, 0.15);
+}
+.emotion-card span {
+  font-size: 2.1rem;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+  font-weight: 800;
+  margin-top: 14px;
+  letter-spacing: 1.5px;
+  color: #fffbe6;
+  text-shadow: 1px 2px 8px rgba(255, 111, 97, 0.18);
 }
 .emotion-card:hover {
-  transform: translateY(-8px) scale(1.05);
-  box-shadow: 0 8px 32px rgba(255,111,97,0.15);
+  transform: translateY(-10px) scale(1.07);
+  box-shadow: 0 16px 48px rgba(255,111,97,0.22);
+  background: linear-gradient(120deg, #ffd700 0%, #ff6f61 80%);
 }
 
 .modal {
@@ -168,21 +227,3 @@ h1 {
   transition: background 0.2s;
 }
 .submit-btn:hover { background: #ffd700; color: #222; }
-
-.admin-btn {
-  position: fixed;
-  top: 25px;
-  right: 40px;
-  background: linear-gradient(90deg, #ff6f61 60%, #ffd700 100%);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 10px 18px;
-  font-size: 1rem;
-  font-weight: 600;
-  cursor: pointer;
-  z-index: 100;
-  box-shadow: 0 2px 12px rgba(255,111,97,0.10);
-  transition: background 0.2s;
-}
-.admin-btn:hover { background: #ffd700; color: #222; }
