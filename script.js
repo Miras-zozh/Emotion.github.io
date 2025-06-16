@@ -162,5 +162,5 @@ adminLoginForm.onsubmit = (e) => {
   } else {
     adminError.style.display = 'block';
   }
-};
 });
+
