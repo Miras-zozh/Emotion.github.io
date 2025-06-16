@@ -62,7 +62,6 @@ function renderTable(data) {
             .delete()
             .eq('id', id);
           if (!error) {
-            // Удаляем строку из allData и перерисовываем таблицу
             allData = allData.filter(r => String(r.id) !== String(id));
             renderTable(allData);
           } else {
@@ -73,7 +72,6 @@ function renderTable(data) {
     });
   }
 }
-
 function updateDeleteHeader() {
   const deleteHeader = document.getElementById('delete-header');
   if (deleteHeader) {
