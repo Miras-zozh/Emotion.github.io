@@ -11,10 +11,10 @@ const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // ==== Admin password ====
 const ADMIN_PASSWORD = '12344'; // Задайте свой пароль
 
-let isAdmin = false;
+  let isAdmin = false;
   let currentEmotion = '';
   let allData = [];
-  let currentLanguage = 'en'; // по умолчанию английский
+  let currentLanguage = 'en';
 
   // ==== Переводы ====
   const translations = {
@@ -77,15 +77,27 @@ let isAdmin = false;
   const addForm = document.getElementById('add-form');
   const langSwitcher = document.querySelector('.lang-switcher');
   const deleteHeader = document.getElementById('delete-header');
+  const adminLoginBtn = document.getElementById('admin-login-btn');
+  const adminModal = document.getElementById('admin-modal');
+  const closeAdminModalBtn = document.getElementById('close-admin-modal');
+  const adminLoginForm = document.getElementById('admin-login-form');
+  const adminPasswordInput = document.getElementById('admin-password');
+  const adminError = document.getElementById('admin-error');
+  const sortField = document.getElementById('sort-field');
+  const sortAscBtn = document.getElementById('sort-asc');
+  const sortDescBtn = document.getElementById('sort-desc');
 
-  // ==== Функция смены языка ====
+  // Сортировка
+  let sortKey = 'name';
+  let sortDir = 'asc';
+
   function updateLanguageUI() {
-    // Обновить заголовки таблицы
+    // Заголовки таблицы
     document.querySelectorAll('#emotion-table th[data-i18n]').forEach(th => {
       const key = th.getAttribute('data-i18n');
       th.textContent = translations[currentLanguage][key];
     });
-    // Обновить плейсхолдеры формы
+    // Плейсхолдеры формы
     document.querySelectorAll('#add-form input[data-i18n-placeholder]').forEach(input => {
       const key = input.getAttribute('data-i18n-placeholder');
       input.placeholder = translations[currentLanguage][key];
@@ -93,14 +105,28 @@ let isAdmin = false;
     // Кнопки
     showFormBtn.textContent = translations[currentLanguage].addData;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
-    // Столбец удалить
     if (isAdmin) {
       deleteHeader.textContent = translations[currentLanguage].delete;
     }
+    // Сортировка
+    sortField.querySelectorAll('option').forEach(opt => {
+      const key = opt.value;
+      if (translations[currentLanguage][key]) {
+        opt.textContent = translations[currentLanguage][key];
+      }
+    });
   }
 
-  // ==== Рендер таблицы ====
   function renderTable(data) {
+    // сортировка
+    data = [...data].sort((a, b) => {
+      let vA = a[sortKey] || '';
+      let vB = b[sortKey] || '';
+      if (vA < vB) return sortDir === 'asc' ? -1 : 1;
+      if (vA > vB) return sortDir === 'asc' ? 1 : -1;
+      return 0;
+    });
+
     tableBody.innerHTML = '';
     data.forEach(row => {
       const tr = document.createElement('tr');
@@ -139,7 +165,7 @@ let isAdmin = false;
     }
   }
 
-  // ==== Открытие карточки эмоции ====
+  // Открытие карточки эмоции
   document.querySelectorAll('.emotion-card').forEach(card => {
     card.addEventListener('click', async () => {
       currentEmotion = card.dataset.emotion;
@@ -147,8 +173,7 @@ let isAdmin = false;
       modal.classList.remove('hidden');
       showFormBtn.classList.toggle('hidden', !isAdmin);
       addForm.classList.add('hidden');
-      // Загрузка данных из Supabase по эмоции и языку
-      const { data, error } = await supabaseClient
+      const { data } = await supabaseClient
         .from('emotions')
         .select('*')
         .eq('emotion', currentEmotion)
@@ -159,16 +184,12 @@ let isAdmin = false;
     });
   });
 
-  // ==== Закрытие модального окна ====
   closeModalBtn.onclick = () => modal.classList.add('hidden');
-
-  // ==== Открытие формы добавления ====
   showFormBtn.onclick = () => {
     addForm.classList.remove('hidden');
     showFormBtn.classList.add('hidden');
   };
 
-  // ==== Сохранение данных в Supabase ====
   addForm.onsubmit = async (e) => {
     e.preventDefault();
     const formData = new FormData(addForm);
@@ -195,13 +216,11 @@ let isAdmin = false;
     }
   };
 
-  // ==== Переключатель языков ====
   langSwitcher.addEventListener('click', function(e) {
     if (e.target.tagName === 'BUTTON') {
       const lang = e.target.getAttribute('data-lang');
       if (lang && translations[lang]) {
         currentLanguage = lang;
-        // Если открыта модалка — обновить данные и интерфейс
         if (!modal.classList.contains('hidden') && currentEmotion) {
           supabaseClient
             .from('emotions')
@@ -220,7 +239,44 @@ let isAdmin = false;
     }
   });
 
-  // ==== Инициализация ====
-  updateLanguageUI();
+  // ---- Админ ----
+  adminLoginBtn.onclick = () => {
+    adminModal.classList.remove('hidden');
+    adminError.style.display = 'none';
+    adminPasswordInput.value = '';
+  };
+  closeAdminModalBtn.onclick = () => adminModal.classList.add('hidden');
+  adminLoginForm.onsubmit = (e) => {
+    e.preventDefault();
+    if (adminPasswordInput.value === ADMIN_PASSWORD) {
+      isAdmin = true;
+      adminModal.classList.add('hidden');
+      adminLoginBtn.textContent = 'Вы вошли как админ';
+      adminLoginBtn.disabled = true;
+      showFormBtn.classList.remove('hidden');
+      if (!modal.classList.contains('hidden')) {
+        renderTable(allData);
+      }
+      deleteHeader.style.display = '';
+    } else {
+      adminError.style.display = 'block';
+    }
+  };
 
+  // ---- Сортировка ----
+  sortField.onchange = function() {
+    sortKey = sortField.value;
+    renderTable(allData);
+  };
+  sortAscBtn.onclick = function() {
+    sortDir = 'asc';
+    renderTable(allData);
+  };
+  sortDescBtn.onclick = function() {
+    sortDir = 'desc';
+    renderTable(allData);
+  };
+
+  // ---- Инициализация ----
+  updateLanguageUI();
 });
