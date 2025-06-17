@@ -1,89 +1,77 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Эмоции</title>
+  <title>Emotions</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Language Switcher -->
+  <div class="lang-switcher">
+    <button data-lang="kk">🇰🇿</button>
+    <button data-lang="ru">🇷🇺</button>
+    <button data-lang="de">🇩🇪</button>
+    <button data-lang="en">🇬🇧</button>
+  </div>
+
+  <!-- Welcome block (always in English) -->
   <div class="welcome">
-    <h1>Мир Эмоций</h1>
+    <h1>World of Emotions</h1>
     <div class="welcome-text">
       <p>
-        Эмоции — это яркие краски нашей жизни, они сопровождают нас с самого детства и делают каждый день неповторимым. Радость и грусть, страх и удивление, гнев и отвращение — все они важны для нашего внутреннего мира. Эмоции помогают нам понимать себя и других, принимать решения и строить отношения. Они могут вдохновлять на подвиги или предостерегать от опасностей. Через эмоции мы выражаем свою индивидуальность и реагируем на окружающий мир. Понимание своих чувств — ключ к гармонии и развитию личности. Не бойтесь своих эмоций, ведь именно они делают нас живыми. Как говорил Карл Густав Юнг: 
+        Emotions are the bright colors of our lives, accompanying us from childhood and making every day unique. Joy and sadness, fear and surprise, anger and disgust — all are important for our inner world...
       </p>
       <blockquote>
-        «Эмоции — это не слабость, а сила, которая движет нашей жизнью».
+        “Emotions are not a weakness, but a force that drives our lives.” <br>— Carl Gustav Jung
       </blockquote>
     </div>
   </div>
 
-  <button id="admin-login-btn" class="admin-btn">Вход для администратора</button>
-
+  <!-- Emotions Cards -->
   <div class="emotions-container">
-    <div class="emotion-card" data-emotion="радость">😊<span>Радость</span></div>
-    <div class="emotion-card" data-emotion="грусть">😢<span>Грусть</span></div>
-    <div class="emotion-card" data-emotion="страх">😱<span>Страх</span></div>
-    <div class="emotion-card" data-emotion="гнев">😡<span>Гнев</span></div>
-    <div class="emotion-card" data-emotion="удивление">😮<span>Удивление</span></div>
-    <div class="emotion-card" data-emotion="отвращение">🤢<span>Отвращение</span></div>
+    <div class="emotion-card" data-emotion="joy">😊<span>Joy</span></div>
+    <div class="emotion-card" data-emotion="sadness">😢<span>Sadness</span></div>
+    <div class="emotion-card" data-emotion="fear">😱<span>Fear</span></div>
+    <div class="emotion-card" data-emotion="anger">😡<span>Anger</span></div>
+    <div class="emotion-card" data-emotion="surprise">😮<span>Surprise</span></div>
+    <div class="emotion-card" data-emotion="aversion">🤢<span>Disgust</span></div>
   </div>
 
-  <!-- Модальное окно эмоции -->
+  <!-- Modal for emotion data -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
       <h2 id="modal-title"></h2>
-      <div class="filters">
-        <input type="text" id="filter-name" placeholder="Фильтр по наименованию">
-        <input type="text" id="filter-role" placeholder="Фильтр по роли">
-        <button id="reset-filters">Сбросить</button>
-      </div>
       <table id="emotion-table">
         <thead>
           <tr>
-            <th>Наименование</th>
-            <th>Объект сравнения</th>
-            <th>Субмодель</th>
-            <th>Семантическая роль</th>
-            <th>Признаки</th>
-            <th>Примеры</th>
-            <th>Глаголы</th>
-            <th>Примечание</th>
-            <th id="delete-header" style="display:none;">Удалить</th>
+            <th data-i18n="emotionName">Emotion Name</th>
+            <th data-i18n="metaphoricalModel">Metaphorical Model</th>
+            <th data-i18n="submodel">Submodel</th>
+            <th data-i18n="semanticRole">Semantic Role</th>
+            <th data-i18n="example">Example</th>
+            <th data-i18n="verbClass">Thematic Verb Class</th>
+            <th data-i18n="adjClass">Thematic Adjective Class</th>
+            <th id="delete-header" style="display:none;">Delete</th>
           </tr>
         </thead>
         <tbody></tbody>
       </table>
-      <button id="show-form" class="add-btn hidden">Добавить данные</button>
-      <!-- Форма добавления -->
+      <button id="show-form" class="add-btn hidden" data-i18n="addData">Add Data</button>
       <form id="add-form" class="hidden">
-        <input type="text" name="name" placeholder="Наименование" required>
-        <input type="text" name="object" placeholder="Объект сравнения">
-        <input type="text" name="submodel" placeholder="Субмодель">
-        <input type="text" name="role" placeholder="Семантическая роль">
-        <input type="text" name="features" placeholder="Признаки">
-        <input type="text" name="examples" placeholder="Примеры">
-        <input type="text" name="verbs" placeholder="Глаголы">
-        <input type="text" name="note" placeholder="Примечание">
-        <button type="submit" class="submit-btn">Сохранить</button>
+        <input type="text" name="name" placeholder="Emotion Name" required data-i18n-placeholder="emotionName">
+        <input type="text" name="metaphorical_model" placeholder="Metaphorical Model" data-i18n-placeholder="metaphoricalModel">
+        <input type="text" name="submodel" placeholder="Submodel" data-i18n-placeholder="submodel">
+        <input type="text" name="semantic_role" placeholder="Semantic Role" data-i18n-placeholder="semanticRole">
+        <input type="text" name="example" placeholder="Example" data-i18n-placeholder="example">
+        <input type="text" name="verb_class" placeholder="Thematic Verb Class" data-i18n-placeholder="verbClass">
+        <input type="text" name="adj_class" placeholder="Thematic Adjective Class" data-i18n-placeholder="adjClass">
+        <button type="submit" class="submit-btn" data-i18n="save">Save</button>
       </form>
     </div>
   </div>
 
-  <!-- Модальное окно администратора -->
-  <div id="admin-modal" class="modal hidden">
-    <div class="modal-content" style="min-width:350px;max-width:400px;">
-      <span id="close-admin-modal" class="close">&times;</span>
-      <h2>Вход администратора</h2>
-      <form id="admin-login-form">
-        <input type="password" id="admin-password" placeholder="Пароль" required>
-        <button type="submit" class="submit-btn">Войти</button>
-      </form>
-      <p id="admin-error" style="color:#ff6f61;margin-top:10px;display:none;">Неверный пароль</p>
-    </div>
-  </div>
-
+  <!-- Admin and Supabase scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="script.js"></script>
 </body>
