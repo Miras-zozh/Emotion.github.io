@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Emotions</title>
+  <title>World of Emotions</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <!-- Language Switcher -->
+  <!-- Кнопка входа для админа -->
+  <button id="admin-login-btn" class="admin-btn">🔑 Вход для админа</button>
+
+  <!-- Переключатель языков -->
   <div class="lang-switcher">
     <button data-lang="kk">🇰🇿</button>
     <button data-lang="ru">🇷🇺</button>
@@ -14,7 +17,7 @@
     <button data-lang="en">🇬🇧</button>
   </div>
 
-  <!-- Welcome block (always in English) -->
+  <!-- Welcome block (всегда на английском) -->
   <div class="welcome">
     <h1>World of Emotions</h1>
     <div class="welcome-text">
@@ -27,21 +30,34 @@
     </div>
   </div>
 
-  <!-- Emotions Cards -->
+  <!-- Эмоции -->
   <div class="emotions-container">
     <div class="emotion-card" data-emotion="joy">😊<span>Joy</span></div>
     <div class="emotion-card" data-emotion="sadness">😢<span>Sadness</span></div>
     <div class="emotion-card" data-emotion="fear">😱<span>Fear</span></div>
     <div class="emotion-card" data-emotion="anger">😡<span>Anger</span></div>
     <div class="emotion-card" data-emotion="surprise">😮<span>Surprise</span></div>
-    <div class="emotion-card" data-emotion="aversion">🤢<span>Disgust</span></div>
+    <div class="emotion-card" data-emotion="disgust">🤢<span>Disgust</span></div>
   </div>
 
-  <!-- Modal for emotion data -->
+  <!-- Модальное окно -->
   <div id="modal" class="modal hidden">
     <div class="modal-content">
       <span id="close-modal" class="close">&times;</span>
       <h2 id="modal-title"></h2>
+      <div class="sort-filters">
+        <select id="sort-field">
+          <option value="name">Emotion Name</option>
+          <option value="metaphorical_model">Metaphorical Model</option>
+          <option value="submodel">Submodel</option>
+          <option value="semantic_role">Semantic Role</option>
+          <option value="example">Example</option>
+          <option value="verb_class">Thematic Verb Class</option>
+          <option value="adj_class">Thematic Adjective Class</option>
+        </select>
+        <button id="sort-asc">↑</button>
+        <button id="sort-desc">↓</button>
+      </div>
       <table id="emotion-table">
         <thead>
           <tr>
@@ -71,7 +87,19 @@
     </div>
   </div>
 
-  <!-- Admin and Supabase scripts -->
+  <!-- Модальное окно для входа админа -->
+  <div id="admin-modal" class="modal hidden">
+    <div class="modal-content" style="min-width:350px">
+      <span id="close-admin-modal" class="close">&times;</span>
+      <h2>Вход администратора</h2>
+      <form id="admin-login-form">
+        <input type="password" id="admin-password" placeholder="Пароль администратора" required>
+        <button type="submit">Войти</button>
+        <div id="admin-error" style="color:#ff6f61;display:none;margin-top:6px;">Неверный пароль</div>
+      </form>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="script.js"></script>
 </body>
