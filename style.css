@@ -6,6 +6,23 @@ body {
   color: #222;
 }
 
+.lang-switcher {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  padding: 18px 40px 0 0;
+}
+.lang-switcher button {
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.1s;
+}
+.lang-switcher button:hover {
+  transform: scale(1.2);
+}
+
 .welcome {
   max-width: 900px;
   margin: 40px auto 0 auto;
@@ -19,19 +36,9 @@ body {
 .welcome h1 {
   font-size: 3.2rem;
   font-weight: 900;
-  letter-spacing: 2px;
   color: #ff6f61;
   margin-bottom: 18px;
-  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
 }
-
-.welcome-text {
-  font-size: 1.25rem;
-  color: #444;
-  line-height: 1.7;
-  margin-bottom: 0;
-}
-
 .welcome-text blockquote {
   font-style: italic;
   color: #b86e00;
@@ -41,24 +48,6 @@ body {
   font-size: 1.1em;
   max-width: 600px;
 }
-
-.admin-btn {
-  position: fixed;
-  top: 25px;
-  right: 40px;
-  background: linear-gradient(90deg, #ff6f61 60%, #ffd700 100%);
-  color: #fff;
-  border: none;
-  border-radius: 8px;
-  padding: 12px 26px;
-  font-size: 1.15rem;
-  font-weight: 700;
-  cursor: pointer;
-  z-index: 100;
-  box-shadow: 0 2px 12px rgba(255,111,97,0.10);
-  transition: background 0.2s;
-}
-.admin-btn:hover { background: #ffd700; color: #222; }
 
 .emotions-container {
   display: flex;
@@ -88,7 +77,6 @@ body {
 }
 .emotion-card span {
   font-size: 2.1rem;
-  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
   font-weight: 800;
   margin-top: 14px;
   letter-spacing: 1.5px;
@@ -135,32 +123,6 @@ body {
 }
 .close:hover { color: #ff6f61; }
 
-.filters {
-  margin: 18px 0 10px 0;
-  display: flex;
-  gap: 10px;
-}
-
-.filters input {
-  padding: 7px 12px;
-  border: 1px solid #ddd;
-  border-radius: 7px;
-  font-size: 1rem;
-  outline: none;
-}
-
-#reset-filters {
-  background: #ff6f61;
-  color: #fff;
-  border: none;
-  border-radius: 7px;
-  padding: 7px 16px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s;
-}
-#reset-filters:hover { background: #ffd700; color: #222; }
-
 #emotion-table {
   width: 100%;
   border-collapse: collapse;
@@ -180,7 +142,7 @@ body {
   font-weight: 700;
 }
 
-.add-btn {
+.add-btn, .submit-btn {
   background: linear-gradient(90deg, #ffd700 60%, #ff6f61 100%);
   color: #fff;
   border: none;
@@ -192,7 +154,7 @@ body {
   margin-bottom: 12px;
   transition: background 0.2s;
 }
-.add-btn:hover { background: #ff6f61; }
+.add-btn:hover, .submit-btn:hover { background: #ff6f61; color: #222; }
 
 #add-form {
   display: flex;
@@ -213,35 +175,3 @@ body {
   font-size: 1rem;
   margin-bottom: 6px;
 }
-
-.submit-btn {
-  background: #ff6f61;
-  color: #fff;
-  border: none;
-  border-radius: 7px;
-  padding: 9px 18px;
-  font-size: 1.1rem;
-  font-weight: 600;
-  cursor: pointer;
-  margin-left: auto;
-  transition: background 0.2s;
-}
-.submit-btn:hover { background: #ffd700; color: #222; }
-
-.delete-btn {
-  background: #ff6f61;
-  color: #fff;
-  border: none;
-  border-radius: 7px;
-  padding: 6px 14px;
-  font-size: 1rem;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.2s;
-}
-.delete-btn:hover {
-  background: #ffd700;
-  color: #222;
-}
-
-
