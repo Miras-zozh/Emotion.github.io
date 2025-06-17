@@ -191,30 +191,36 @@ const ADMIN_PASSWORD = '12344'; // Задайте свой пароль
   };
 
   addForm.onsubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(addForm);
-    const newRow = {
-      emotion: currentEmotion,
-      name: formData.get('name'),
-      metaphorical_model: formData.get('metaphorical_model'),
-      submodel: formData.get('submodel'),
-      semantic_role: formData.get('semantic_role'),
-      example: formData.get('example'),
-      verb_class: formData.get('verb_class'),
-      adj_class: formData.get('adj_class'),
-      language: currentLanguage
-    };
-    const { data, error } = await supabaseClient.from('emotions').insert([newRow]);
-    if (!error) {
-      allData.push({ ...newRow, id: data[0]?.id });
-      renderTable(allData);
-      addForm.reset();
-      addForm.classList.add('hidden');
-      showFormBtn.classList.remove('hidden');
-    } else {
-      alert('Ошибка при добавлении данных');
-    }
+  e.preventDefault();
+  const formData = new FormData(addForm);
+  const newRow = {
+    emotion: currentEmotion,
+    name: formData.get('name'),
+    metaphorical_model: formData.get('metaphorical_model'),
+    submodel: formData.get('submodel'),
+    semantic_role: formData.get('semantic_role'),
+    example: formData.get('example'),
+    verb_class: formData.get('verb_class'),
+    adj_class: formData.get('adj_class'),
+    language: currentLanguage
   };
+  const { data, error } = await supabaseClient
+    .from('emotions')
+    .insert([newRow])
+    .select();
+  if (!error && data && data[0]) {
+    allData.push({ ...newRow, id: data[0].id });
+    renderTable(allData);
+    addForm.reset();
+    addForm.classList.add('hidden');
+    showFormBtn.classList.remove('hidden');
+  } else if (error) {
+    alert('Ошибка при добавлении данных: ' + error.message);
+  } else {
+    alert('Ошибка: не удалось получить id новой строки');
+  }
+};
+
 
   langSwitcher.addEventListener('click', function(e) {
     if (e.target.tagName === 'BUTTON') {
