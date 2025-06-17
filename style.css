@@ -23,6 +23,21 @@ body {
   transform: scale(1.2);
 }
 
+.admin-btn {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  background: #ff6f61;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  z-index: 100;
+}
+
 .welcome {
   max-width: 900px;
   margin: 40px auto 0 auto;
@@ -123,6 +138,16 @@ body {
 }
 .close:hover { color: #ff6f61; }
 
+.sort-filters {
+  margin-bottom: 10px;
+  display: flex;
+  gap: 8px;
+}
+.sort-filters select, .sort-filters button {
+  font-size: 1rem;
+  padding: 4px 10px;
+}
+
 #emotion-table {
   width: 100%;
   border-collapse: collapse;
@@ -174,4 +199,20 @@ body {
   border-radius: 7px;
   font-size: 1rem;
   margin-bottom: 6px;
+}
+
+.delete-btn {
+  background: #ff6f61;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 6px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+.delete-btn:hover {
+  background: #ffd700;
+  color: #222;
 }
