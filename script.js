@@ -16,6 +16,18 @@ const ADMIN_PASSWORD = '12344'; // Задайте свой пароль
   let allData = [];
   let currentLanguage = 'en';
 
+const tabBtns = document.querySelectorAll('.tab-btn');
+const tabContents = document.querySelectorAll('.tab-content');
+
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    tabBtns.forEach(b => b.classList.remove('active'));
+    tabContents.forEach(tc => tc.classList.add('hidden'));
+    btn.classList.add('active');
+    document.getElementById('tab-' + btn.dataset.tab).classList.remove('hidden');
+  });
+});
+  
   // ==== Переводы ====
   const translations = {
     en: {
@@ -268,6 +280,13 @@ const ADMIN_PASSWORD = '12344'; // Задайте свой пароль
       adminError.style.display = 'block';
     }
   };
+
+  ${isAdmin ? `
+  <td>
+    <button class="edit-btn" data-id="${row.id}">Edit</button>
+    <button class="delete-btn" data-id="${row.id}">Delete</button>
+  </td>
+` : ''}
 
   // ---- Сортировка ----
   sortField.onchange = function() {
