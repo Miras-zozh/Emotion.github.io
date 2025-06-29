@@ -149,7 +149,13 @@
     <option>Goal</option>
     <!-- ... -->
   </select>
-  <input type="text" name="example" placeholder="Example">
+
+<div class="format-panel">
+  <button type="button" onclick="insertTag('<b>', '</b>')"><b>B</b></button>
+  <button type="button" onclick="insertTag('<span style=\'color:red\'>', '</span>')" style="color:red;">A</button>
+  <button type="button" onclick="insertTag('<span style=\'color:blue\'>', '</span>')" style="color:blue;">A</button>
+</div>
+  <textarea name="example" placeholder="Example"></textarea>
   <select name="verb_class">
     <option value="">Thematic Verb Class</option>
     <option>охватывать</option>
