@@ -129,53 +129,69 @@ tabBtns.forEach(btn => {
     });
   }
 
-  function renderTable(data) {
-    // сортировка
-    data = [...data].sort((a, b) => {
-      let vA = a[sortKey] || '';
-      let vB = b[sortKey] || '';
-      if (vA < vB) return sortDir === 'asc' ? -1 : 1;
-      if (vA > vB) return sortDir === 'asc' ? 1 : -1;
-      return 0;
-    });
+ function renderTable(data) {
+  // сортировка
+  data = [...data].sort((a, b) => {
+    let vA = a[sortKey] || '';
+    let vB = b[sortKey] || '';
+    if (vA < vB) return sortDir === 'asc' ? -1 : 1;
+    if (vA > vB) return sortDir === 'asc' ? 1 : -1;
+    return 0;
+  });
 
-    tableBody.innerHTML = '';
-    data.forEach(row => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.name || ''}</td>
-        <td>${row.metaphorical_model || ''}</td>
-        <td>${row.submodel || ''}</td>
-        <td>${row.semantic_role || ''}</td>
-        <td>${row.example || ''}</td>
-        <td>${row.verb_class || ''}</td>
-        <td>${row.adj_class || ''}</td>
-        ${isAdmin ? `<td><button class="delete-btn" data-id="${row.id}">${translations[currentLanguage].delete}</button></td>` : ''}
-      `;
-      tableBody.appendChild(tr);
-    });
+  tableBody.innerHTML = '';
+  data.forEach(row => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td>${row.name || ''}</td>
+      <td>${row.metaphorical_model || ''}</td>
+      <td>${row.submodel || ''}</td>
+      <td>${row.semantic_role || ''}</td>
+      <td>${row.example || ''}</td>
+      <td>${row.verb_class || ''}</td>
+      <td>${row.adj_class || ''}</td>
+      ${
+        isAdmin
+          ? `<td>
+              <button class="edit-btn" data-id="${row.id}">Edit</button>
+              <button class="delete-btn" data-id="${row.id}">${translations[currentLanguage].delete}</button>
+            </td>`
+          : ''
+      }
+    `;
+    tableBody.appendChild(tr);
+  });
 
-    // Кнопки "Удалить"
-    if (isAdmin) {
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.onclick = async function() {
-          const id = this.dataset.id;
-          if (confirm('Удалить эту запись?')) {
-            const { error } = await supabaseClient
-              .from('emotions')
-              .delete()
-              .eq('id', id);
-            if (!error) {
-              allData = allData.filter(r => String(r.id) !== String(id));
-              renderTable(allData);
-            } else {
-              alert('Ошибка при удалении');
-            }
+  // --- обработчики кнопок Edit и Delete ---
+  if (isAdmin) {
+    // Delete
+    document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.onclick = async function() {
+        const id = this.dataset.id;
+        if (confirm('Delete this row?')) {
+          const { error } = await supabaseClient
+            .from('emotions')
+            .delete()
+            .eq('id', id);
+          if (!error) {
+            allData = allData.filter(r => String(r.id) !== String(id));
+            renderTable(allData);
+          } else {
+            alert('Error deleting');
           }
-        };
-      });
-    }
+        }
+      };
+    });
+    // Edit (заглушка — реализуйте по своему сценарию)
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.onclick = function() {
+        const id = this.dataset.id;
+        // Здесь откройте форму редактирования и заполните её данными строки с этим id
+        alert('Edit row ' + id);
+      };
+    });
   }
+}
 
   // Открытие карточки эмоции
   document.querySelectorAll('.emotion-card').forEach(card => {
@@ -281,12 +297,6 @@ tabBtns.forEach(btn => {
     }
   };
 
-  ${isAdmin ? `
-  <td>
-    <button class="edit-btn" data-id="${row.id}">Edit</button>
-    <button class="delete-btn" data-id="${row.id}">Delete</button>
-  </td>
-` : ''}
 
   // ---- Сортировка ----
   sortField.onchange = function() {
