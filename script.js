@@ -124,6 +124,7 @@ tabBtns.forEach(btn => {
       }
     });
   }
+  
 
  function renderTable(data) {
   // сортировка
@@ -178,6 +179,27 @@ tabBtns.forEach(btn => {
         }
       };
     });
+
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.onclick = function() {
+      const id = this.dataset.id;
+      const row = allData.find(r => String(r.id) === String(id));
+      if (!row) return;
+      // Заполняем форму
+      addForm.name.value = row.name || '';
+      addForm.metaphorical_model.value = row.metaphorical_model || '';
+      addForm.submodel.value = row.submodel || '';
+      addForm.semantic_role.value = row.semantic_role || '';
+      addForm.example.value = row.example || '';
+      addForm.verb_class.value = row.verb_class || '';
+      addForm.adj_class.value = row.adj_class || '';
+      addForm.dataset.editId = id; // помечаем, что редактируем
+      addForm.classList.remove('hidden');
+      showFormBtn.classList.add('hidden');
+    };
+  });
+}
+    
     // Edit (заглушка — реализуйте по своему сценарию)
     document.querySelectorAll('.edit-btn').forEach(btn => {
       btn.onclick = function() {
@@ -228,22 +250,44 @@ tabBtns.forEach(btn => {
     adj_class: formData.get('adj_class'),
     language: currentLanguage
   };
-  const { data, error } = await supabaseClient
-    .from('emotions')
-    .insert([newRow])
-    .select();
-  if (!error && data && data[0]) {
-    allData.push({ ...newRow, id: data[0].id });
-    renderTable(allData);
-    addForm.reset();
-    addForm.classList.add('hidden');
-    showFormBtn.classList.remove('hidden');
-  } else if (error) {
-    alert('Ошибка при добавлении данных: ' + error.message);
+  const editId = addForm.dataset.editId;
+  if (editId) {
+    // Редактирование
+    const { data, error } = await supabaseClient
+      .from('emotions')
+      .update(newRow)
+      .eq('id', editId)
+      .select();
+    if (!error && data && data[0]) {
+      // Обновляем в allData
+      const idx = allData.findIndex(r => String(r.id) === String(editId));
+      if (idx !== -1) allData[idx] = data[0];
+      renderTable(allData);
+      addForm.reset();
+      addForm.classList.add('hidden');
+      showFormBtn.classList.remove('hidden');
+      delete addForm.dataset.editId;
+    } else {
+      alert('Ошибка при редактировании');
+    }
   } else {
-    alert('Ошибка: не удалось получить id новой строки');
+    // Добавление (как раньше)
+    const { data, error } = await supabaseClient
+      .from('emotions')
+      .insert([newRow])
+      .select();
+    if (!error && data && data[0]) {
+      allData.push({ ...newRow, id: data[0].id });
+      renderTable(allData);
+      addForm.reset();
+      addForm.classList.add('hidden');
+      showFormBtn.classList.remove('hidden');
+    } else {
+      alert('Ошибка при добавлении данных');
+    }
   }
 };
+
 
 
   langSwitcher.addEventListener('click', function(e) {
