@@ -144,7 +144,7 @@ tabBtns.forEach(btn => {
       <td>${row.metaphorical_model || ''}</td>
       <td>${row.submodel || ''}</td>
       <td>${row.semantic_role || ''}</td>
-      <td>${row.example || ''}</td>
+      <td>${row.example ? row.example : ''}</td>
       <td>${row.verb_class || ''}</td>
       <td>${row.adj_class || ''}</td>
       ${
@@ -211,6 +211,18 @@ tabBtns.forEach(btn => {
   }
 }
 
+window.insertTag = function(open, close) {
+  const textarea = document.getElementById('example-field');
+  if (!textarea) return;
+  const start = textarea.selectionStart;
+  const end = textarea.selectionEnd;
+  const text = textarea.value;
+  textarea.value = text.slice(0, start) + open + text.slice(start, end) + close + text.slice(end);
+  textarea.focus();
+  textarea.selectionStart = textarea.selectionEnd = end + open.length + close.length;
+};
+
+                          
   // Открытие карточки эмоции
   document.querySelectorAll('.emotion-card').forEach(card => {
     card.addEventListener('click', async () => {
