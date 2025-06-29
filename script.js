@@ -208,8 +208,7 @@ tabBtns.forEach(btn => {
         alert('Edit row ' + id);
       };
     });
-  }
-});
+  });
 
 window.insertTag = function(open, close) {
   const textarea = document.getElementById('example-field');
