@@ -99,16 +99,69 @@
         <tbody></tbody>
       </table>
       <button id="show-form" class="add-btn hidden" data-i18n="addData">Add Data</button>
-      <form id="add-form" class="hidden">
-    <select name="name" required><option>Emotion Name</option></select>
-    <select name="metaphorical_model"><option>Metaphorical Model</option></select>
-    <select name="submodel"><option>Submodel</option></select>
-    <select name="semantic_role"><option>Semantic Role</option></select>
-    <input type="text" name="example" placeholder="Example">
-    <select name="verb_class"><option>Thematic Verb Class</option></select>
-    <select name="adj_class"><option>Thematic Adjective Class</option></select>
-    <button type="submit" class="submit-btn">Save</button>
+     <form id="add-form" class="hidden">
+  <select name="name" required>
+    <option value="">Emotion Name</option>
+    <option value="joy">Joy</option>
+    <option value="happiness">Happiness</option>
+    <option value="delight">Delight</option>
+    <!-- и т.д. -->
+  </select>
+  <select name="metaphorical_model">
+    <option value="">Metaphorical Model</option>
+    <option>EMOTION IS A LIVING ORGANISM</option>
+    <option>EMOTION IS A SUBSTANCE</option>
+    <option>EMOTION IS AN ILLNESS</option>
+    <option>EMOTION IS A FIRE</option>
+    <option>EMOTION IS LIGHT</option>
+    <option>EMOTION IS AN OBJECT</option>
+    <option>EMOTION IS A FOOD</option>
+    <option>EMOTION IS A NATURAL FORCE</option>
+    <option>EMOTION IS A COMPANION</option>
+    <option>EMOTION IS A BURDEN</option>
+    <option>EMOTION IS A BUILDING</option>
+    <option>EMOTION IS A BOUNDED SPACE</option>
+    <option>EMOTION IS A GAS</option>
+    <option>EMOTION IS A LIQUID</option>
+    <!-- и т.д. -->
+  </select>
+  <select name="submodel">
+    <option value="">Submodel</option>
+    <option>LIQUID</option>
+    <option>PLANT</option>
+    <option>ANIMAL</option>
+    <!-- и т.д. -->
+  </select>
+  <select name="semantic_role">
+    <option value="">Semantic Role</option>
+    <option>Agent</option>
+    <option>Instrument</option>
+    <option>Patient</option>
+    <option>Purpose</option>
+    <option>Force</option>
+    <option>Location</option>
+    <option>Counteragent</option>
+    <option>Goal</option>
+    <!-- и т.д. -->
+  </select>
+  <input type="text" name="example" placeholder="Example">
+  <select name="verb_class">
+    <option value="">Thematic Verb Class</option>
+    <option>охватывать</option>
+    <option>наполнять</option>
+    <option>заражать</option>
+    <!-- и т.д. -->
+  </select>
+  <select name="adj_class">
+    <option value="">Thematic Adjective Class</option>
+    <option>всеобщий</option>
+    <option>бурный</option>
+    <option>непринужденный</option>
+    <!-- и т.д. -->
+  </select>
+  <button type="submit" class="submit-btn">Save</button>
 </form>
+
     </div>
   </div>
 
