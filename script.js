@@ -104,11 +104,7 @@ tabBtns.forEach(btn => {
   let sortDir = 'asc';
 
   function updateLanguageUI() {
-    // Заголовки таблицы
-    document.querySelectorAll('#emotion-table th[data-i18n]').forEach(th => {
-      const key = th.getAttribute('data-i18n');
-      th.textContent = translations[currentLanguage][key];
-    });
+  
     // Плейсхолдеры формы
     document.querySelectorAll('#add-form input[data-i18n-placeholder]').forEach(input => {
       const key = input.getAttribute('data-i18n-placeholder');
