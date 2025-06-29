@@ -209,7 +209,7 @@ tabBtns.forEach(btn => {
       };
     });
   });
-
+})
 window.insertTag = function(open, close) {
   const textarea = document.getElementById('example-field');
   if (!textarea) return;
