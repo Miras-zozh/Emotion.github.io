@@ -199,15 +199,6 @@ tabBtns.forEach(btn => {
     };
   });
 }
-    
-    // Edit (заглушка — реализуйте по своему сценарию)
-    document.querySelectorAll('.edit-btn').forEach(btn => {
-      btn.onclick = function() {
-        const id = this.dataset.id;
-        // Здесь откройте форму редактирования и заполните её данными строки с этим id
-        alert('Edit row ' + id);
-      };
-    });
   
 }
 window.insertTag = function(open, close) {
