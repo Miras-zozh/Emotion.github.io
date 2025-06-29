@@ -17,6 +17,27 @@
     <button data-lang="en">🇬🇧</button>
   </div>
 
+<div class="tabs">
+    <button class="tab-btn" data-tab="publications">Publications</button>
+    <button class="tab-btn" data-tab="instructions">Instructions</button>
+    <button class="tab-btn" data-tab="developer">Developer</button>
+    <button class="tab-btn" data-tab="about">About us</button>
+  </div>
+</div>
+<div class="tab-content hidden" id="tab-publications">
+  <h2>Publications</h2>
+  <!-- Здесь будет загрузка PDF (реализуем позже) -->
+</div>
+<div class="tab-content hidden" id="tab-instructions">
+  <h2>Instructions</h2>
+</div>
+<div class="tab-content hidden" id="tab-developer">
+  <h2>Developer</h2>
+</div>
+<div class="tab-content hidden" id="tab-about">
+  <h2>About us</h2>
+</div>
+  
   <!-- Welcome block (всегда на английском) -->
   <div class="welcome">
     <h1>World of Emotions</h1>
@@ -31,14 +52,18 @@
   </div>
 
   <!-- Эмоции -->
-  <div class="emotions-container">
-    <div class="emotion-card" data-emotion="joy">😊<span>Joy</span></div>
-    <div class="emotion-card" data-emotion="sadness">😢<span>Sadness</span></div>
-    <div class="emotion-card" data-emotion="fear">😱<span>Fear</span></div>
-    <div class="emotion-card" data-emotion="anger">😡<span>Anger</span></div>
-    <div class="emotion-card" data-emotion="surprise">😮<span>Surprise</span></div>
-    <div class="emotion-card" data-emotion="disgust">🤢<span>Disgust</span></div>
+ <div class="emotions-container">
+  <div class="emotions-row">
+    <div class="emotion-card" data-emotion="joy">😊</div>
+    <div class="emotion-card" data-emotion="sadness">😢</div>
+    <div class="emotion-card" data-emotion="fear">😱</div>
   </div>
+  <div class="emotions-row">
+    <div class="emotion-card" data-emotion="anger">😡</div>
+    <div class="emotion-card" data-emotion="surprise">😮</div>
+    <div class="emotion-card" data-emotion="disgust">🤢</div>
+  </div>
+</div>
 
   <!-- Модальное окно -->
   <div id="modal" class="modal hidden">
@@ -75,15 +100,15 @@
       </table>
       <button id="show-form" class="add-btn hidden" data-i18n="addData">Add Data</button>
       <form id="add-form" class="hidden">
-        <input type="text" name="name" placeholder="Emotion Name" required data-i18n-placeholder="emotionName">
-        <input type="text" name="metaphorical_model" placeholder="Metaphorical Model" data-i18n-placeholder="metaphoricalModel">
-        <input type="text" name="submodel" placeholder="Submodel" data-i18n-placeholder="submodel">
-        <input type="text" name="semantic_role" placeholder="Semantic Role" data-i18n-placeholder="semanticRole">
-        <input type="text" name="example" placeholder="Example" data-i18n-placeholder="example">
-        <input type="text" name="verb_class" placeholder="Thematic Verb Class" data-i18n-placeholder="verbClass">
-        <input type="text" name="adj_class" placeholder="Thematic Adjective Class" data-i18n-placeholder="adjClass">
-        <button type="submit" class="submit-btn" data-i18n="save">Save</button>
-      </form>
+    <select name="name" required><option>Emotion Name</option></select>
+    <select name="metaphorical_model"><option>Metaphorical Model</option></select>
+    <select name="submodel"><option>Submodel</option></select>
+    <select name="semantic_role"><option>Semantic Role</option></select>
+    <input type="text" name="example" placeholder="Example">
+    <select name="verb_class"><option>Thematic Verb Class</option></select>
+    <select name="adj_class"><option>Thematic Adjective Class</option></select>
+    <button type="submit" class="submit-btn">Save</button>
+</form>
     </div>
   </div>
 
