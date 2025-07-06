@@ -345,4 +345,4 @@ if (editId) {
 
   // ---- Инициализация ----
   updateLanguageUI();
-});
+}});
