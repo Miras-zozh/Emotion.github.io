@@ -217,41 +217,29 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     const editId = addForm.dataset.editId;
-    if (editId) {
-      const { data, error } = await supabaseClient
-        .from('emotions')
-        .update(newRow)
-        .eq('id', editId)
-        .select();
-      if (!error && data && data[0]) {
-        const idx = allData.findIndex(r => String(r.id) === String(editId));
-        if (idx !== -1) allData[idx] = data[0];
-        renderTable(allData);
-        addForm.reset();
-        addForm.classList.add('hidden');
-        showFormBtn.classList.remove('hidden');
-        delete addForm.dataset.editId;
-      } else if (error) {
-        alert('Ошибка при редактировании: ' + error.message);
-        console.error(error);
-      } else {
-        alert('Ошибка: не удалось обновить запись');
-      }
-    } else {
-      const { data, error } = await supabaseClient
-        .from('emotions')
-        .insert([newRow])
-        .select();
-      if (!error && data && data[0]) {
-        allData.push({ ...newRow, id: data[0].id });
-        renderTable(allData);
-        addForm.reset();
-        addForm.classList.add('hidden');
-        showFormBtn.classList.remove('hidden');
-      } else {
-        alert('Ошибка при добавлении данных');
-      }
-    }
+if (editId) {
+  const { data, error } = await supabaseClient
+    .from('emotions')
+    .update(newRow)
+    .eq('id', Number(editId)) // если id числовой
+    .select();
+  console.log('UPDATE RESULT', { data, error, editId, newRow });
+  if (!error && data && data[0]) {
+    const idx = allData.findIndex(r => String(r.id) === String(editId));
+    if (idx !== -1) allData[idx] = data[0];
+    renderTable(allData);
+    addForm.reset();
+    addForm.classList.add('hidden');
+    showFormBtn.classList.remove('hidden');
+    delete addForm.dataset.editId;
+  } else if (error) {
+    alert('Ошибка при редактировании: ' + error.message);
+    console.error(error);
+  } else {
+    alert('Ошибка: не удалось обновить запись');
+    console.log('editId:', editId, 'newRow:', newRow, 'data:', data, 'error:', error);
+  }
+}
   };
 
   langSwitcher.addEventListener('click', function(e) {
