@@ -254,8 +254,8 @@ window.insertTag = function(open, close) {
   };
   
     
-  const editId = addForm.dataset.editId;
-  if (editId) {
+const editId = addForm.dataset.editId;
+if (editId) {
   const { data, error } = await supabaseClient
     .from('emotions')
     .update(newRow)
@@ -276,7 +276,9 @@ window.insertTag = function(open, close) {
   } else {
     alert('Ошибка: не удалось обновить запись');
   }
-};
+}
+
+
 
 
   langSwitcher.addEventListener('click', function(e) {
