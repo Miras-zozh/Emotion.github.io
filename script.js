@@ -252,6 +252,8 @@ window.insertTag = function(open, close) {
     adj_class: formData.get('adj_class'),
     language: currentLanguage
   };
+  
+    
   const editId = addForm.dataset.editId;
   if (editId) {
   const { data, error } = await supabaseClient
@@ -275,6 +277,7 @@ window.insertTag = function(open, close) {
     alert('Ошибка: не удалось обновить запись');
   }
 };
+
 
   langSwitcher.addEventListener('click', function(e) {
     if (e.target.tagName === 'BUTTON') {
