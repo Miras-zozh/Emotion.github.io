@@ -271,6 +271,7 @@ addForm.onsubmit = async (e) => {
 
 
 
+
   langSwitcher.addEventListener('click', function(e) {
     if (e.target.tagName === 'BUTTON') {
       const lang = e.target.getAttribute('data-lang');
