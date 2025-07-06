@@ -274,7 +274,7 @@ window.insertTag = function(open, close) {
   } else {
     alert('Ошибка: не удалось обновить запись');
   }
-}
+};
 
   langSwitcher.addEventListener('click', function(e) {
     if (e.target.tagName === 'BUTTON') {
