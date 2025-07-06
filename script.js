@@ -201,8 +201,10 @@ document.addEventListener('DOMContentLoaded', () => {
     showFormBtn.classList.add('hidden');
   };
 
- addForm.onsubmit = async (e) => {
+addForm.onsubmit = async (e) => {
   e.preventDefault();
+
+  // Собираем данные из формы
   const formData = new FormData(addForm);
   const newRow = {
     emotion: currentEmotion,
@@ -216,16 +218,22 @@ document.addEventListener('DOMContentLoaded', () => {
     language: currentLanguage
   };
 
-  const editId = addForm.dataset.editId;
+  // Проверяем, редактирование или добавление
+  const editId = addForm.dataset.editId ? Number(addForm.dataset.editId) : null;
+
   if (editId) {
+    // --- РЕДАКТИРОВАНИЕ ---
     const { data, error } = await supabaseClient
       .from('emotions')
       .update(newRow)
-      .eq('id', Number(editId))
+      .eq('id', editId)
       .select();
+
     console.log('UPDATE RESULT', { data, error, editId, newRow });
+
     if (!error && data && data[0]) {
-      const idx = allData.findIndex(r => String(r.id) === String(editId));
+      // Обновляем в allData
+      const idx = allData.findIndex(r => Number(r.id) === editId);
       if (idx !== -1) allData[idx] = data[0];
       renderTable(allData);
       addForm.reset();
@@ -240,22 +248,27 @@ document.addEventListener('DOMContentLoaded', () => {
       console.log('editId:', editId, 'newRow:', newRow, 'data:', data, 'error:', error);
     }
   } else {
-    // Добавление новой записи
+    // --- ДОБАВЛЕНИЕ ---
     const { data, error } = await supabaseClient
       .from('emotions')
       .insert([newRow])
       .select();
+
+    console.log('INSERT RESULT', { data, error, newRow });
+
     if (!error && data && data[0]) {
-      allData.push({ ...newRow, id: data[0].id });
+      allData.push({ ...data[0] });
       renderTable(allData);
       addForm.reset();
       addForm.classList.add('hidden');
       showFormBtn.classList.remove('hidden');
     } else {
-      alert('Ошибка при добавлении данных');
+      alert('Ошибка при добавлении данных: ' + (error ? error.message : ''));
+      console.log('INSERT ERROR', { data, error, newRow });
     }
   }
 };
+
 
 
   langSwitcher.addEventListener('click', function(e) {
