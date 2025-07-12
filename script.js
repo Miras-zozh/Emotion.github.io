@@ -9,7 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
   let isAdmin = false;
   let currentEmotion = '';
   let allData = [];
-  let currentLanguage = 'en'; // Язык интерфейса
+  let currentLanguage = 'en';
 
   // ==== Переводы ====
   const translations = {
@@ -86,14 +86,16 @@ document.addEventListener('DOMContentLoaded', () => {
   let sortKey = 'name';
   let sortDir = 'asc';
 
-  // Обновление UI под выбранный язык интерфейса
   function updateLanguageUI() {
-    // Плейсхолдеры формы (input и textarea)
-    document.querySelectorAll('#add-form input[data-i18n-placeholder], #add-form textarea[data-i18n-placeholder]').forEach(input => {
+    // Заголовки таблицы
+    document.querySelectorAll('#emotion-table th[data-i18n]').forEach(th => {
+      const key = th.getAttribute('data-i18n');
+      th.textContent = translations[currentLanguage][key];
+    });
+    // Плейсхолдеры формы
+    document.querySelectorAll('#add-form input[data-i18n-placeholder]').forEach(input => {
       const key = input.getAttribute('data-i18n-placeholder');
-      if (translations[currentLanguage][key]) {
-        input.placeholder = translations[currentLanguage][key];
-      }
+      input.placeholder = translations[currentLanguage][key];
     });
     // Кнопки
     showFormBtn.textContent = translations[currentLanguage].addData;
@@ -110,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Отрисовка таблицы с данными (данные всегда на английском)
   function renderTable(data) {
+    // сортировка
     data = [...data].sort((a, b) => {
       let vA = a[sortKey] || '';
       let vB = b[sortKey] || '';
@@ -128,76 +130,37 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${row.metaphorical_model || ''}</td>
         <td>${row.submodel || ''}</td>
         <td>${row.semantic_role || ''}</td>
-        <td class="example-cell"></td>
+        <td>${row.example || ''}</td>
         <td>${row.verb_class || ''}</td>
         <td>${row.adj_class || ''}</td>
-        ${
-          isAdmin
-            ? `<td>
-                <button class="edit-btn" data-id="${row.id}">Edit</button>
-                <button class="delete-btn" data-id="${row.id}">${translations[currentLanguage].delete}</button>
-              </td>`
-            : ''
-        }
+        ${isAdmin ? `<td><button class="delete-btn" data-id="${row.id}">${translations[currentLanguage].delete}</button></td>` : ''}
       `;
-      // Вставляем example с поддержкой HTML-тегов
-      tr.querySelector('.example-cell').innerHTML = row.example || '';
       tableBody.appendChild(tr);
     });
 
+    // Кнопки "Удалить"
     if (isAdmin) {
-      // Обработчики удаления
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.onclick = async function() {
           const id = this.dataset.id;
-          if (confirm('Delete this row?')) {
+          if (confirm('Удалить эту запись?')) {
             const { error } = await supabaseClient
               .from('emotions')
               .delete()
-              .eq('id', Number(id));
+              .eq('id', id);
             if (!error) {
-              allData = allData.filter(r => Number(r.id) !== Number(id));
+              allData = allData.filter(r => String(r.id) !== String(id));
               renderTable(allData);
             } else {
-              alert('Error deleting');
+              alert('Ошибка при удалении');
             }
           }
-        };
-      });
-      // Обработчики редактирования
-      document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.onclick = function() {
-          const id = this.dataset.id;
-          const row = allData.find(r => Number(r.id) === Number(id));
-          if (!row) return;
-          addForm.name.value = row.name || '';
-          addForm.metaphorical_model.value = row.metaphorical_model || '';
-          addForm.submodel.value = row.submodel || '';
-          addForm.semantic_role.value = row.semantic_role || '';
-          addForm.example.value = row.example || '';
-          addForm.verb_class.value = row.verb_class || '';
-          addForm.adj_class.value = row.adj_class || '';
-          addForm.dataset.editId = id;
-          addForm.classList.remove('hidden');
-          showFormBtn.classList.add('hidden');
         };
       });
     }
   }
 
-  // Вставка тегов для форматирования example
-  window.insertTag = function(open, close) {
-    const textarea = document.getElementById('example-field');
-    if (!textarea) return;
-    const start = textarea.selectionStart;
-    const end = textarea.selectionEnd;
-    const text = textarea.value;
-    textarea.value = text.slice(0, start) + open + text.slice(start, end) + close + text.slice(end);
-    textarea.focus();
-    textarea.selectionStart = textarea.selectionEnd = end + open.length + close.length;
-  };
-
-  // Открытие карточки эмоции — загружаем данные только на английском
+  // Открытие карточки эмоции
   document.querySelectorAll('.emotion-card').forEach(card => {
     card.addEventListener('click', async () => {
       currentEmotion = card.dataset.emotion;
@@ -209,7 +172,7 @@ document.addEventListener('DOMContentLoaded', () => {
         .from('emotions')
         .select('*')
         .eq('emotion', currentEmotion)
-        .eq('language', 'en'); // Данные всегда на английском
+        .eq('language', currentLanguage);
       allData = data || [];
       renderTable(allData);
       updateLanguageUI();
@@ -218,16 +181,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
   closeModalBtn.onclick = () => modal.classList.add('hidden');
   showFormBtn.onclick = () => {
-    addForm.reset();
     addForm.classList.remove('hidden');
     showFormBtn.classList.add('hidden');
-    delete addForm.dataset.editId;
   };
 
-  // Обработка отправки формы добавления/редактирования
   addForm.onsubmit = async (e) => {
     e.preventDefault();
-
     const formData = new FormData(addForm);
     const newRow = {
       emotion: currentEmotion,
@@ -238,61 +197,44 @@ document.addEventListener('DOMContentLoaded', () => {
       example: formData.get('example'),
       verb_class: formData.get('verb_class'),
       adj_class: formData.get('adj_class'),
-      language: 'en' // Всегда сохраняем на английском
+      language: currentLanguage
     };
-
-    const editId = addForm.dataset.editId ? Number(addForm.dataset.editId) : null;
-
-    if (editId) {
-      // Редактирование
-      const { data, error } = await supabaseClient
-        .from('emotions')
-        .update(newRow)
-        .eq('id', editId)
-        .select();
-
-      if (!error && data && data[0]) {
-        const idx = allData.findIndex(r => Number(r.id) === editId);
-        if (idx !== -1) allData[idx] = data[0];
-        renderTable(allData);
-        addForm.reset();
-        addForm.classList.add('hidden');
-        showFormBtn.classList.remove('hidden');
-        delete addForm.dataset.editId;
-      } else {
-        alert('Ошибка при редактировании: ' + (error ? error.message : 'Неизвестная ошибка'));
-      }
+    const { data, error } = await supabaseClient.from('emotions').insert([newRow]);
+    if (!error) {
+      allData.push({ ...newRow, id: data[0]?.id });
+      renderTable(allData);
+      addForm.reset();
+      addForm.classList.add('hidden');
+      showFormBtn.classList.remove('hidden');
     } else {
-      // Добавление
-      const { data, error } = await supabaseClient
-        .from('emotions')
-        .insert([newRow])
-        .select();
-
-      if (!error && data && data[0]) {
-        allData.push(data[0]);
-        renderTable(allData);
-        addForm.reset();
-        addForm.classList.add('hidden');
-        showFormBtn.classList.remove('hidden');
-      } else {
-        alert('Ошибка при добавлении данных: ' + (error ? error.message : 'Неизвестная ошибка'));
-      }
+      alert('Ошибка при добавлении данных');
     }
   };
 
-  // Переключение языка интерфейса (только UI, без перезагрузки данных)
-  langSwitcher.addEventListener('click', (e) => {
+  langSwitcher.addEventListener('click', function(e) {
     if (e.target.tagName === 'BUTTON') {
       const lang = e.target.getAttribute('data-lang');
       if (lang && translations[lang]) {
         currentLanguage = lang;
-        updateLanguageUI();
+        if (!modal.classList.contains('hidden') && currentEmotion) {
+          supabaseClient
+            .from('emotions')
+            .select('*')
+            .eq('emotion', currentEmotion)
+            .eq('language', currentLanguage)
+            .then(({ data }) => {
+              allData = data || [];
+              renderTable(allData);
+              updateLanguageUI();
+            });
+        } else {
+          updateLanguageUI();
+        }
       }
     }
   });
 
-  // Админ — вход
+  // ---- Админ ----
   adminLoginBtn.onclick = () => {
     adminModal.classList.remove('hidden');
     adminError.style.display = 'none';
@@ -307,14 +249,16 @@ document.addEventListener('DOMContentLoaded', () => {
       adminLoginBtn.textContent = 'Вы вошли как админ';
       adminLoginBtn.disabled = true;
       showFormBtn.classList.remove('hidden');
-      if (!modal.classList.contains('hidden')) renderTable(allData);
+      if (!modal.classList.contains('hidden')) {
+        renderTable(allData);
+      }
       deleteHeader.style.display = '';
     } else {
       adminError.style.display = 'block';
     }
   };
 
-  // Сортировка
+  // ---- Сортировка ----
   sortField.onchange = function() {
     sortKey = sortField.value;
     renderTable(allData);
@@ -328,6 +272,6 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTable(allData);
   };
 
-  // Инициализация UI
+  // ---- Инициализация ----
   updateLanguageUI();
 });
