@@ -104,37 +104,38 @@ body {
   background: linear-gradient(120deg, #ffd700 0%, #ff6f61 80%);
 }
 
-.modal {
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(30, 34, 44, 0.8);
+.modal-content {
+  background: #fff;
+  padding: 24px 32px;
+  border-radius: 16px;
+  max-width: 900px;
+  max-height: 80vh; /* Ограничиваем высоту окна */
+  overflow: hidden;
+  position: relative;
   display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 99;
+  flex-direction: column;
 }
 
 .hidden {
   display: none !important;
 }
 
-.modal-content {
-  background: #fff;
-  padding: 36px 32px;
-  border-radius: 16px;
-  min-width: 900px;
-  position: relative;
-  box-shadow: 0 8px 40px rgba(0,0,0,0.18);
+.modal-body {
+  overflow-y: auto; /* Включаем прокрутку для содержимого */
+  flex-grow: 1;
+  margin-top: 12px;
+  padding-right: 8px; /* Для скроллбара */
 }
 
 .close {
   position: absolute;
-  right: 24px;
-  top: 18px;
+  top: 16px;
+  right: 20px;
   font-size: 2rem;
   color: #aaa;
   cursor: pointer;
   transition: color 0.2s;
+  z-index: 10;
 }
 .close:hover { color: #ff6f61; }
 
