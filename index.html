@@ -42,50 +42,54 @@
 
   <!-- Модальное окно -->
   <div id="modal" class="modal hidden">
-    <div class="modal-content">
-      <span id="close-modal" class="close">&times;</span>
-      <h2 id="modal-title"></h2>
+  <div class="modal-content">
+    <span id="close-modal" class="close" title="Close modal">&times;</span>
+    <h2 id="modal-title"></h2>
+    <div class="modal-body">
       <div class="sort-filters">
         <select id="sort-field">
-          <option value="name">Emotion Name</option>
-          <option value="metaphorical_model">Metaphorical Model</option>
-          <option value="submodel">Submodel</option>
-          <option value="semantic_role">Semantic Role</option>
-          <option value="example">Example</option>
-          <option value="verb_class">Thematic Verb Class</option>
-          <option value="adj_class">Thematic Adjective Class</option>
+          <option value="name" data-i18n="emotionName">Emotion Name</option>
+          <option value="metaphorical_model" data-i18n="metaphoricalModel">Metaphorical Model</option>
+          <option value="submodel" data-i18n="submodel">Submodel</option>
+          <option value="semantic_role" data-i18n="semanticRole">Semantic Role</option>
+          <option value="example" data-i18n="example">Example</option>
+          <option value="verb_class" data-i18n="verbClass">Thematic Verb Class</option>
+          <option value="adj_class" data-i18n="adjClass">Thematic Adjective Class</option>
         </select>
-        <button id="sort-asc">↑</button>
-        <button id="sort-desc">↓</button>
+        <button id="sort-asc" title="Sort ascending">↑</button>
+        <button id="sort-desc" title="Sort descending">↓</button>
       </div>
-      <table id="emotion-table">
-        <thead>
-          <tr>
-            <th data-i18n="emotionName">Emotion Name</th>
-            <th data-i18n="metaphoricalModel">Metaphorical Model</th>
-            <th data-i18n="submodel">Submodel</th>
-            <th data-i18n="semanticRole">Semantic Role</th>
-            <th data-i18n="example">Example</th>
-            <th data-i18n="verbClass">Thematic Verb Class</th>
-            <th data-i18n="adjClass">Thematic Adjective Class</th>
-            <th id="delete-header" style="display:none;">Delete</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <div class="table-container">
+        <table id="emotion-table">
+          <thead>
+            <tr>
+              <th data-i18n="emotionName">Emotion Name</th>
+              <th data-i18n="metaphoricalModel">Metaphorical Model</th>
+              <th data-i18n="submodel">Submodel</th>
+              <th data-i18n="semanticRole">Semantic Role</th>
+              <th data-i18n="example">Example</th>
+              <th data-i18n="verbClass">Thematic Verb Class</th>
+              <th data-i18n="adjClass">Thematic Adjective Class</th>
+              <th id="delete-header" style="display:none;" data-i18n="delete">Delete</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
       <button id="show-form" class="add-btn hidden" data-i18n="addData">Add Data</button>
       <form id="add-form" class="hidden">
-        <input type="text" name="name" placeholder="Emotion Name" required data-i18n-placeholder="emotionName">
-        <input type="text" name="metaphorical_model" placeholder="Metaphorical Model" data-i18n-placeholder="metaphoricalModel">
-        <input type="text" name="submodel" placeholder="Submodel" data-i18n-placeholder="submodel">
-        <input type="text" name="semantic_role" placeholder="Semantic Role" data-i18n-placeholder="semanticRole">
-        <input type="text" name="example" placeholder="Example" data-i18n-placeholder="example">
-        <input type="text" name="verb_class" placeholder="Thematic Verb Class" data-i18n-placeholder="verbClass">
-        <input type="text" name="adj_class" placeholder="Thematic Adjective Class" data-i18n-placeholder="adjClass">
+        <input type="text" name="name" placeholder="Emotion Name" required data-i18n-placeholder="emotionName" />
+        <input type="text" name="metaphorical_model" placeholder="Metaphorical Model" data-i18n-placeholder="metaphoricalModel" />
+        <input type="text" name="submodel" placeholder="Submodel" data-i18n-placeholder="submodel" />
+        <input type="text" name="semantic_role" placeholder="Semantic Role" data-i18n-placeholder="semanticRole" />
+        <input type="text" name="example" placeholder="Example" data-i18n-placeholder="example" />
+        <input type="text" name="verb_class" placeholder="Thematic Verb Class" data-i18n-placeholder="verbClass" />
+        <input type="text" name="adj_class" placeholder="Thematic Adjective Class" data-i18n-placeholder="adjClass" />
         <button type="submit" class="submit-btn" data-i18n="save">Save</button>
       </form>
     </div>
   </div>
+</div>
 
   <!-- Модальное окно для входа админа -->
   <div id="admin-modal" class="modal hidden">
