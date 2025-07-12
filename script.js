@@ -211,28 +211,16 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  langSwitcher.addEventListener('click', function(e) {
-    if (e.target.tagName === 'BUTTON') {
-      const lang = e.target.getAttribute('data-lang');
-      if (lang && translations[lang]) {
-        currentLanguage = lang;
-        if (!modal.classList.contains('hidden') && currentEmotion) {
-          supabaseClient
-            .from('emotions')
-            .select('*')
-            .eq('emotion', currentEmotion)
-            .eq('language', currentLanguage)
-            .then(({ data }) => {
-              allData = data || [];
-              renderTable(allData);
-              updateLanguageUI();
-            });
-        } else {
-          updateLanguageUI();
-        }
-      }
+ langSwitcher.addEventListener('click', (e) => {
+  if (e.target.tagName === 'BUTTON') {
+    const lang = e.target.getAttribute('data-lang');
+    if (lang && translations[lang]) {
+      currentLanguage = lang;
+      // Обновляем только интерфейс, не загружаем данные таблиц заново
+      updateLanguageUI();
     }
-  });
+  }
+});
 
   // ---- Админ ----
   adminLoginBtn.onclick = () => {
