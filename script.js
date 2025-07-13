@@ -14,6 +14,21 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==== Переводы ====
   const translations = {
     en: {
+      pageTitle: "World of Emotions",
+      mainTitle: "World of Emotions",
+      welcomeText: "Emotions are the bright colors of our lives, accompanying us from childhood and making every day unique. Joy and sadness, fear and surprise, anger and disgust — all are important for our inner world...",
+      welcomeQuote: "“Emotions are not a weakness, but a force that drives our lives.” <br>— Carl Gustav Jung",
+      adminLogin: "🔑 Admin login",
+      adminLoginTitle: "Admin Login",
+      adminPassword: "Admin password",
+      adminLoginBtn: "Login",
+      adminWrongPass: "Wrong password",
+      joy: "Joy",
+      sadness: "Sadness",
+      fear: "Fear",
+      anger: "Anger",
+      surprise: "Surprise",
+      disgust: "Disgust",
       emotionName: "Emotion Name",
       metaphoricalModel: "Metaphorical Model",
       submodel: "Submodel",
@@ -26,6 +41,21 @@ document.addEventListener('DOMContentLoaded', () => {
       delete: "Delete"
     },
     ru: {
+      pageTitle: "Мир эмоций",
+      mainTitle: "Мир эмоций",
+      welcomeText: "Эмоции — это яркие краски нашей жизни, сопровождающие нас с детства и делающие каждый день уникальным. Радость и грусть, страх и удивление, гнев и отвращение — все они важны для нашего внутреннего мира...",
+      welcomeQuote: "«Эмоции — не слабость, а сила, которая движет нашей жизнью.» <br>— Карл Густав Юнг",
+      adminLogin: "🔑 Вход для админа",
+      adminLoginTitle: "Вход администратора",
+      adminPassword: "Пароль администратора",
+      adminLoginBtn: "Войти",
+      adminWrongPass: "Неверный пароль",
+      joy: "Радость",
+      sadness: "Грусть",
+      fear: "Страх",
+      anger: "Гнев",
+      surprise: "Удивление",
+      disgust: "Отвращение",
       emotionName: "Наименование эмоции",
       metaphoricalModel: "Метафорическая модель",
       submodel: "Субмодель",
@@ -38,6 +68,21 @@ document.addEventListener('DOMContentLoaded', () => {
       delete: "Удалить"
     },
     de: {
+      pageTitle: "Welt der Emotionen",
+      mainTitle: "Welt der Emotionen",
+      welcomeText: "Emotionen sind die leuchtenden Farben unseres Lebens, begleiten uns seit der Kindheit und machen jeden Tag einzigartig. Freude und Trauer, Angst und Überraschung, Wut und Ekel – alle sind wichtig für unsere innere Welt...",
+      welcomeQuote: "„Emotionen sind keine Schwäche, sondern eine Kraft, die unser Leben antreibt.“ <br>— Carl Gustav Jung",
+      adminLogin: "🔑 Admin-Login",
+      adminLoginTitle: "Admin Login",
+      adminPassword: "Admin-Passwort",
+      adminLoginBtn: "Anmelden",
+      adminWrongPass: "Falsches Passwort",
+      joy: "Freude",
+      sadness: "Traurigkeit",
+      fear: "Angst",
+      anger: "Wut",
+      surprise: "Überraschung",
+      disgust: "Ekel",
       emotionName: "Name der Emotion",
       metaphoricalModel: "Metaphorisches Modell",
       submodel: "Submodell",
@@ -50,6 +95,21 @@ document.addEventListener('DOMContentLoaded', () => {
       delete: "Löschen"
     },
     kk: {
+      pageTitle: "Эмоциялар әлемі",
+      mainTitle: "Эмоциялар әлемі",
+      welcomeText: "Эмоциялар — біздің өміріміздің жарқын түстері, олар бізді балалық шақтан бастап ертіп, әр күнді ерекше етеді. Қуаныш пен қайғы, қорқыныш пен таңданыс, ашу мен жиіркену — бәрі де ішкі әлеміміз үшін маңызды...",
+      welcomeQuote: "«Эмоциялар — әлсіздік емес, өмірімізді алға жетелейтін күш.» <br>— Карл Густав Юнг",
+      adminLogin: "🔑 Әкімшіге кіру",
+      adminLoginTitle: "Әкімшіге кіру",
+      adminPassword: "Әкімші құпия сөзі",
+      adminLoginBtn: "Кіру",
+      adminWrongPass: "Қате құпия сөз",
+      joy: "Қуаныш",
+      sadness: "Қайғы",
+      fear: "Қорқыныш",
+      anger: "Ашу",
+      surprise: "Таңданыс",
+      disgust: "Жиіркену",
       emotionName: "Эмоция атауы",
       metaphoricalModel: "Метафорикалық модель",
       submodel: "Субмодель",
@@ -82,38 +142,40 @@ document.addEventListener('DOMContentLoaded', () => {
   const sortAscBtn = document.getElementById('sort-asc');
   const sortDescBtn = document.getElementById('sort-desc');
 
-  // Сортировка
   let sortKey = 'name';
   let sortDir = 'asc';
 
   function updateLanguageUI() {
-    // Заголовки таблицы
-    document.querySelectorAll('#emotion-table th[data-i18n]').forEach(th => {
-      const key = th.getAttribute('data-i18n');
-      th.textContent = translations[currentLanguage][key];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[currentLanguage][key]) {
+        if (el.tagName.toLowerCase() === 'title') {
+          document.title = translations[currentLanguage][key];
+        } else {
+          el.innerHTML = translations[currentLanguage][key];
+        }
+      }
     });
-    // Плейсхолдеры формы
-    document.querySelectorAll('#add-form input[data-i18n-placeholder]').forEach(input => {
-      const key = input.getAttribute('data-i18n-placeholder');
-      input.placeholder = translations[currentLanguage][key];
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (translations[currentLanguage][key]) {
+        el.placeholder = translations[currentLanguage][key];
+      }
     });
-    // Кнопки
-    showFormBtn.textContent = translations[currentLanguage].addData;
-    addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
-    if (isAdmin) {
-      deleteHeader.textContent = translations[currentLanguage].delete;
-    }
-    // Сортировка
     sortField.querySelectorAll('option').forEach(opt => {
       const key = opt.value;
       if (translations[currentLanguage][key]) {
         opt.textContent = translations[currentLanguage][key];
       }
     });
+    showFormBtn.textContent = translations[currentLanguage].addData;
+    addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
+    if (isAdmin) {
+      deleteHeader.textContent = translations[currentLanguage].delete;
+    }
   }
 
   function renderTable(data) {
-    // сортировка
     data = [...data].sort((a, b) => {
       let vA = a[sortKey] || '';
       let vB = b[sortKey] || '';
@@ -138,7 +200,6 @@ document.addEventListener('DOMContentLoaded', () => {
       tableBody.appendChild(tr);
     });
 
-    // Кнопки "Удалить"
     if (isAdmin) {
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.onclick = async function() {
@@ -160,11 +221,10 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
-  // Открытие карточки эмоции
   document.querySelectorAll('.emotion-card').forEach(card => {
     card.addEventListener('click', async () => {
       currentEmotion = card.dataset.emotion;
-      modalTitle.textContent = card.textContent;
+      modalTitle.textContent = card.querySelector('[data-i18n]')?.textContent || card.textContent;
       modal.classList.remove('hidden');
       showFormBtn.classList.toggle('hidden', !isAdmin);
       addForm.classList.add('hidden');
@@ -185,50 +245,45 @@ document.addEventListener('DOMContentLoaded', () => {
     showFormBtn.classList.add('hidden');
   };
 
- addForm.onsubmit = async (e) => {
-  e.preventDefault();
-  const formData = new FormData(addForm);
-  const newRow = {
-    emotion: currentEmotion,
-    name: formData.get('name'),
-    metaphorical_model: formData.get('metaphorical_model'),
-    submodel: formData.get('submodel'),
-    semantic_role: formData.get('semantic_role'),
-    example: formData.get('example'),
-    verb_class: formData.get('verb_class'),
-    adj_class: formData.get('adj_class'),
-    language: currentLanguage
+  addForm.onsubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(addForm);
+    const newRow = {
+      emotion: currentEmotion,
+      name: formData.get('name'),
+      metaphorical_model: formData.get('metaphorical_model'),
+      submodel: formData.get('submodel'),
+      semantic_role: formData.get('semantic_role'),
+      example: formData.get('example'),
+      verb_class: formData.get('verb_class'),
+      adj_class: formData.get('adj_class'),
+      language: currentLanguage
+    };
+    const { data, error } = await supabaseClient
+      .from('emotions')
+      .insert([newRow])
+      .select();
+    if (!error && data && data.length > 0) {
+      allData.push({ ...newRow, id: data[0].id });
+      renderTable(allData);
+      addForm.reset();
+      addForm.classList.add('hidden');
+      showFormBtn.classList.remove('hidden');
+    } else {
+      alert('Ошибка при добавлении данных: ' + (error ? error.message : 'Данные не получены'));
+    }
   };
 
-  const { data, error } = await supabaseClient
-    .from('emotions')
-    .insert([newRow])
-    .select();
-
-  if (!error && data && data.length > 0) {
-    allData.push({ ...newRow, id: data[0].id });
-    renderTable(allData);
-    addForm.reset();
-    addForm.classList.add('hidden');
-    showFormBtn.classList.remove('hidden');
-  } else {
-    alert('Ошибка при добавлении данных: ' + (error ? error.message : 'Данные не получены'));
-  }
-};
-
-
- langSwitcher.addEventListener('click', (e) => {
-  if (e.target.tagName === 'BUTTON') {
-    const lang = e.target.getAttribute('data-lang');
-    if (lang && translations[lang]) {
-      currentLanguage = lang;
-      // Обновляем только интерфейс, не загружаем данные таблиц заново
-      updateLanguageUI();
+  langSwitcher.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+      const lang = e.target.getAttribute('data-lang');
+      if (lang && translations[lang]) {
+        currentLanguage = lang;
+        updateLanguageUI();
+      }
     }
-  }
-});
+  });
 
-  // ---- Админ ----
   adminLoginBtn.onclick = () => {
     adminModal.classList.remove('hidden');
     adminError.style.display = 'none';
@@ -240,7 +295,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (adminPasswordInput.value === ADMIN_PASSWORD) {
       isAdmin = true;
       adminModal.classList.add('hidden');
-      adminLoginBtn.textContent = 'Вы вошли как админ';
+      adminLoginBtn.textContent = translations[currentLanguage].adminLogin + ' (admin)';
       adminLoginBtn.disabled = true;
       showFormBtn.classList.remove('hidden');
       if (!modal.classList.contains('hidden')) {
@@ -252,7 +307,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  // ---- Сортировка ----
   sortField.onchange = function() {
     sortKey = sortField.value;
     renderTable(allData);
@@ -266,6 +320,5 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTable(allData);
   };
 
-  // ---- Инициализация ----
   updateLanguageUI();
 });
