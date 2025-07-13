@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>World of Emotions</title>
+  <title data-i18n="pageTitle">World of Emotions</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Кнопка входа для админа -->
-  <button id="admin-login-btn" class="admin-btn">🔑 Вход для админа</button>
+  <button id="admin-login-btn" class="admin-btn" data-i18n="adminLogin">🔑 Admin login</button>
 
   <!-- Переключатель языков -->
   <div class="lang-switcher">
@@ -17,14 +17,14 @@
     <button data-lang="en">🇬🇧</button>
   </div>
 
-  <!-- Welcome block (всегда на английском) -->
+  <!-- Welcome block -->
   <div class="welcome">
-    <h1>World of Emotions</h1>
+    <h1 data-i18n="mainTitle">World of Emotions</h1>
     <div class="welcome-text">
-      <p>
+      <p data-i18n="welcomeText">
         Emotions are the bright colors of our lives, accompanying us from childhood and making every day unique. Joy and sadness, fear and surprise, anger and disgust — all are important for our inner world...
       </p>
-      <blockquote>
+      <blockquote data-i18n="welcomeQuote">
         “Emotions are not a weakness, but a force that drives our lives.” <br>— Carl Gustav Jung
       </blockquote>
     </div>
@@ -32,74 +32,74 @@
 
   <!-- Эмоции -->
   <div class="emotions-container">
-    <div class="emotion-card" data-emotion="joy">😊<span>Joy</span></div>
-    <div class="emotion-card" data-emotion="sadness">😢<span>Sadness</span></div>
-    <div class="emotion-card" data-emotion="fear">😱<span>Fear</span></div>
-    <div class="emotion-card" data-emotion="anger">😡<span>Anger</span></div>
-    <div class="emotion-card" data-emotion="surprise">😮<span>Surprise</span></div>
-    <div class="emotion-card" data-emotion="disgust">🤢<span>Disgust</span></div>
+    <div class="emotion-card" data-emotion="joy"><span>😊</span><span data-i18n="joy">Joy</span></div>
+    <div class="emotion-card" data-emotion="sadness"><span>😢</span><span data-i18n="sadness">Sadness</span></div>
+    <div class="emotion-card" data-emotion="fear"><span>😱</span><span data-i18n="fear">Fear</span></div>
+    <div class="emotion-card" data-emotion="anger"><span>😡</span><span data-i18n="anger">Anger</span></div>
+    <div class="emotion-card" data-emotion="surprise"><span>😮</span><span data-i18n="surprise">Surprise</span></div>
+    <div class="emotion-card" data-emotion="disgust"><span>🤢</span><span data-i18n="disgust">Disgust</span></div>
   </div>
 
   <!-- Модальное окно -->
   <div id="modal" class="modal hidden">
-  <div class="modal-content">
-    <span id="close-modal" class="close" title="Close modal">&times;</span>
-    <h2 id="modal-title"></h2>
-    <div class="modal-body">
-      <div class="sort-filters">
-        <select id="sort-field">
-          <option value="name" data-i18n="emotionName">Emotion Name</option>
-          <option value="metaphorical_model" data-i18n="metaphoricalModel">Metaphorical Model</option>
-          <option value="submodel" data-i18n="submodel">Submodel</option>
-          <option value="semantic_role" data-i18n="semanticRole">Semantic Role</option>
-          <option value="example" data-i18n="example">Example</option>
-          <option value="verb_class" data-i18n="verbClass">Thematic Verb Class</option>
-          <option value="adj_class" data-i18n="adjClass">Thematic Adjective Class</option>
-        </select>
-        <button id="sort-asc" title="Sort ascending">↑</button>
-        <button id="sort-desc" title="Sort descending">↓</button>
+    <div class="modal-content">
+      <span id="close-modal" class="close" title="Close modal">&times;</span>
+      <h2 id="modal-title"></h2> <!-- Заголовок модалки обычно обновляется динамически из JS (например, "Joy" / "Радость"), поэтому data-i18n не нужен -->
+      <div class="modal-body">
+        <div class="sort-filters">
+          <select id="sort-field">
+            <option value="name" data-i18n="emotionName">Emotion Name</option>
+            <option value="metaphorical_model" data-i18n="metaphoricalModel">Metaphorical Model</option>
+            <option value="submodel" data-i18n="submodel">Submodel</option>
+            <option value="semantic_role" data-i18n="semanticRole">Semantic Role</option>
+            <option value="example" data-i18n="example">Example</option>
+            <option value="verb_class" data-i18n="verbClass">Thematic Verb Class</option>
+            <option value="adj_class" data-i18n="adjClass">Thematic Adjective Class</option>
+          </select>
+          <button id="sort-asc" title="Sort ascending">↑</button>
+          <button id="sort-desc" title="Sort descending">↓</button>
+        </div>
+        <div class="table-container">
+          <table id="emotion-table">
+            <thead>
+              <tr>
+                <th data-i18n="emotionName">Emotion Name</th>
+                <th data-i18n="metaphoricalModel">Metaphorical Model</th>
+                <th data-i18n="submodel">Submodel</th>
+                <th data-i18n="semanticRole">Semantic Role</th>
+                <th data-i18n="example">Example</th>
+                <th data-i18n="verbClass">Thematic Verb Class</th>
+                <th data-i18n="adjClass">Thematic Adjective Class</th>
+                <th id="delete-header" style="display:none;" data-i18n="delete">Delete</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <button id="show-form" class="add-btn hidden" data-i18n="addData">Add Data</button>
+        <form id="add-form" class="hidden">
+          <input type="text" name="name" placeholder="Emotion Name" required data-i18n-placeholder="emotionName" />
+          <input type="text" name="metaphorical_model" placeholder="Metaphorical Model" data-i18n-placeholder="metaphoricalModel" />
+          <input type="text" name="submodel" placeholder="Submodel" data-i18n-placeholder="submodel" />
+          <input type="text" name="semantic_role" placeholder="Semantic Role" data-i18n-placeholder="semanticRole" />
+          <input type="text" name="example" placeholder="Example" data-i18n-placeholder="example" />
+          <input type="text" name="verb_class" placeholder="Thematic Verb Class" data-i18n-placeholder="verbClass" />
+          <input type="text" name="adj_class" placeholder="Thematic Adjective Class" data-i18n-placeholder="adjClass" />
+          <button type="submit" class="submit-btn" data-i18n="save">Save</button>
+        </form>
       </div>
-      <div class="table-container">
-        <table id="emotion-table">
-          <thead>
-            <tr>
-              <th data-i18n="emotionName">Emotion Name</th>
-              <th data-i18n="metaphoricalModel">Metaphorical Model</th>
-              <th data-i18n="submodel">Submodel</th>
-              <th data-i18n="semanticRole">Semantic Role</th>
-              <th data-i18n="example">Example</th>
-              <th data-i18n="verbClass">Thematic Verb Class</th>
-              <th data-i18n="adjClass">Thematic Adjective Class</th>
-              <th id="delete-header" style="display:none;" data-i18n="delete">Delete</th>
-            </tr>
-          </thead>
-          <tbody></tbody>
-        </table>
-      </div>
-      <button id="show-form" class="add-btn hidden" data-i18n="addData">Add Data</button>
-      <form id="add-form" class="hidden">
-        <input type="text" name="name" placeholder="Emotion Name" required data-i18n-placeholder="emotionName" />
-        <input type="text" name="metaphorical_model" placeholder="Metaphorical Model" data-i18n-placeholder="metaphoricalModel" />
-        <input type="text" name="submodel" placeholder="Submodel" data-i18n-placeholder="submodel" />
-        <input type="text" name="semantic_role" placeholder="Semantic Role" data-i18n-placeholder="semanticRole" />
-        <input type="text" name="example" placeholder="Example" data-i18n-placeholder="example" />
-        <input type="text" name="verb_class" placeholder="Thematic Verb Class" data-i18n-placeholder="verbClass" />
-        <input type="text" name="adj_class" placeholder="Thematic Adjective Class" data-i18n-placeholder="adjClass" />
-        <button type="submit" class="submit-btn" data-i18n="save">Save</button>
-      </form>
     </div>
   </div>
-</div>
 
   <!-- Модальное окно для входа админа -->
   <div id="admin-modal" class="modal hidden">
     <div class="modal-content" style="min-width:350px">
       <span id="close-admin-modal" class="close">&times;</span>
-      <h2>Вход администратора</h2>
+      <h2 data-i18n="adminLoginTitle">Admin Login</h2>
       <form id="admin-login-form">
-        <input type="password" id="admin-password" placeholder="Пароль администратора" required>
-        <button type="submit">Войти</button>
-        <div id="admin-error" style="color:#ff6f61;display:none;margin-top:6px;">Неверный пароль</div>
+        <input type="password" id="admin-password" placeholder="Admin password" required data-i18n-placeholder="adminPassword" />
+        <button type="submit" data-i18n="adminLoginBtn">Login</button>
+        <div id="admin-error" style="color:#ff6f61;display:none;margin-top:6px;" data-i18n="adminWrongPass">Wrong password</div>
       </form>
     </div>
   </div>
