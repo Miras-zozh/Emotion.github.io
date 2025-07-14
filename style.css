@@ -246,3 +246,34 @@ body {
 .emotion-card span:first-child {
   font-size: 8rem;
 }
+.top-tabs {
+  position: fixed;
+  top: 20px;
+  right: 40px;
+  display: flex;
+  gap: 18px;
+  z-index: 101;
+}
+
+.tab-link {
+  font-family: inherit;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #ff6f61;
+  background: linear-gradient(90deg, #ffd700 60%, #ff6f61 100%);
+  border: none;
+  border-radius: 18px;
+  padding: 8px 20px;
+  text-decoration: none;
+  transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 12px rgba(255, 223, 0, 0.07);
+  letter-spacing: 0.5px;
+  outline: none;
+  cursor: pointer;
+}
+.tab-link:hover, .tab-link:focus {
+  background: #ff6f61;
+  color: #fffbe6;
+  box-shadow: 0 4px 18px rgba(255,111,97,0.15);
+  text-decoration: none;
+}
