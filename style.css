@@ -225,3 +225,7 @@ body {
   background: #ffd700;
   color: #222;
 }
+.emotion-card span[data-i18n] {
+  display: none;
+}
+
