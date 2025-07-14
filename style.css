@@ -279,3 +279,20 @@ body {
   box-shadow: 0 4px 18px rgba(255,111,97,0.15);
   text-decoration: none;
 }
+
+.edit-btn {
+  background: #ffd700;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 6px 14px;
+  font-size: 1rem;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 8px;
+  transition: background 0.2s;
+}
+.edit-btn:hover {
+  background: #ff6f61;
+  color: #222;
+}
