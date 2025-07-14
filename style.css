@@ -254,7 +254,7 @@ body {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 12px;
+  gap: 24px;
 }
 
 .side-tabs .tab-link {
