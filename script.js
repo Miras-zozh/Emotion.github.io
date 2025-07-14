@@ -42,7 +42,7 @@ document.addEventListener('DOMContentLoaded', () => {
       publications: "Publications",
       instructions: "Instructions",
       developer: "Developer",
-      about: "About"
+      about: "About us"
     },
     ru: {
       pageTitle: "Мир эмоций",
