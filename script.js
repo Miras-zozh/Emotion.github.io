@@ -231,8 +231,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const { data } = await supabaseClient
         .from('emotions')
         .select('*')
-        .eq('emotion', currentEmotion)
-        .eq('language', currentLanguage);
+        .eq('emotion', currentEmotion);
       allData = data || [];
       renderTable(allData);
       updateLanguageUI();
