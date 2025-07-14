@@ -38,7 +38,11 @@ document.addEventListener('DOMContentLoaded', () => {
       adjClass: "Thematic Adjective Class",
       addData: "Add Data",
       save: "Save",
-      delete: "Delete"
+      delete: "Delete",
+      publications: "Publications",
+      instructions: "Instructions",
+      developer: "Developer",
+      about: "About"
     },
     ru: {
       pageTitle: "Мир эмоций",
@@ -65,7 +69,11 @@ document.addEventListener('DOMContentLoaded', () => {
       adjClass: "Тематический класс прилагательных",
       addData: "Добавить данные",
       save: "Сохранить",
-      delete: "Удалить"
+      delete: "Удалить",
+      publications: "Публикации",
+      instructions: "Инструкции",
+      developer: "Разработчик",
+      about: "О нас"
     },
     de: {
       pageTitle: "Welt der Emotionen",
@@ -92,7 +100,11 @@ document.addEventListener('DOMContentLoaded', () => {
       adjClass: "Thematische Adjektivklasse",
       addData: "Daten hinzufügen",
       save: "Speichern",
-      delete: "Löschen"
+      delete: "Löschen",
+      publications: "Publikationen",
+      instructions: "Anleitungen",
+      developer: "Entwickler",
+      about: "Über uns"
     },
     kk: {
       pageTitle: "Эмоциялар әлемі",
@@ -119,7 +131,11 @@ document.addEventListener('DOMContentLoaded', () => {
       adjClass: "Тақырыптық сын есім класы",
       addData: "Дерек қосу",
       save: "Сақтау",
-      delete: "Жою"
+      delete: "Жою",
+      publications: "Жарияланымдар",
+      instructions: "Нұсқаулықтар",
+      developer: "Әзірлеуші",
+      about: "Біз туралы"
     }
   };
 
