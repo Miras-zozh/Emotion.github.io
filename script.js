@@ -186,6 +186,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     showFormBtn.textContent = translations[currentLanguage].addData;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
+    addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].edit;
     if (isAdmin) {
       deleteHeader.textContent = translations[currentLanguage].delete;
     }
@@ -211,12 +212,28 @@ document.addEventListener('DOMContentLoaded', () => {
         <td>${row.example || ''}</td>
         <td>${row.verb_class || ''}</td>
         <td>${row.adj_class || ''}</td>
-        ${isAdmin ? `<td><button class="delete-btn" data-id="${row.id}">${translations[currentLanguage].delete}</button></td>` : ''}
+        ${isAdmin ? `<td><button class="edit-btn" data-id="${row.id}">${translations[currentLanguage]?.edit || 'Edit'}</button>
+        <button class="delete-btn" data-id="${row.id}">${translations[currentLanguage].delete}</button></td>` : ''}
       `;
       tableBody.appendChild(tr);
     });
 
     if (isAdmin) {
+      document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.onclick = function() {
+      const id = this.dataset.id;
+      const row = allData.find(r => String(r.id) === String(id));
+      if (row) {
+        // Заполнить форму значениями из строки
+        addForm.classList.remove('hidden');
+        showFormBtn.classList.add('hidden');
+        for (const key of ['name','metaphorical_model','submodel','semantic_role','example','verb_class','adj_class']) {
+          addForm.elements[key].value = row[key] || '';
+        }
+        addForm.dataset.editId = id; // Сохраняем id редактируемой строки
+      }
+    };
+  });
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.onclick = async function() {
           const id = this.dataset.id;
@@ -260,20 +277,41 @@ document.addEventListener('DOMContentLoaded', () => {
     showFormBtn.classList.add('hidden');
   };
 
-  addForm.onsubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(addForm);
-    const newRow = {
-      emotion: currentEmotion,
-      name: formData.get('name'),
-      metaphorical_model: formData.get('metaphorical_model'),
-      submodel: formData.get('submodel'),
-      semantic_role: formData.get('semantic_role'),
-      example: formData.get('example'),
-      verb_class: formData.get('verb_class'),
-      adj_class: formData.get('adj_class'),
-      language: currentLanguage
-    };
+ addForm.onsubmit = async (e) => {
+  e.preventDefault();
+  const formData = new FormData(addForm);
+  const newRow = {
+    emotion: currentEmotion,
+    name: formData.get('name'),
+    metaphorical_model: formData.get('metaphorical_model'),
+    submodel: formData.get('submodel'),
+    semantic_role: formData.get('semantic_role'),
+    example: formData.get('example'),
+    verb_class: formData.get('verb_class'),
+    adj_class: formData.get('adj_class'),
+    language: currentLanguage
+  };
+
+  if (addForm.dataset.editId) {
+    // Режим редактирования
+    const editId = addForm.dataset.editId;
+    const { error } = await supabaseClient
+      .from('emotions')
+      .update(newRow)
+      .eq('id', editId);
+    if (!error) {
+      const idx = allData.findIndex(r => String(r.id) === String(editId));
+      if (idx !== -1) allData[idx] = { ...allData[idx], ...newRow };
+      renderTable(allData);
+      addForm.reset();
+      addForm.classList.add('hidden');
+      showFormBtn.classList.remove('hidden');
+      delete addForm.dataset.editId;
+    } else {
+      alert('Ошибка при редактировании: ' + error.message);
+    }
+  } else {
+    // Обычное добавление
     const { data, error } = await supabaseClient
       .from('emotions')
       .insert([newRow])
@@ -287,7 +325,9 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       alert('Ошибка при добавлении данных: ' + (error ? error.message : 'Данные не получены'));
     }
-  };
+  }
+};
+
 
   langSwitcher.addEventListener('click', (e) => {
     if (e.target.tagName === 'BUTTON') {
