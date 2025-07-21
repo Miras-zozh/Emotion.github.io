@@ -139,6 +139,26 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  // --- Публикации (PDF) ---
+const showPublicationsBtn = document.getElementById('show-publications');
+const pdfModal = document.getElementById('pdf-modal');
+const closePdfModalBtn = document.getElementById('close-pdf-modal');
+
+// Проверка на существование элементов (если вдруг они есть не на всех страницах)
+if (showPublicationsBtn && pdfModal && closePdfModalBtn) {
+  showPublicationsBtn.addEventListener('click', () => {
+    pdfModal.classList.remove('hidden');
+  });
+  closePdfModalBtn.addEventListener('click', () => {
+    pdfModal.classList.add('hidden');
+  });
+  pdfModal.addEventListener('click', (e) => {
+    if (e.target === pdfModal) {
+      pdfModal.classList.add('hidden');
+    }
+  });
+}
+
   // ==== UI Elements ====
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modal-title');
