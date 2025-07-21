@@ -22,7 +22,9 @@
 </button>
   <li><a href="#" class="tab-link" data-i18n="instructions">Инструкции</a></li>
   <li><a href="#" class="tab-link" data-i18n="developer">Разработчик</a></li>
-  <li><a href="#" class="tab-link" data-i18n="about">О нас</a></li>
+ <button class="add-btn" id="about-btn" style="margin-top: 18px;">
+  <span data-i18n="about">О нас</span>
+</button>
 </ul>
   <!-- Welcome block -->
   <div class="welcome">
@@ -36,7 +38,16 @@
       </blockquote>
     </div>
   </div>
-
+  
+<!-- About us modal (или секция) -->
+<div class="modal hidden" id="about-modal">
+  <div class="modal-content" style="max-width:700px;">
+    <span class="close" id="about-close">&times;</span>
+    <div id="about-content" style="margin-top:18px; min-height:120px;">
+      <!-- Текст о проекте будет вставляться сюда -->
+    </div>
+  </div>
+</div>
   <!-- Модальное окно публикаций -->
 <div id="pdf-modal" class="modal hidden">
   <div class="modal-content" style="max-width:1100px; min-width:340px;">
