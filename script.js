@@ -42,7 +42,10 @@ document.addEventListener('DOMContentLoaded', () => {
       publications: "Publications",
       instructions: "Instructions",
       developer: "Developer",
-      about: "About us"
+      about: "About us",
+      aboutText: "This research was carried out with the support of the Science Committee of the Ministry of Science and Higher Education of the Republic of Kazakhstan (Grant Nº AP19177908 Comparison of metaphorical models in Kazakh, Russian, English, and German (based on the representation of emotional states) within the priority area Research in the field of social and human sciences."
+},
+      
     },
     ru: {
       pageTitle: "Мир эмоций",
@@ -74,6 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
       instructions: "Инструкции",
       developer: "Разработчик",
       about: "О нас"
+      aboutText: "Исследование выполнено при поддержке Комитета науки Министерства науки и высшего образования Республики Казахстан (Грант Nº AP19177908 «Сопоставление метафорических моделей в казахском, русском, английском и немецком языках (на примере репрезентации эмоциональных состояний») по приоритету «Исследования в области социальных и гуманитарных наук»."
     },
     de: {
       pageTitle: "Welt der Emotionen",
@@ -105,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
       instructions: "Anleitungen",
       developer: "Entwickler",
       about: "Über uns"
+      aboutText: "Diese Forschung wurde mit Unterstützung des Wissenschaftskomitees des Ministeriums für Wissenschaft und Hochschulbildung der Republik Kasachstan durchgeführt (Grant-Nr. AP19177908 "Vergleich metaphorischer Modelle im Kasachischen, Russischen, Englischen und Deutschen (am Beispiel der Repräsentation emotionaler Zustände)") im Rahmen der Priorität "Forschung im Bereich der Sozial- und Geisteswissenschaften"."
     },
     kk: {
       pageTitle: "Эмоциялар әлемі",
@@ -136,6 +141,7 @@ document.addEventListener('DOMContentLoaded', () => {
       instructions: "Нұсқаулықтар",
       developer: "Әзірлеуші",
       about: "Біз туралы"
+      aboutText: "Бұл зерттеу Қазақстан Республикасы Ғылым және жоғары білім министрлігінің Ғылым комитетінің қолдауымен жүзеге асырылды (Грант № AP19177908 "Қазақ, орыс, ағылшын және неміс тілдеріндегі метафоралық үлгілерді салыстыру (эмоциялық күйлердің репрезентациясы мысалында)") «Әлеуметтік және гуманитарлық ғылымдар саласындағы зерттеулер» басымдығы бойынша."
     }
   };
 
@@ -158,6 +164,37 @@ if (showPublicationsBtn && pdfModal && closePdfModalBtn) {
     }
   });
 }
+
+  const aboutBtn = document.getElementById('about-btn');
+const aboutModal = document.getElementById('about-modal');
+const aboutClose = document.getElementById('about-close');
+const aboutContent = document.getElementById('about-content');
+
+function showAboutContent() {
+  aboutContent.innerHTML = translations[currentLanguage].aboutText;
+}
+
+aboutBtn.addEventListener('click', () => {
+  showAboutContent();
+  aboutModal.classList.remove('hidden');
+});
+
+aboutClose.addEventListener('click', () => {
+  aboutModal.classList.add('hidden');
+});
+
+// Закрытие модалки по клику вне окна
+aboutModal.addEventListener('click', (e) => {
+  if (e.target === aboutModal) aboutModal.classList.add('hidden');
+});
+
+function updateLanguageUI() {
+  // ...существующий код
+  if (!aboutModal.classList.contains('hidden')) {
+    showAboutContent();
+  }
+}
+
 
   // ==== UI Elements ====
   const modal = document.getElementById('modal');
