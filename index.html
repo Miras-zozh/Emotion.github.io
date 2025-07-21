@@ -17,7 +17,9 @@
     <button data-lang="en">🇬🇧</button>
   </div>
 <ul class="side-tabs">
-  <li><a href="#" class="tab-link" data-i18n="publications">Публикации</a></li>
+ <button id="show-publications" class="add-btn" style="margin-left: 16px; margin-top: 16px;">
+  <span data-i18n="publications">Публикации</span>
+</button>
   <li><a href="#" class="tab-link" data-i18n="instructions">Инструкции</a></li>
   <li><a href="#" class="tab-link" data-i18n="developer">Разработчик</a></li>
   <li><a href="#" class="tab-link" data-i18n="about">О нас</a></li>
@@ -35,6 +37,19 @@
     </div>
   </div>
 
+  <!-- Модальное окно публикаций -->
+<div id="pdf-modal" class="modal hidden">
+  <div class="modal-content" style="max-width:1100px; min-width:340px;">
+    <span class="close" id="close-pdf-modal">&times;</span>
+    <h2 style="margin-bottom:12px">Публикации</h2>
+    <div class="modal-body" style="display:flex; gap:18px; justify-content:center; align-items:flex-start; flex-wrap:wrap;">
+      <!-- Вставь свои пути к PDF ниже -->
+      <iframe src="docs/publ1.pdf" width="320" height="440" style="border:1px solid #eee; border-radius:6px;"></iframe>
+      <iframe src="docs/publ2.pdf" width="320" height="440" style="border:1px solid #eee; border-radius:6px;"></iframe>
+      <iframe src="docs/publ3.pdf" width="320" height="440" style="border:1px solid #eee; border-radius:6px;"></iframe>
+    </div>
+  </div>
+</div>
   <!-- Эмоции -->
   <div class="emotions-container">
     <div class="emotion-card" data-emotion="joy"><span>😊</span><span data-i18n="joy">Joy</span></div>
