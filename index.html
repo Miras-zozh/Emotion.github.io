@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
   <meta charset="UTF-8" />
   <title data-i18n="pageTitle">World of Emotions</title>
   <link rel="stylesheet" href="style.css" />
@@ -113,7 +114,8 @@
           <input type="text" name="metaphorical_model" placeholder="Metaphorical Model" data-i18n-placeholder="metaphoricalModel" />
           <input type="text" name="submodel" placeholder="Submodel" data-i18n-placeholder="submodel" />
           <input type="text" name="semantic_role" placeholder="Semantic Role" data-i18n-placeholder="semanticRole" />
-          <input type="text" name="example" placeholder="Example" data-i18n-placeholder="example" />
+         <div id="example-editor" style="height: 120px; background: #fff; border: 1px solid #ccc; border-radius: 6px;"></div>
+<input type="hidden" name="example" />
           <input type="text" name="verb_class" placeholder="Thematic Verb Class" data-i18n-placeholder="verbClass" />
           <input type="text" name="adj_class" placeholder="Thematic Adjective Class" data-i18n-placeholder="adjClass" />
           <button type="submit" class="submit-btn" data-i18n="save">Save</button>
@@ -137,5 +139,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script src="script.js"></script>
+  <script src="https://cdn.quilljs.com/1.3.6/quill.js"></script>
+
 </body>
 </html>
