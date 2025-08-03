@@ -1,3 +1,4 @@
+let quill;
 document.addEventListener('DOMContentLoaded', () => {
   // ==== Supabase config ====
   const SUPABASE_URL = 'https://iajtzxdhjkcycgvbetax.supabase.co';
@@ -144,6 +145,20 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
+  quill = new Quill('#example-editor', {
+    theme: 'snow',
+    modules: {
+      toolbar: [
+        [{ 'font': [] }],
+        [{ 'size': ['small', false, 'large', 'huge'] }],
+        ['bold', 'italic', 'underline'],
+        [{ 'color': [] }, { 'background': [] }],
+        [{ 'align': [] }],
+        ['clean']
+      ]
+    }
+  });
+  
   // --- Публикации (PDF) ---
 const showPublicationsBtn = document.getElementById('show-publications');
 const pdfModal = document.getElementById('pdf-modal');
@@ -265,14 +280,18 @@ function updateLanguageUI() {
         <td>${row.metaphorical_model || ''}</td>
         <td>${row.submodel || ''}</td>
         <td>${row.semantic_role || ''}</td>
-        <td>${row.example || ''}</td>
+        <td></td>
         <td>${row.verb_class || ''}</td>
         <td>${row.adj_class || ''}</td>
         ${isAdmin ? `<td><button class="edit-btn" data-id="${row.id}">${translations[currentLanguage]?.edit || 'Edit'}</button>
         <button class="delete-btn" data-id="${row.id}">${translations[currentLanguage].delete}</button></td>` : ''}
       `;
-      tableBody.appendChild(tr);
-    });
+      
+      const exampleTd = tr.children[4];
+    exampleTd.innerHTML = row.example || '';
+
+    tableBody.appendChild(tr);
+  });
 
     if (isAdmin) {
       document.querySelectorAll('.edit-btn').forEach(btn => {
@@ -283,10 +302,18 @@ function updateLanguageUI() {
         // Заполнить форму значениями из строки
         addForm.classList.remove('hidden');
         showFormBtn.classList.add('hidden');
-        for (const key of ['name','metaphorical_model','submodel','semantic_role','example','verb_class','adj_class']) {
+        for (const key of ['name', 'metaphorical_model', 'submodel', 'semantic_role', 'verb_class', 'adj_class']) {
           addForm.elements[key].value = row[key] || '';
         }
-        addForm.dataset.editId = id; // Сохраняем id редактируемой строки
+
+        // **Вот сюда вставляем загрузку Example в Quill:**
+        quill.root.innerHTML = row.example || '';
+
+        // Сохраняем id редактируемой записи в атрибуте формы
+        addForm.dataset.editId = id;
+
+        // (Опционально) меняем текст кнопки сохранения, если хочешь
+        addForm.querySelector('.submit-btn').textContent = translations[currentLanguage]?.edit || 'Edit';
       }
     };
   });
@@ -335,6 +362,7 @@ function updateLanguageUI() {
 
  addForm.onsubmit = async (e) => {
   e.preventDefault();
+  addForm.elements['example'].value = quill.root.innerHTML;
   const formData = new FormData(addForm);
   const newRow = {
     emotion: currentEmotion,
