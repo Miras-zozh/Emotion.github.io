@@ -159,26 +159,25 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 // Получаем элементы
-const emotionSearchInput = document.getElementById('emotion-search');
-const emotionSearchBtn = document.getElementById('emotion-search-btn');
+  const emotionSearchInput = document.getElementById('emotion-search');
+  const emotionSearchBtn = document.getElementById('emotion-search-btn');
 
-// Функция поиска и обновления таблицы
-function searchByEmotionName() {
-  const query = emotionSearchInput.value.trim().toLowerCase();
-  // Если пустой запрос — покажем всю таблицу (все данные)
-  if (!query) {
-    renderTable(allData);
-    return;
+  function searchByEmotionName() {
+    const query = emotionSearchInput.value.trim().toLowerCase();
+
+    if (!query) {
+      // Если пустая строка — показываем все записи
+      renderTable(allData);
+      return;
+    }
+
+    const filtered = allData.filter(row => (row.name || '').toLowerCase().includes(query));
+    renderTable(filtered);
   }
-  // Фильтруем данные по совпадению в имени эмоции
-  const filtered = allData.filter(row => (row.name || '').toLowerCase().includes(query));
-  // Отобразим отфильтрованные данные
-  renderTable(filtered);
-}
 
-// Обработчик на кнопку "Найти"
-emotionSearchBtn.addEventListener('click', searchByEmotionName);
-
+  if (emotionSearchBtn) {
+    emotionSearchBtn.addEventListener('click', searchByEmotionName);
+  }
 
   // --- Публикации (PDF) ---
 const showPublicationsBtn = document.getElementById('show-publications');
