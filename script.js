@@ -160,40 +160,6 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
-const emotionSearchInput = document.getElementById('emotion-search');
-
-function filterAndSortData() {
-  const query = emotionSearchInput.value.trim().toLowerCase();
-  const selectedLang = languageFilter ? languageFilter.value : '';
-
-  let filteredData = allData;
-
-  // Фильтр по языку, если есть селектор
-  if (selectedLang) {
-    filteredData = filteredData.filter(row => row.language === selectedLang);
-  }
-
-  // Поиск по названию эмоции
-  if (query) {
-    filteredData = filteredData.filter(row => (row.name || '').toLowerCase().includes(query));
-  }
-
-  // Сортируем
-  filteredData = sortData(filteredData);
-
-  // Рендерим таблицу
-  renderTable(filteredData);
-}
-
-// Обработчик для input поиска
-emotionSearchInput.addEventListener('input', () => {
-  filterAndSortData();
-});
-languageFilter.addEventListener('change', filterAndSortData);
-filterAndSortData();
-
-  
-
   // --- Публикации (PDF) ---
 const showPublicationsBtn = document.getElementById('show-publications');
 const pdfModal = document.getElementById('pdf-modal');
@@ -306,16 +272,6 @@ function updateLanguageUI() {
       if (vA > vB) return sortDir === 'asc' ? 1 : -1;
       return 0;
     });
-
-    function sortData(data) {
-  return [...data].sort((a, b) => {
-    let vA = a[sortKey] || '';
-    let vB = b[sortKey] || '';
-    if (vA < vB) return (sortDir === 'asc' ? -1 : 1);
-    if (vA > vB) return (sortDir === 'asc' ? 1 : -1);
-    return 0;
-  });
-}
 
 
     tableBody.innerHTML = '';
