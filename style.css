@@ -115,14 +115,14 @@ body {
   background: #fff;
   padding: 32px 36px;
   border-radius: 16px;
-  max-width: 95vw;       /* Уменьшил с 900px на 95% ширины окна */
-  max-height: 80vh; /* Ограничиваем высоту */
+  max-width: 95vw; /* Вместо фиксированных 900px */
+  max-height: 80vh; /* Чтобы окно не было слишком высоким */
   display: flex;
   flex-direction: column;
   position: relative;
   box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-  overflow-x: hidden;    /* Отключаем горизонтальный скролл */
-  overflow-y: auto;      /* Вертикальный скролл, если нужно */
+  overflow-x: hidden;   /* Горизонтальный скролл отключён */
+  overflow-y: auto;     /* Вертикальный скролл, если нужно */
 }
 
 .hidden {
@@ -130,14 +130,14 @@ body {
 }
 
 .modal-body {
-  overflow-y: auto; /* Включаем прокрутку */
+  overflow-y: auto;
   flex-grow: 1;
   margin-top: 12px;
   padding-right: 8px; /* Чтобы скроллбар не перекрывал контент */
 }
 
 .table-container {
-  max-height: 60vh; /* Ограничение высоты таблицы */
+  max-height: 60vh;
   overflow-y: auto;
   margin-bottom: 12px;
 }
@@ -163,27 +163,29 @@ body {
   gap: 8px;
 }
 
-.sort-filters select, .sort-filters button {
+.sort-filters select,
+.sort-filters button {
   font-size: 1rem;
   padding: 4px 10px;
 }
 
 #emotion-table {
-  width: 100%;                 /* Таблица занимает всю ширину контейнера */
-  table-layout: fixed;         /* Фиксированный layout для ровных столбцов */
+  width: 100%; /* занимает всю ширину родителя */
+  table-layout: fixed; /* фиксированная верстка колонки */
   border-collapse: collapse;
   margin-bottom: 18px;
-  font-size: 0.9rem;           /* Немного уменьшаем шрифт */
+  font-size: 0.9rem; /* чуть меньше шрифт */
 }
 
-#emotion-table th, #emotion-table td {
+#emotion-table th,
+#emotion-table td {
   border: 1px solid #eee;
   padding: 8px 10px;
   text-align: left;
-  max-width: 180px;            /* Максимальная ширина столбцов */
-  word-wrap: break-word;       /* Перенос слов */
-  white-space: normal;         /* Позволяет переносу строк */
   vertical-align: top;
+  max-width: 180px;
+  word-wrap: break-word;
+  white-space: normal;
 }
 
 #emotion-table th {
@@ -192,7 +194,8 @@ body {
   font-weight: 700;
 }
 
-.add-btn, .submit-btn {
+.add-btn,
+.submit-btn {
   background: linear-gradient(90deg, #ffd700 60%, #ff6f61 100%);
   color: #fff;
   border: none;
@@ -205,9 +208,10 @@ body {
   transition: background 0.2s;
 }
 
-.add-btn:hover, .submit-btn:hover { 
-  background: #ff6f61; 
-  color: #222; 
+.add-btn:hover,
+.submit-btn:hover {
+  background: #ff6f61;
+  color: #222;
 }
 
 #add-form {
@@ -218,7 +222,7 @@ body {
   background: #f9f6e7;
   padding: 18px 12px;
   border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(255,223,0,0.07);
+  box-shadow: 0 2px 10px rgba(255, 223, 0, 0.07);
 }
 
 #add-form input {
@@ -253,11 +257,14 @@ body {
 
 .modal {
   position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0, 0, 0, 0.25);
   z-index: 1000;
 }
 
@@ -296,10 +303,11 @@ body {
   cursor: pointer;
 }
 
-.side-tabs .tab-link:hover, .side-tabs .tab-link:focus {
+.side-tabs .tab-link:hover,
+.side-tabs .tab-link:focus {
   background: #ff6f61;
   color: #fffbe6;
-  box-shadow: 0 4px 18px rgba(255,111,97,0.15);
+  box-shadow: 0 4px 18px rgba(255, 111, 97, 0.15);
   text-decoration: none;
 }
 
@@ -321,12 +329,12 @@ body {
   color: #222;
 }
 
-/* Дополнительные небольшие фиксы */
-/* Уберём горизонтальный скролл у модального окна */
+/* Фикс по отключению горизонтального скролла у модального окна */
 .modal-content {
   overflow-x: hidden;
 }
-/* Вертикальный скролл для таблицы */
+
+/* Вертикальный скролл в контейнере с таблицей */
 .table-container {
   max-height: 60vh;
   overflow-y: auto;
