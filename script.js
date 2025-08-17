@@ -245,9 +245,7 @@ function updateLanguageUI() {
   const adminLoginForm = document.getElementById('admin-login-form');
   const adminPasswordInput = document.getElementById('admin-password');
   const adminError = document.getElementById('admin-error');
-  const sortField = document.getElementById('sort-field');
-  const sortAscBtn = document.getElementById('sort-asc');
-  const sortDescBtn = document.getElementById('sort-desc');
+ 
 
   let sortKey = 'name';
   let sortDir = 'asc';
