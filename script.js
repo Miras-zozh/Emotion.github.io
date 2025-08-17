@@ -269,12 +269,6 @@ function updateLanguageUI() {
         el.placeholder = translations[currentLanguage][key];
       }
     });
-    sortField.querySelectorAll('option').forEach(opt => {
-      const key = opt.value;
-      if (translations[currentLanguage][key]) {
-        opt.textContent = translations[currentLanguage][key];
-      }
-    });
     showFormBtn.textContent = translations[currentLanguage].addData;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].edit;
