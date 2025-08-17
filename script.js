@@ -461,18 +461,7 @@ function updateLanguageUI() {
     }
   };
 
-  sortField.onchange = function() {
-    sortKey = sortField.value;
-    renderTable(allData);
-  };
-  sortAscBtn.onclick = function() {
-    sortDir = 'asc';
-    renderTable(allData);
-  };
-  sortDescBtn.onclick = function() {
-    sortDir = 'desc';
-    renderTable(allData);
-  };
+ 
 
   updateLanguageUI();
 });
