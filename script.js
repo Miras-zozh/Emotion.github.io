@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==== Переводы ====
   const translations = {
     en: {
+      dbTitle: "Multilingual database “Emotions in metaphorical representation”",
       pageTitle: "World of Emotions",
       mainTitle: "World of Emotions",
       welcomeText: "Emotions are the bright colors of our lives, accompanying us from childhood and making every day unique. Joy and sadness, fear and surprise, anger and disgust — all are important for our inner world...",
@@ -48,6 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
 },
       
     ru: {
+      dbTitle: "Мультиязычная база данных «Эмоции в метафорическом представлении»",
       pageTitle: "Мир эмоций",
       mainTitle: "Мир эмоций",
       welcomeText: "Эмоции — это яркие краски нашей жизни, сопровождающие нас с детства и делающие каждый день уникальным. Радость и грусть, страх и удивление, гнев и отвращение — все они важны для нашего внутреннего мира...",
@@ -80,6 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
       aboutText: "Исследование выполнено при поддержке Комитета науки Министерства науки и высшего образования Республики Казахстан (Грант Nº AP19177908 «Сопоставление метафорических моделей в казахском, русском, английском и немецком языках (на примере репрезентации эмоциональных состояний») по приоритету «Исследования в области социальных и гуманитарных наук»."
     },
     de: {
+      dbTitle: "Mehrsprachige Datenbank „Emotionen in metaphorischer Darstellung“",
       pageTitle: "Welt der Emotionen",
       mainTitle: "Welt der Emotionen",
       welcomeText: "Emotionen sind die leuchtenden Farben unseres Lebens, begleiten uns seit der Kindheit und machen jeden Tag einzigartig. Freude und Trauer, Angst und Überraschung, Wut und Ekel – alle sind wichtig für unsere innere Welt...",
@@ -112,6 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
       aboutText: "Diese Forschung wurde mit Unterstützung des Wissenschaftskomitees des Ministeriums für Wissenschaft und Hochschulbildung der Republik Kasachstan durchgeführt (Grant-Nr. AP19177908 Vergleich metaphorischer Modelle im Kasachischen, Russischen, Englischen und Deutschen (am Beispiel der Repräsentation emotionaler Zustände)) im Rahmen der Priorität Forschung im Bereich der Sozial- und Geisteswissenschaften."
     },
     kk: {
+      dbTitle: "Мультиязычная база данных «Эмоции в метафориялық көріністе»",
       pageTitle: "Эмоциялар әлемі",
       mainTitle: "Эмоциялар әлемі",
       welcomeText: "Эмоциялар — біздің өміріміздің жарқын түстері, олар бізді балалық шақтан бастап ертіп, әр күнді ерекше етеді. Қуаныш пен қайғы, қорқыныш пен таңданыс, ашу мен жиіркену — бәрі де ішкі әлеміміз үшін маңызды...",
@@ -259,7 +263,11 @@ function updateLanguageUI() {
         } else {
           el.innerHTML = translations[currentLanguage][key];
         }
-      }
+   
+        const dbTitleEl = document.getElementById('db-title');
+  if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
+    dbTitleEl.textContent = translations[currentLanguage].dbTitle;
+  }
     });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       const key = el.getAttribute('data-i18n-placeholder');
