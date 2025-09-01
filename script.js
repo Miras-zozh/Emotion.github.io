@@ -267,8 +267,7 @@ function updateLanguageUI() {
         const dbTitleEl = document.getElementById('db-title');
   if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
     dbTitleEl.textContent = translations[currentLanguage].dbTitle;
-  }
-    });
+  });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       const key = el.getAttribute('data-i18n-placeholder');
       if (translations[currentLanguage][key]) {
