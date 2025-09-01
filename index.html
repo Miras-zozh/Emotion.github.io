@@ -11,7 +11,13 @@
 
   <!-- Кнопка входа для админа -->
   <button id="admin-login-btn" class="admin-btn" data-i18n="adminLogin">🔑 Admin login</button>
-    
+    <header style="display: flex; justify-content: space-between; align-items: center; padding: 12px 40px; background: #fff;">
+  <button id="admin-login-btn" class="admin-btn" data-i18n="adminLogin">🔑 Admin login</button>
+
+  <h1 id="db-title" style="flex-grow: 1; text-align: center; margin: 0; font-weight: 700; font-size: 1.5rem; color: #ff6f61;">
+    <!-- Текст заголовка подставит JS согласно языку -->
+    Мультиязычная база данных «Эмоции в метафорическом представлении»
+  </h1>
 
   <!-- Переключатель языков -->
   <div class="lang-switcher">
@@ -24,7 +30,7 @@
  <button id="show-publications" class="add-btn" style="margin-left: 16px; margin-top: 16px;">
   <span data-i18n="publications">Публикации</span>
 </button>
-  
+    </header>
   <li><a href="#" class="tab-link" data-i18n="instructions">Инструкции</a></li>
   <li><a href="#" class="tab-link" data-i18n="developer">Разработчик</a></li>
  <button class="add-btn" id="about-btn" style="margin-top: 18px;">
