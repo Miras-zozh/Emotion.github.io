@@ -256,8 +256,7 @@ function updateLanguageUI() {
   let sortDir = 'asc';
 
   function updateLanguageUI() {
-    
-    document.querySelectorAll('[data-i18n]').forEach(el => {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (translations[currentLanguage][key]) {
         if (el.tagName.toLowerCase() === 'title') {
@@ -266,14 +265,14 @@ function updateLanguageUI() {
           el.innerHTML = translations[currentLanguage][key];
         }
       }
-  });
+    });
     document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
       const key = el.getAttribute('data-i18n-placeholder');
       if (translations[currentLanguage][key]) {
         el.placeholder = translations[currentLanguage][key];
       }
-    }
     });
+    
     showFormBtn.textContent = translations[currentLanguage].addData;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].edit;
