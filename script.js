@@ -228,10 +228,6 @@ aboutModal.addEventListener('click', (e) => {
 
 function updateLanguageUI() {
 
-  const dbTitleEl = document.getElementById('db-title');
-  if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
-    dbTitleEl.textContent = translations[currentLanguage].dbTitle;
-  }
   // ...существующий код
   if (!aboutModal.classList.contains('hidden')) {
     showAboutContent();
@@ -260,6 +256,10 @@ function updateLanguageUI() {
   let sortDir = 'asc';
 
   function updateLanguageUI() {
+      const dbTitleEl = document.getElementById('db-title');
+  if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
+    dbTitleEl.textContent = translations[currentLanguage].dbTitle;
+  }
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (translations[currentLanguage][key]) {
