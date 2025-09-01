@@ -7,12 +7,15 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header style="display: flex; align-items: center; justify-content: space-between; padding: 12px 40px;">
-  <!-- Кнопка входа для админа -->
-  <button id="admin-login-btn" class="admin-btn" data-i18n="adminLogin">🔑 Admin login</button>
-     <h1 id="db-title" style="flex-grow: 1; text-align: center; margin: 0; font-weight: 700; font-size: 1.5rem; color: #ff6f61;">
+  <div id="header-bar" style="width: 100%; background: #fff; padding: 12px 40px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; position: relative; z-index: 1001;">
+  <h1 id="db-title" style="margin: 0; font-weight: 700; font-size: 1.5rem; color: #ff6f61; user-select: none;">
     Мультиязычная база данных «Эмоции в метафорическом представлении»
   </h1>
+</div>
+
+  <!-- Кнопка входа для админа -->
+  <button id="admin-login-btn" class="admin-btn" data-i18n="adminLogin">🔑 Admin login</button>
+    
 
   <!-- Переключатель языков -->
   <div class="lang-switcher">
@@ -32,7 +35,6 @@
   <span data-i18n="about">О нас</span>
 </button>
 </ul>
-    </header>
   <!-- Welcome block -->
   <div class="welcome">
     <h1 data-i18n="mainTitle">World of Emotions</h1>
