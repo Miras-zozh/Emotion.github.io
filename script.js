@@ -256,7 +256,7 @@ function updateLanguageUI() {
   let sortDir = 'asc';
 
   function updateLanguageUI() {
-      const dbTitleEl = document.getElementById('db-title');
+    const dbTitleEl = document.getElementById('db-title');
   if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
     dbTitleEl.textContent = translations[currentLanguage].dbTitle;
   }
