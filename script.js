@@ -209,20 +209,9 @@ const aboutClose = document.getElementById('about-close');
 const aboutContent = document.getElementById('about-content');
 
 function showAboutContent() {
-  const content = `
-    <h2>О нашем проекте</h2>
-    <p>Кожахметова Асель Сабырбековна – доктор философии (PhD), постдокторант </p>
-    <p>Гуманитарной школы Университета Нархоз (Алматы, Казахстан). E-mail: a.kozhakhmetova@narxoz.kz</p>
-     <p>Казкенова Аимгуль Каирбековна – канд. филол. наук, профессор Гуманитарной</p>
-    <p>школы Университета Нархоз (Алматы, Казахстан). E-mail: aimgul.kazkenova@narxoz.kz</p>
-    <ul>
-      <li>Многоязычность: казахский, русский, английский, немецкий</li>
-      <li>Обширная база данных эмоций и связанных метафор</li>
-      <li>Интерактивный интерфейс для исследования и добавления данных</li>
-    </ul>
-  `;
-    aboutContent.innerHTML = content;
+  aboutContent.innerHTML = translations[currentLanguage].aboutText;
 }
+
 
 aboutBtn.addEventListener('click', () => {
   showAboutContent();
