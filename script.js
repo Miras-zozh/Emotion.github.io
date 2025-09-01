@@ -272,6 +272,7 @@ function updateLanguageUI() {
       if (translations[currentLanguage][key]) {
         el.placeholder = translations[currentLanguage][key];
       }
+    }
     });
     showFormBtn.textContent = translations[currentLanguage].addData;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
