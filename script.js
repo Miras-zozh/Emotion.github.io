@@ -256,23 +256,28 @@ function updateLanguageUI() {
   let sortDir = 'asc';
 
   function updateLanguageUI() {
+  const dbTitleEl = document.getElementById('db-title');
+  if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
+    dbTitleEl.textContent = translations[currentLanguage].dbTitle;
+  }
+
   document.querySelectorAll('[data-i18n]').forEach(el => {
-      const key = el.getAttribute('data-i18n');
-      if (translations[currentLanguage][key]) {
-        if (el.tagName.toLowerCase() === 'title') {
-          document.title = translations[currentLanguage][key];
-        } else {
-          el.innerHTML = translations[currentLanguage][key];
-        }
+    const key = el.getAttribute('data-i18n');
+    if (translations[currentLanguage][key]) {
+      if (el.tagName.toLowerCase() === 'title') {
+        document.title = translations[currentLanguage][key];
+      } else {
+        el.innerHTML = translations[currentLanguage][key];
       }
-    });
-    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-      const key = el.getAttribute('data-i18n-placeholder');
-      if (translations[currentLanguage][key]) {
-        el.placeholder = translations[currentLanguage][key];
-      }
-    })
-    });
+    }
+  });
+
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (translations[currentLanguage][key]) {
+      el.placeholder = translations[currentLanguage][key];
+    }
+  });
     
     showFormBtn.textContent = translations[currentLanguage].addData;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
