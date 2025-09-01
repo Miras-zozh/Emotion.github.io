@@ -271,6 +271,7 @@ function updateLanguageUI() {
       if (translations[currentLanguage][key]) {
         el.placeholder = translations[currentLanguage][key];
       }
+    })
     });
     
     showFormBtn.textContent = translations[currentLanguage].addData;
