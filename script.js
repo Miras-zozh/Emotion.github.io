@@ -164,6 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 // Получаем элементы
 // ====== Единый поиск ======
+// ====== Единый поиск ======
 const emotionSearchInput = document.getElementById('emotion-search');
 const semanticSearch = document.getElementById('semantic-search');
 const metaphorSearch = document.getElementById('metaphor-search');
