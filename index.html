@@ -91,14 +91,10 @@
       <span id="close-modal" class="close" title="Close modal">&times;</span>
       <h2 id="modal-title"></h2>
       <div class="modal-body">
-        <div class="filter-sort" style="margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
+       <div class="filter-sort" style="margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
   <!-- Поиск по эмоции -->
   <input type="text" id="emotion-search" placeholder="Поиск по эмоции..." 
          style="padding: 6px 10px; font-size: 1rem; width: 250px;" />
-  <button id="emotion-search-btn" 
-          style="padding: 6px 14px; cursor: pointer; background: #ff6f61; color: #fff; border: none; border-radius: 6px;">
-    Найти
-  </button>
 
   <!-- Фильтр по семантическим ролям -->
   <select id="semantic-search" style="padding: 6px 10px; font-size: 1rem;">
@@ -117,17 +113,19 @@
   <!-- Фильтр по метафорическим ролям -->
   <select id="metaphor-search" style="padding: 6px 10px; font-size: 1rem;">
     <option value="">Все метафорические роли</option>
-    <!-- Здесь можешь сам добавлять -->
+    <!-- Здесь сам допишешь -->
     <option value="Container">Container</option>
     <option value="Path">Path</option>
     <option value="Force">Force</option>
   </select>
 
-  <button id="role-search-btn" 
+  <!-- Общая кнопка -->
+  <button id="search-btn" 
           style="padding: 6px 14px; cursor: pointer; background: #ff6f61; color: #fff; border: none; border-radius: 6px;">
-    Фильтр
+    Найти
   </button>
 </div>
+
 
 
         
