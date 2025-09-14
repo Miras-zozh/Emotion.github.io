@@ -183,6 +183,37 @@ document.addEventListener('DOMContentLoaded', () => {
     emotionSearchBtn.addEventListener('click', searchByEmotionName);
   }
 
+  // ====== Новый поиск по ролям ======
+const semanticSearch = document.getElementById('semantic-search');
+const metaphorSearch = document.getElementById('metaphor-search');
+const roleSearchBtn = document.getElementById('role-search-btn');
+
+function searchByRoles() {
+  const semanticVal = semanticSearch.value.trim().toLowerCase();
+  const metaphorVal = metaphorSearch.value.trim().toLowerCase();
+
+  let filtered = [...allData];
+
+  if (semanticVal) {
+    filtered = filtered.filter(row => 
+      (row.semantic_role || '').toLowerCase().includes(semanticVal)
+    );
+  }
+
+  if (metaphorVal) {
+    filtered = filtered.filter(row => 
+      (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
+    );
+  }
+
+  renderTable(filtered);
+}
+
+if (roleSearchBtn) {
+  roleSearchBtn.addEventListener('click', searchByRoles);
+}
+
+
   // --- Публикации (PDF) ---
 const showPublicationsBtn = document.getElementById('show-publications');
 const pdfModal = document.getElementById('pdf-modal');
