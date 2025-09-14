@@ -163,45 +163,33 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 // Получаем элементы
-  const emotionSearchInput = document.getElementById('emotion-search');
-  const emotionSearchBtn = document.getElementById('emotion-search-btn');
-
-  function searchByEmotionName() {
-    const query = emotionSearchInput.value.trim().toLowerCase();
-
-    if (!query) {
-      // Если пустая строка — показываем все записи
-      renderTable(allData);
-      return;
-    }
-
-    const filtered = allData.filter(row => (row.name || '').toLowerCase().includes(query));
-    renderTable(filtered);
-  }
-
-  if (emotionSearchBtn) {
-    emotionSearchBtn.addEventListener('click', searchByEmotionName);
-  }
-
-  // ====== Новый поиск по ролям ======
+// ====== Единый поиск ======
+const emotionSearchInput = document.getElementById('emotion-search');
 const semanticSearch = document.getElementById('semantic-search');
 const metaphorSearch = document.getElementById('metaphor-search');
-const roleSearchBtn = document.getElementById('role-search-btn');
+const searchBtn = document.getElementById('search-btn');
 
-function searchByRoles() {
-  const semanticVal = semanticSearch.value.trim().toLowerCase();
-  const metaphorVal = metaphorSearch.value.trim().toLowerCase();
+function unifiedSearch() {
+  const emotionVal = (emotionSearchInput?.value || '').trim().toLowerCase();
+  const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
+  const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
 
   let filtered = [...allData];
 
+  if (emotionVal) {
+    filtered = filtered.filter(row =>
+      (row.name || '').toLowerCase().includes(emotionVal)
+    );
+  }
+
   if (semanticVal) {
-    filtered = filtered.filter(row => 
+    filtered = filtered.filter(row =>
       (row.semantic_role || '').toLowerCase().includes(semanticVal)
     );
   }
 
   if (metaphorVal) {
-    filtered = filtered.filter(row => 
+    filtered = filtered.filter(row =>
       (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
     );
   }
@@ -209,8 +197,8 @@ function searchByRoles() {
   renderTable(filtered);
 }
 
-if (roleSearchBtn) {
-  roleSearchBtn.addEventListener('click', searchByRoles);
+if (searchBtn) {
+  searchBtn.addEventListener('click', unifiedSearch);
 }
 
 
