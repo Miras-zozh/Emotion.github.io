@@ -15,6 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // ==== Переводы ====
   const translations = {
     en: {
+      "edit": "Edit",
       dbTitle: "Multilingual database “Emotions in metaphorical representation”",
       pageTitle: "World of Emotions",
       mainTitle: "World of Emotions",
@@ -49,6 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
 },
       
     ru: {
+      "edit": "Редактировать",
       dbTitle: "Мультиязычная база данных «Эмоции в метафорическом представлении»",
       pageTitle: "Мир эмоций",
       mainTitle: "Мир эмоций",
@@ -82,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
       aboutText: "Исследование выполнено при поддержке Комитета науки Министерства науки и высшего образования Республики Казахстан (Грант Nº AP19177908 «Сопоставление метафорических моделей в казахском, русском, английском и немецком языках (на примере репрезентации эмоциональных состояний») по приоритету «Исследования в области социальных и гуманитарных наук»."
     },
     de: {
+      "edit": "Bearbeiten",
       dbTitle: "Mehrsprachige Datenbank „Emotionen in metaphorischer Darstellung“",
       pageTitle: "Welt der Emotionen",
       mainTitle: "Welt der Emotionen",
@@ -115,6 +118,7 @@ document.addEventListener('DOMContentLoaded', () => {
       aboutText: "Diese Forschung wurde mit Unterstützung des Wissenschaftskomitees des Ministeriums für Wissenschaft und Hochschulbildung der Republik Kasachstan durchgeführt (Grant-Nr. AP19177908 Vergleich metaphorischer Modelle im Kasachischen, Russischen, Englischen und Deutschen (am Beispiel der Repräsentation emotionaler Zustände)) im Rahmen der Priorität Forschung im Bereich der Sozial- und Geisteswissenschaften."
     },
     kk: {
+      "edit": "Өзгерту",
       dbTitle: "Мультиязычная база данных «Эмоции в метафориялық көріністе»",
       pageTitle: "Эмоциялар әлемі",
       mainTitle: "Эмоциялар әлемі",
@@ -168,8 +172,10 @@ document.addEventListener('DOMContentLoaded', () => {
 const emotionSearchInput = document.getElementById('emotion-search');
 const semanticSearch = document.getElementById('semantic-search');
 const metaphorSearch = document.getElementById('metaphor-search');
-const submodelSearch = document.getElementById('submodel-search');
 const searchBtn = document.getElementById('search-btn');
+
+const submodelSearch = document.getElementById('submodel-search');
+
 
 function unifiedSearch() {
   const emotionVal = (emotionSearchInput?.value || '').trim().toLowerCase();
@@ -197,7 +203,7 @@ function unifiedSearch() {
     );
   }
 
-   if (submodelVal) {
+  if (submodelVal) {
     filtered = filtered.filter(row =>
       (row.submodel || '').toLowerCase().includes(submodelVal)
     );
@@ -205,7 +211,6 @@ function unifiedSearch() {
 
   renderTable(filtered);
 }
-
 if (searchBtn) {
   searchBtn.addEventListener('click', unifiedSearch);
 }
@@ -255,16 +260,7 @@ aboutModal.addEventListener('click', (e) => {
   if (e.target === aboutModal) aboutModal.classList.add('hidden');
 });
 
-function updateLanguageUI() {
-
-  // ...существующий код
-  if (!aboutModal.classList.contains('hidden')) {
-    showAboutContent();
-  }
-}
-
-
-  // ==== UI Elements ====
+// ==== UI Elements ====
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modal-title');
   const closeModalBtn = document.getElementById('close-modal');
@@ -310,7 +306,6 @@ function updateLanguageUI() {
     
     showFormBtn.textContent = translations[currentLanguage].addData;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
-    addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].edit;
     if (isAdmin) {
       deleteHeader.textContent = translations[currentLanguage].delete;
     }
@@ -445,6 +440,7 @@ function updateLanguageUI() {
       addForm.classList.add('hidden');
       showFormBtn.classList.remove('hidden');
       delete addForm.dataset.editId;
+      addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
     } else {
       alert('Ошибка при редактировании: ' + error.message);
     }
@@ -460,6 +456,7 @@ function updateLanguageUI() {
       addForm.reset();
       addForm.classList.add('hidden');
       showFormBtn.classList.remove('hidden');
+      addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
     } else {
       alert('Ошибка при добавлении данных: ' + (error ? error.message : 'Данные не получены'));
     }
@@ -498,18 +495,6 @@ function updateLanguageUI() {
     } else {
       adminError.style.display = 'block';
     }
-  };
-sortField.onchange = function() {
-    sortKey = sortField.value;
-    renderTable(allData);
-  };
-  sortAscBtn.onclick = function() {
-    sortDir = 'asc';
-    renderTable(allData);
-  };
-  sortDescBtn.onclick = function() {
-    sortDir = 'desc';
-    renderTable(allData);
   };
  
 
