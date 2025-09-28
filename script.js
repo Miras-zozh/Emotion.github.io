@@ -337,37 +337,42 @@ quill = new Quill('#example-editor', {
       tr.children[4].innerHTML = row.example || '';
       tableBody.appendChild(tr);
     });
-    if (isAdmin) {
-      document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.onclick = function() {
-          const id = this.dataset.id;
-          const row = allData.find(r => String(r.id) === String(id));
-          if (row) {
-            addForm.classList.remove('hidden');
-            showFormBtn.classList.add('hidden');
-            for (const key of ['name','metaphorical_model','submodel','semantic_role','verb_class','adj_class']) {
-              addForm.elements[key].value = row[key] || '';
-            }
-            quill.root.innerHTML = row.example || '';
-            addForm.dataset.editId = id;
-            addForm.querySelector('.submit-btn').textContent = translations[currentLanguage]?.edit || 'Edit';
-          }
-        };
-      });
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.onclick = async function() {
-          const id = this.dataset.id;
-          if (confirm('Удалить эту запись?')) {
-            const { error } = await supabaseClient.from('emotions').delete().eq('id', id);
-            if (!error) {
-              allData = allData.filter(r => String(r.id) !== String(id));
-              renderTable(allData);
-            } else alert('Ошибка при удалении');
-          }
-        };
-      });
-    }
-  }
+   if (isAdmin) {
+  document.querySelectorAll('.edit-btn').forEach(btn => {
+    btn.onclick = function() {
+      const id = this.dataset.id;
+      const row = allData.find(r => String(r.id) === String(id));
+      if (row) {
+        addForm.classList.remove('hidden');
+        showFormBtn.classList.add('hidden');
+        for (const key of ['name','metaphorical_model','submodel','semantic_role','verb_class','adj_class']) {
+          addForm.elements[key].value = row[key] || '';
+        }
+        quill.root.innerHTML = row.example || '';
+        addForm.dataset.editId = id;
+        addForm.querySelector('.submit-btn').textContent = translations[currentLanguage]?.edit || 'Edit';
+      }
+    };
+  });
+
+  document.querySelectorAll('.delete-btn').forEach(btn => {
+    btn.onclick = async function() {
+      const id = this.dataset.id;
+      if (confirm('Удалить эту запись?')) {
+        const { error } = await supabaseClient
+          .from('emotions')
+          .delete()
+          .eq('id', id);
+        if (!error) {
+          allData = allData.filter(r => String(r.id) !== String(id));
+          renderTable(allData);
+        } else {
+          alert('Ошибка при удалении');
+        }
+      }
+    };
+  });
+}
 
   document.querySelectorAll('.emotion-card').forEach(card => {
     card.addEventListener('click', async () => {
