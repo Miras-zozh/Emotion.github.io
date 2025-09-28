@@ -372,7 +372,7 @@ quill = new Quill('#example-editor', {
       }
     };
   });
-}
+};
 
   document.querySelectorAll('.emotion-card').forEach(card => {
     card.addEventListener('click', async () => {
