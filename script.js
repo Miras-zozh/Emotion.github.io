@@ -222,33 +222,40 @@ quill = new Quill('#example-editor', {
     let filtered = [...allData];
 
     if (emotionCodeVal) {
-      filtered = filtered.filter(row =>
-        ((row.emotion || '').toLowerCase() === emotionCodeVal) ||
-        ((row.name || '').toLowerCase().includes(emotionCodeVal))
-      );
-    } else if (emotionTextVal) {
-      filtered = filtered.filter(row =>
-        (row.name || '').toLowerCase().includes(emotionTextVal) ||
-        (row.emotion || '').toLowerCase().includes(emotionTextVal)
-      );
-    }
-    if (semanticVal) {
-      filtered = filtered.filter(row =>
-        (row.semantic_role || '').toLowerCase().includes(semanticVal)
-      );
-    }
-    if (metaphorVal) {
-      filtered = filtered.filter(row =>
-        (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
-      );
-    }
-    if (submodelVal) {
-      filtered = filtered.filter(row =>
-        (row.submodel || '').toLowerCase().includes(submodelVal)
-      );
-    }
-    renderTable(filtered);
+    // Берём перевод эмоции для текущего языка
+    const translatedName = (translations[currentLanguage][emotionCodeVal] || '').toLowerCase();
+    filtered = filtered.filter(row =>
+      (row.emotion || '').toLowerCase().includes(emotionCodeVal) ||   // англ. код
+      (row.name || '').toLowerCase().includes(emotionCodeVal) ||      // возможно имя в базе
+      (row.name || '').toLowerCase().includes(translatedName)         // перевод (флаги)
+    );
+  } else if (emotionTextVal) {
+    filtered = filtered.filter(row =>
+      (row.name || '').toLowerCase().includes(emotionTextVal) ||
+      (row.emotion || '').toLowerCase().includes(emotionTextVal)
+    );
   }
+
+  if (semanticVal) {
+    filtered = filtered.filter(row =>
+      (row.semantic_role || '').toLowerCase().includes(semanticVal)
+    );
+  }
+
+  if (metaphorVal) {
+    filtered = filtered.filter(row =>
+      (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
+    );
+  }
+
+  if (submodelVal) {
+    filtered = filtered.filter(row =>
+      (row.submodel || '').toLowerCase().includes(submodelVal)
+    );
+  }
+
+  renderTable(filtered);
+}
   if (searchBtn) searchBtn.addEventListener('click', unifiedSearch);
 
   // ==== Модалки ====
