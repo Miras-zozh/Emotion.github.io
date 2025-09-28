@@ -362,12 +362,16 @@ aboutModal.addEventListener('click', (e) => {
   }
 }
 
+  
   if (emotionDropdown) {
   emotionDropdown.addEventListener('change', () => {
-    emotionSearchInput.value = emotionDropdown.value; 
-    unifiedSearch();
+    const selectedText = emotionDropdown.options[emotionDropdown.selectedIndex].textContent;
+    emotionSearchInput.value = selectedText; 
+    
+    unifiedSearch(); // сразу запускаем поиск
   });
 }
+
 
 
     if (isAdmin) {
