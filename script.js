@@ -168,12 +168,14 @@ document.addEventListener('DOMContentLoaded', () => {
 const emotionSearchInput = document.getElementById('emotion-search');
 const semanticSearch = document.getElementById('semantic-search');
 const metaphorSearch = document.getElementById('metaphor-search');
+const submodelSearch = document.getElementById('submodel-search');
 const searchBtn = document.getElementById('search-btn');
 
 function unifiedSearch() {
   const emotionVal = (emotionSearchInput?.value || '').trim().toLowerCase();
   const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
   const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
+  const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
 
   let filtered = [...allData];
 
@@ -192,6 +194,12 @@ function unifiedSearch() {
   if (metaphorVal) {
     filtered = filtered.filter(row =>
       (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
+    );
+  }
+
+   if (submodelVal) {
+    filtered = filtered.filter(row =>
+      (row.submodel || '').toLowerCase().includes(submodelVal)
     );
   }
 
