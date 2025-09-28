@@ -461,5 +461,5 @@ quill = new Quill('#example-editor', {
     } else adminError.style.display = 'block';
   }; 
 
-  updateLanguageUI();
-});
+updateLanguageUI();
+  }});
