@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       instructions: "Instructions",
       developer: "Developer",
       about: "About us",
-      aboutText: "This research was carried out with the support of the Science Committee of the Ministry of Science and Higher Education of the Republic of Kazakhstan (Grant Nº AP19177908 Comparison of metaphorical models in Kazakh, Russian, English, and German (based on the representation of emotional states) within the priority area Research in the field of social and human sciences."
+      aboutText: "This research was carried out with the support of the Science Committee of the Ministry of Science and Higher Education of the Republic of Kazakhstan (Grant Nº AP19177908 Comparison of metaphorical models in Kazakh, Russian, English, and German (based on the representation of emotional states) within the priority area Research in the field of social and human sciences. Assel Kozhakhmetova – Doctor of Philosophy (PhD), Postdoctoral Researcher, School of Arts and Social Sciences, Narxoz University (Almaty, Kazakhstan). E-mail: a.kozhakhmetova@narxoz.kz Aimgul Kazkenova – Candidate of Philological Sciences, Professor, School of Arts and Social Sciences, Narxoz University (Almaty, Kazakhstan). E-mail: aimgul.kazkenova@narxoz.kz"
 },
       
     ru: {
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
       instructions: "Инструкции",
       developer: "Разработчик",
       about: "О нас",
-      aboutText: "Исследование выполнено при поддержке Комитета науки Министерства науки и высшего образования Республики Казахстан (Грант Nº AP19177908 «Сопоставление метафорических моделей в казахском, русском, английском и немецком языках (на примере репрезентации эмоциональных состояний») по приоритету «Исследования в области социальных и гуманитарных наук»."
+      aboutText: "Исследование выполнено при поддержке Комитета науки Министерства науки и высшего образования Республики Казахстан (Грант Nº AP19177908 «Сопоставление метафорических моделей в казахском, русском, английском и немецком языках (на примере репрезентации эмоциональных состояний») по приоритету «Исследования в области социальных и гуманитарных наук».Кожахметова Асель Сабырбековна – доктор философии (PhD), постдокторант Гуманитарной школы Университета Нархоз (Алматы, Казахстан). E-mail: a.kozhakhmetova@narxoz.kz Казкенова Аимгуль Каирбековна – кандидат филологических наук, профессор Гуманитарной школы Университета Нархоз (Алматы, Казахстан). E-mail: aimgul.kazkenova@narxoz.kz"
     },
     de: {
       "edit": "Bearbeiten",
@@ -115,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
       instructions: "Anleitungen",
       developer: "Entwickler",
       about: "Über uns",
-      aboutText: "Diese Forschung wurde mit Unterstützung des Wissenschaftskomitees des Ministeriums für Wissenschaft und Hochschulbildung der Republik Kasachstan durchgeführt (Grant-Nr. AP19177908 Vergleich metaphorischer Modelle im Kasachischen, Russischen, Englischen und Deutschen (am Beispiel der Repräsentation emotionaler Zustände)) im Rahmen der Priorität Forschung im Bereich der Sozial- und Geisteswissenschaften."
+      aboutText: "Diese Forschung wurde mit Unterstützung des Wissenschaftskomitees des Ministeriums für Wissenschaft und Hochschulbildung der Republik Kasachstan durchgeführt (Grant-Nr. AP19177908 Vergleich metaphorischer Modelle im Kasachischen, Russischen, Englischen und Deutschen (am Beispiel der Repräsentation emotionaler Zustände)) im Rahmen der Priorität Forschung im Bereich der Sozial- und Geisteswissenschaften. Assel Kozhakhmetova – Doktor der Philosophie (PhD), Postdoktorandin, Schule für Geistes- und Sozialwissenschaften, Narxoz Universität (Almaty, Kasachstan). E-Mail: a.kozhakhmetova@narxoz.kz Aimgul Kazkenova – Kandidatin der philologischen Wissenschaften, Professorin, Schule für Geistes- und Sozialwissenschaften, Narxoz Universität (Almaty, Kasachstan). E-Mail: aimgul.kazkenova@narxoz.kz"
     },
     kk: {
       "edit": "Өзгерту",
@@ -149,7 +149,7 @@ document.addEventListener('DOMContentLoaded', () => {
       instructions: "Нұсқаулықтар",
       developer: "Әзірлеуші",
       about: "Біз туралы",
-      aboutText: "Бұл зерттеу Қазақстан Республикасы Ғылым және жоғары білім министрлігінің Ғылым комитетінің қолдауымен жүзеге асырылды (Грант № AP19177908 Қазақ, орыс, ағылшын және неміс тілдеріндегі метафоралық үлгілерді салыстыру (эмоциялық күйлердің репрезентациясы мысалында)) «Әлеуметтік және гуманитарлық ғылымдар саласындағы зерттеулер» басымдығы бойынша."
+      aboutText: "Бұл зерттеу Қазақстан Республикасы Ғылым және жоғары білім министрлігінің Ғылым комитетінің қолдауымен жүзеге асырылды (Грант № AP19177908 Қазақ, орыс, ағылшын және неміс тілдеріндегі метафоралық үлгілерді салыстыру (эмоциялық күйлердің репрезентациясы мысалында)) «Әлеуметтік және гуманитарлық ғылымдар саласындағы зерттеулер» басымдығы бойынша. Кожахметова Асель Сабырбековна – философия докторы (PhD), Нархоз университеті (Алматы, Қазақстан) Гуманитарлық мектебінің постдокторанты. E-mail: a.kozhakhmetova@narxoz.kz Казкенова Аимгуль Каирбековна – филология ғылымдарының кандидаты, Нархоз университеті (Алматы, Қазақстан) Гуманитарлық мектебінің профессоры. E-mail: aimgul.kazkenova@narxoz.kz"
     }
   };
 
