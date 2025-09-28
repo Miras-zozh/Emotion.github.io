@@ -166,14 +166,12 @@ document.addEventListener('DOMContentLoaded', () => {
       ]
     }
   });
-// Получаем элементы
-// ====== Единый поиск ======
-// ====== Единый поиск ======
+
 const emotionSearchInput = document.getElementById('emotion-search');
 const semanticSearch = document.getElementById('semantic-search');
 const metaphorSearch = document.getElementById('metaphor-search');
 const searchBtn = document.getElementById('search-btn');
-
+const emotionDropdown = document.getElementById('emotion-dropdown');
 const submodelSearch = document.getElementById('submodel-search');
 
 
@@ -341,6 +339,36 @@ aboutModal.addEventListener('click', (e) => {
 
     tableBody.appendChild(tr);
   });
+
+    if (emotionDropdown) {
+    const emotions = [
+      { key: 'joy', value: 'joy' },
+      { key: 'sadness', value: 'sadness' },
+      { key: 'fear', value: 'fear' },
+      { key: 'anger', value: 'anger' },
+      { key: 'surprise', value: 'surprise' },
+      { key: 'disgust', value: 'disgust' }
+    ];
+    emotionDropdown.innerHTML = '<option value="">-- ' 
+      + (translations[currentLanguage].emotionName || 'Select emotion') 
+      + ' --</option>';
+
+    emotions.forEach(e => {
+      const opt = document.createElement('option');
+      opt.value = e.value; // техническое значение
+      opt.textContent = translations[currentLanguage][e.key]; // перевод
+      emotionDropdown.appendChild(opt);
+    });
+  }
+}
+
+  if (emotionDropdown) {
+  emotionDropdown.addEventListener('change', () => {
+    emotionSearchInput.value = emotionDropdown.value; 
+    unifiedSearch();
+  });
+}
+
 
     if (isAdmin) {
       document.querySelectorAll('.edit-btn').forEach(btn => {
