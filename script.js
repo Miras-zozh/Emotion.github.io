@@ -460,6 +460,6 @@ quill = new Quill('#example-editor', {
       deleteHeader.style.display = '';
     } else adminError.style.display = 'block';
   }; 
-
+  }
 updateLanguageUI();
-  }});
+  });
