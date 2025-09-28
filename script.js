@@ -200,8 +200,10 @@ quill = new Quill('#example-editor', {
   if (emotionDropdown) {
     emotionDropdown.addEventListener('change', () => {
       const selectedText = emotionDropdown.options[emotionDropdown.selectedIndex].textContent;
-      emotionSearchInput.value = selectedText;
-      unifiedSearch();
+      if (emotionSearchInput) {
+  emotionSearchInput.value = selectedText;
+}
+unifiedSearch();
     });
   }
 
