@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   };
 
-  quill = new Quill('#example-editor', {
+quill = new Quill('#example-editor', {
     theme: 'snow',
     modules: {
       toolbar: [
@@ -167,98 +167,111 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-const emotionSearchInput = document.getElementById('emotion-search');
-const semanticSearch = document.getElementById('semantic-search');
-const metaphorSearch = document.getElementById('metaphor-search');
-const searchBtn = document.getElementById('search-btn');
-const emotionDropdown = document.getElementById('emotion-dropdown');
-const submodelSearch = document.getElementById('submodel-search');
+  const emotionSearchInput = document.getElementById('emotion-search');
+  const semanticSearch = document.getElementById('semantic-search');
+  const metaphorSearch = document.getElementById('metaphor-search');
+  const searchBtn = document.getElementById('search-btn');
+  const emotionDropdown = document.getElementById('emotion-dropdown');
+  const submodelSearch = document.getElementById('submodel-search');
 
-
-function unifiedSearch() {
-  const emotionVal = (emotionSearchInput?.value || '').trim().toLowerCase();
-  const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
-  const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
-  const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
-
-  let filtered = [...allData];
-
-  if (emotionVal) {
-    filtered = filtered.filter(row =>
-      (row.name || '').toLowerCase().includes(emotionVal)
-    );
+  // 🔥 Функция для заполнения dropdown эмоций
+  function populateEmotionDropdown() {
+    if (!emotionDropdown) return;
+    const emotions = [
+      { key: 'joy', value: 'joy' },
+      { key: 'sadness', value: 'sadness' },
+      { key: 'fear', value: 'fear' },
+      { key: 'anger', value: 'anger' },
+      { key: 'surprise', value: 'surprise' },
+      { key: 'disgust', value: 'disgust' }
+    ];
+    emotionDropdown.innerHTML = '<option value="">-- ' +
+      (translations[currentLanguage].emotionName || 'Select emotion') +
+      ' --</option>';
+    emotions.forEach(e => {
+      const opt = document.createElement('option');
+      opt.value = e.value;
+      opt.textContent = translations[currentLanguage][e.key] || e.key;
+      emotionDropdown.appendChild(opt);
+    });
   }
 
-  if (semanticVal) {
-    filtered = filtered.filter(row =>
-      (row.semantic_role || '').toLowerCase().includes(semanticVal)
-    );
+  // 🔥 Обработчики dropdown
+  if (emotionDropdown) {
+    emotionDropdown.addEventListener('change', () => {
+      const selectedText = emotionDropdown.options[emotionDropdown.selectedIndex].textContent;
+      emotionSearchInput.value = selectedText;
+      unifiedSearch();
+    });
+  }
+  if (emotionSearchInput) {
+    emotionSearchInput.addEventListener('input', () => {
+      if (emotionDropdown) emotionDropdown.value = '';
+    });
   }
 
-  if (metaphorVal) {
-    filtered = filtered.filter(row =>
-      (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
-    );
-  }
+  // ====== Поиск ======
+  function unifiedSearch() {
+    const emotionTextVal = (emotionSearchInput?.value || '').trim().toLowerCase();
+    const emotionCodeVal = (emotionDropdown?.value || '').trim().toLowerCase();
+    const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
+    const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
+    const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
 
-  if (submodelVal) {
-    filtered = filtered.filter(row =>
-      (row.submodel || '').toLowerCase().includes(submodelVal)
-    );
-  }
+    let filtered = [...allData];
 
-  renderTable(filtered);
-}
-if (searchBtn) {
-  searchBtn.addEventListener('click', unifiedSearch);
-}
-
-
-  // --- Публикации (PDF) ---
-const showPublicationsBtn = document.getElementById('show-publications');
-const pdfModal = document.getElementById('pdf-modal');
-const closePdfModalBtn = document.getElementById('close-pdf-modal');
-
-// Проверка на существование элементов (если вдруг они есть не на всех страницах)
-if (showPublicationsBtn && pdfModal && closePdfModalBtn) {
-  showPublicationsBtn.addEventListener('click', () => {
-    pdfModal.classList.remove('hidden');
-  });
-  closePdfModalBtn.addEventListener('click', () => {
-    pdfModal.classList.add('hidden');
-  });
-  pdfModal.addEventListener('click', (e) => {
-    if (e.target === pdfModal) {
-      pdfModal.classList.add('hidden');
+    if (emotionCodeVal) {
+      filtered = filtered.filter(row =>
+        ((row.emotion || '').toLowerCase() === emotionCodeVal) ||
+        ((row.name || '').toLowerCase().includes(emotionCodeVal))
+      );
+    } else if (emotionTextVal) {
+      filtered = filtered.filter(row =>
+        (row.name || '').toLowerCase().includes(emotionTextVal) ||
+        (row.emotion || '').toLowerCase().includes(emotionTextVal)
+      );
     }
-  });
-}
+    if (semanticVal) {
+      filtered = filtered.filter(row =>
+        (row.semantic_role || '').toLowerCase().includes(semanticVal)
+      );
+    }
+    if (metaphorVal) {
+      filtered = filtered.filter(row =>
+        (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
+      );
+    }
+    if (submodelVal) {
+      filtered = filtered.filter(row =>
+        (row.submodel || '').toLowerCase().includes(submodelVal)
+      );
+    }
+    renderTable(filtered);
+  }
+  if (searchBtn) searchBtn.addEventListener('click', unifiedSearch);
+
+  // --- Модалки (публикации, about) ---
+  const showPublicationsBtn = document.getElementById('show-publications');
+  const pdfModal = document.getElementById('pdf-modal');
+  const closePdfModalBtn = document.getElementById('close-pdf-modal');
+  if (showPublicationsBtn && pdfModal && closePdfModalBtn) {
+    showPublicationsBtn.addEventListener('click', () => pdfModal.classList.remove('hidden'));
+    closePdfModalBtn.addEventListener('click', () => pdfModal.classList.add('hidden'));
+    pdfModal.addEventListener('click', (e) => { if (e.target === pdfModal) pdfModal.classList.add('hidden'); });
+  }
 
   const aboutBtn = document.getElementById('about-btn');
-const aboutModal = document.getElementById('about-modal');
-const aboutClose = document.getElementById('about-close');
-const aboutContent = document.getElementById('about-content');
+  const aboutModal = document.getElementById('about-modal');
+  const aboutClose = document.getElementById('about-close');
+  const aboutContent = document.getElementById('about-content');
+  function showAboutContent() {
+    aboutContent.innerHTML = translations[currentLanguage].aboutText;
+  }
+  aboutBtn.addEventListener('click', () => { showAboutContent(); aboutModal.classList.remove('hidden'); });
+  aboutClose.addEventListener('click', () => aboutModal.classList.add('hidden'));
+  aboutModal.addEventListener('click', (e) => { if (e.target === aboutModal) aboutModal.classList.add('hidden'); });
 
-function showAboutContent() {
-  aboutContent.innerHTML = translations[currentLanguage].aboutText;
-}
-
-
-aboutBtn.addEventListener('click', () => {
-  showAboutContent();
-  aboutModal.classList.remove('hidden');
-});
-
-aboutClose.addEventListener('click', () => {
-  aboutModal.classList.add('hidden');
-});
-
-// Закрытие модалки по клику вне окна
-aboutModal.addEventListener('click', (e) => {
-  if (e.target === aboutModal) aboutModal.classList.add('hidden');
-});
-
-// ==== UI Elements ====
+  // ==== UI Elements ====
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modal-title');
   const closeModalBtn = document.getElementById('close-modal');
@@ -273,40 +286,30 @@ aboutModal.addEventListener('click', (e) => {
   const adminLoginForm = document.getElementById('admin-login-form');
   const adminPasswordInput = document.getElementById('admin-password');
   const adminError = document.getElementById('admin-error');
- 
 
   let sortKey = 'name';
   let sortDir = 'asc';
 
   function updateLanguageUI() {
-  const dbTitleEl = document.getElementById('db-title');
-  if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
-    dbTitleEl.textContent = translations[currentLanguage].dbTitle;
-  }
-
-  document.querySelectorAll('[data-i18n]').forEach(el => {
-    const key = el.getAttribute('data-i18n');
-    if (translations[currentLanguage][key]) {
-      if (el.tagName.toLowerCase() === 'title') {
-        document.title = translations[currentLanguage][key];
-      } else {
-        el.innerHTML = translations[currentLanguage][key];
+    const dbTitleEl = document.getElementById('db-title');
+    if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
+      dbTitleEl.textContent = translations[currentLanguage].dbTitle;
+    }
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (translations[currentLanguage][key]) {
+        if (el.tagName.toLowerCase() === 'title') document.title = translations[currentLanguage][key];
+        else el.innerHTML = translations[currentLanguage][key];
       }
-    }
-  });
-
-  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
-    const key = el.getAttribute('data-i18n-placeholder');
-    if (translations[currentLanguage][key]) {
-      el.placeholder = translations[currentLanguage][key];
-    }
-  });
-    
+    });
+    document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+      const key = el.getAttribute('data-i18n-placeholder');
+      if (translations[currentLanguage][key]) el.placeholder = translations[currentLanguage][key];
+    });
     showFormBtn.textContent = translations[currentLanguage].addData;
     addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
-    if (isAdmin) {
-      deleteHeader.textContent = translations[currentLanguage].delete;
-    }
+    if (isAdmin) deleteHeader.textContent = translations[currentLanguage].delete;
+    populateEmotionDropdown(); // обновляем dropdown
   }
 
   function renderTable(data) {
@@ -317,8 +320,6 @@ aboutModal.addEventListener('click', (e) => {
       if (vA > vB) return sortDir === 'asc' ? 1 : -1;
       return 0;
     });
-
-
     tableBody.innerHTML = '';
     data.forEach(row => {
       const tr = document.createElement('tr');
@@ -333,85 +334,35 @@ aboutModal.addEventListener('click', (e) => {
         ${isAdmin ? `<td><button class="edit-btn" data-id="${row.id}">${translations[currentLanguage]?.edit || 'Edit'}</button>
         <button class="delete-btn" data-id="${row.id}">${translations[currentLanguage].delete}</button></td>` : ''}
       `;
-      
-      const exampleTd = tr.children[4];
-    exampleTd.innerHTML = row.example || '';
-
-    tableBody.appendChild(tr);
-  });
-
-    if (emotionDropdown) {
-    const emotions = [
-      { key: 'joy', value: 'joy' },
-      { key: 'sadness', value: 'sadness' },
-      { key: 'fear', value: 'fear' },
-      { key: 'anger', value: 'anger' },
-      { key: 'surprise', value: 'surprise' },
-      { key: 'disgust', value: 'disgust' }
-    ];
-    emotionDropdown.innerHTML = '<option value="">-- ' 
-      + (translations[currentLanguage].emotionName || 'Select emotion') 
-      + ' --</option>';
-
-    emotions.forEach(e => {
-      const opt = document.createElement('option');
-      opt.value = e.value; // техническое значение
-      opt.textContent = translations[currentLanguage][e.key]; // перевод
-      emotionDropdown.appendChild(opt);
+      tr.children[4].innerHTML = row.example || '';
+      tableBody.appendChild(tr);
     });
-  }
-}
-
-  
-  if (emotionDropdown) {
-  emotionDropdown.addEventListener('change', () => {
-    const selectedText = emotionDropdown.options[emotionDropdown.selectedIndex].textContent;
-    emotionSearchInput.value = selectedText; 
-    
-    unifiedSearch(); // сразу запускаем поиск
-  });
-}
-
-
-
     if (isAdmin) {
       document.querySelectorAll('.edit-btn').forEach(btn => {
-    btn.onclick = function() {
-      const id = this.dataset.id;
-      const row = allData.find(r => String(r.id) === String(id));
-      if (row) {
-        // Заполнить форму значениями из строки
-        addForm.classList.remove('hidden');
-        showFormBtn.classList.add('hidden');
-        for (const key of ['name', 'metaphorical_model', 'submodel', 'semantic_role', 'verb_class', 'adj_class']) {
-          addForm.elements[key].value = row[key] || '';
-        }
-
-        // **Вот сюда вставляем загрузку Example в Quill:**
-        quill.root.innerHTML = row.example || '';
-
-        // Сохраняем id редактируемой записи в атрибуте формы
-        addForm.dataset.editId = id;
-
-        // (Опционально) меняем текст кнопки сохранения, если хочешь
-        addForm.querySelector('.submit-btn').textContent = translations[currentLanguage]?.edit || 'Edit';
-      }
-    };
-  });
+        btn.onclick = function() {
+          const id = this.dataset.id;
+          const row = allData.find(r => String(r.id) === String(id));
+          if (row) {
+            addForm.classList.remove('hidden');
+            showFormBtn.classList.add('hidden');
+            for (const key of ['name','metaphorical_model','submodel','semantic_role','verb_class','adj_class']) {
+              addForm.elements[key].value = row[key] || '';
+            }
+            quill.root.innerHTML = row.example || '';
+            addForm.dataset.editId = id;
+            addForm.querySelector('.submit-btn').textContent = translations[currentLanguage]?.edit || 'Edit';
+          }
+        };
+      });
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.onclick = async function() {
           const id = this.dataset.id;
           if (confirm('Удалить эту запись?')) {
-            const { error } = await supabaseClient
-              .from('emotions')
-              .delete()
-              .eq('id', id);
+            const { error } = await supabaseClient.from('emotions').delete().eq('id', id);
             if (!error) {
               allData = allData.filter(r => String(r.id) !== String(id));
               renderTable(allData);
-            } else {
-              alert('Ошибка при удалении');
-            }
+            } else alert('Ошибка при удалении');
           }
         };
       });
@@ -425,10 +376,7 @@ aboutModal.addEventListener('click', (e) => {
       modal.classList.remove('hidden');
       showFormBtn.classList.toggle('hidden', !isAdmin);
       addForm.classList.add('hidden');
-      const { data } = await supabaseClient
-        .from('emotions')
-        .select('*')
-        .eq('emotion', currentEmotion);
+      const { data } = await supabaseClient.from('emotions').select('*').eq('emotion', currentEmotion);
       allData = data || [];
       renderTable(allData);
       updateLanguageUI();
@@ -436,65 +384,48 @@ aboutModal.addEventListener('click', (e) => {
   });
 
   closeModalBtn.onclick = () => modal.classList.add('hidden');
-  showFormBtn.onclick = () => {
-    addForm.classList.remove('hidden');
-    showFormBtn.classList.add('hidden');
-  };
+  showFormBtn.onclick = () => { addForm.classList.remove('hidden'); showFormBtn.classList.add('hidden'); };
 
- addForm.onsubmit = async (e) => {
-  e.preventDefault();
-  addForm.elements['example'].value = quill.root.innerHTML;
-  const formData = new FormData(addForm);
-  const newRow = {
-    emotion: currentEmotion,
-    name: formData.get('name'),
-    metaphorical_model: formData.get('metaphorical_model'),
-    submodel: formData.get('submodel'),
-    semantic_role: formData.get('semantic_role'),
-    example: formData.get('example'),
-    verb_class: formData.get('verb_class'),
-    adj_class: formData.get('adj_class'),
-    language: currentLanguage
-  };
-
-  if (addForm.dataset.editId) {
-    // Режим редактирования
-    const editId = addForm.dataset.editId;
-    const { error } = await supabaseClient
-      .from('emotions')
-      .update(newRow)
-      .eq('id', editId);
-    if (!error) {
-      const idx = allData.findIndex(r => String(r.id) === String(editId));
-      if (idx !== -1) allData[idx] = { ...allData[idx], ...newRow };
-      renderTable(allData);
-      addForm.reset();
-      addForm.classList.add('hidden');
-      showFormBtn.classList.remove('hidden');
-      delete addForm.dataset.editId;
-      addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
+  addForm.onsubmit = async (e) => {
+    e.preventDefault();
+    addForm.elements['example'].value = quill.root.innerHTML;
+    const formData = new FormData(addForm);
+    const newRow = {
+      emotion: currentEmotion,
+      name: formData.get('name'),
+      metaphorical_model: formData.get('metaphorical_model'),
+      submodel: formData.get('submodel'),
+      semantic_role: formData.get('semantic_role'),
+      example: formData.get('example'),
+      verb_class: formData.get('verb_class'),
+      adj_class: formData.get('adj_class'),
+      language: currentLanguage
+    };
+    if (addForm.dataset.editId) {
+      const editId = addForm.dataset.editId;
+      const { error } = await supabaseClient.from('emotions').update(newRow).eq('id', editId);
+      if (!error) {
+        const idx = allData.findIndex(r => String(r.id) === String(editId));
+        if (idx !== -1) allData[idx] = { ...allData[idx], ...newRow };
+        renderTable(allData);
+        addForm.reset();
+        addForm.classList.add('hidden');
+        showFormBtn.classList.remove('hidden');
+        delete addForm.dataset.editId;
+        addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
+      } else alert('Ошибка при редактировании: ' + error.message);
     } else {
-      alert('Ошибка при редактировании: ' + error.message);
+      const { data, error } = await supabaseClient.from('emotions').insert([newRow]).select();
+      if (!error && data && data.length > 0) {
+        allData.push({ ...newRow, id: data[0].id });
+        renderTable(allData);
+        addForm.reset();
+        addForm.classList.add('hidden');
+        showFormBtn.classList.remove('hidden');
+        addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
+      } else alert('Ошибка при добавлении: ' + (error ? error.message : 'Данные не получены'));
     }
-  } else {
-    // Обычное добавление
-    const { data, error } = await supabaseClient
-      .from('emotions')
-      .insert([newRow])
-      .select();
-    if (!error && data && data.length > 0) {
-      allData.push({ ...newRow, id: data[0].id });
-      renderTable(allData);
-      addForm.reset();
-      addForm.classList.add('hidden');
-      showFormBtn.classList.remove('hidden');
-      addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
-    } else {
-      alert('Ошибка при добавлении данных: ' + (error ? error.message : 'Данные не получены'));
-    }
-  }
-};
-
+  };
 
   langSwitcher.addEventListener('click', (e) => {
     if (e.target.tagName === 'BUTTON') {
@@ -520,15 +451,10 @@ aboutModal.addEventListener('click', (e) => {
       adminLoginBtn.textContent = translations[currentLanguage].adminLogin + ' (admin)';
       adminLoginBtn.disabled = true;
       showFormBtn.classList.remove('hidden');
-      if (!modal.classList.contains('hidden')) {
-        renderTable(allData);
-      }
+      if (!modal.classList.contains('hidden')) renderTable(allData);
       deleteHeader.style.display = '';
-    } else {
-      adminError.style.display = 'block';
-    }
-  };
- 
+    } else adminError.style.display = 'block';
+  }; 
 
   updateLanguageUI();
 });
