@@ -61,7 +61,7 @@ document.addEventListener('DOMContentLoaded', () => {
       adminPassword: "Пароль администратора",
       adminLoginBtn: "Войти",
       adminWrongPass: "Неверный пароль",
-      joy: "радость",
+      joy: "Радость",
       sadness: "Грусть",
       fear: "Страх",
       anger: "Гнев",
