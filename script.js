@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       instructions: "Instructions",
       developer: "Developer",
       about: "About us",
-      aboutText: "This research was carried out with the support of the Science Committee of the Ministry of Science and Higher Education of the Republic of Kazakhstan (Grant Nº AP19177908 Comparison of metaphorical models in Kazakh, Russian, English, and German (based on the representation of emotional states) within the priority area Research in the field of social and human sciences. <br> Assel Kozhakhmetova – Doctor of Philosophy (PhD), Postdoctoral Researcher, School of Arts and Social Sciences, Narxoz University (Almaty, Kazakhstan). E-mail: a.kozhakhmetova@narxoz.kz  <br> Aimgul Kazkenova – Candidate of Philological Sciences, Professor, School of Arts and Social Sciences, Narxoz University (Almaty, Kazakhstan). E-mail: aimgul.kazkenova@narxoz.kz"
+      aboutText: "This research was carried out with the support of the Science Committee of the Ministry of Science and Higher Education of the Republic of Kazakhstan (Grant Nº AP19177908 Comparison of metaphorical models in Kazakh, Russian, English, and German (based on the representation of emotional states) within the priority area Research in the field of social and human sciences. <br><br> Assel Kozhakhmetova – Doctor of Philosophy (PhD), Postdoctoral Researcher, School of Arts and Social Sciences, Narxoz University (Almaty, Kazakhstan). E-mail: a.kozhakhmetova@narxoz.kz  <br><br> Aimgul Kazkenova – Candidate of Philological Sciences, Professor, School of Arts and Social Sciences, Narxoz University (Almaty, Kazakhstan). E-mail: aimgul.kazkenova@narxoz.kz<br>"
 },
       
     ru: {
