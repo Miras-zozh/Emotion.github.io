@@ -176,6 +176,7 @@ quill = new Quill('#example-editor', {
   const submodelSearch = document.getElementById('submodel-search');
 
   // 🔥 Dropdown эмоций
+ // 🔥 Dropdown эмоций
   function populateEmotionDropdown() {
     if (!emotionDropdown) return;
     const emotions = [
@@ -201,9 +202,9 @@ quill = new Quill('#example-editor', {
     emotionDropdown.addEventListener('change', () => {
       const selectedText = emotionDropdown.options[emotionDropdown.selectedIndex].textContent;
       if (emotionSearchInput) {
-  emotionSearchInput.value = selectedText;
-}
-unifiedSearch();
+        emotionSearchInput.value = selectedText;
+      }
+      unifiedSearch();
     });
   }
 
@@ -223,77 +224,87 @@ unifiedSearch();
 
     let filtered = [...allData];
 
-    if (emotionCodeVal) {
-    // Берём перевод эмоции для текущего языка
-    const translatedName = (translations[currentLanguage][emotionCodeVal] || '').toLowerCase();
-    filtered = filtered.filter(row =>
-      (row.emotion || '').toLowerCase().includes(emotionCodeVal) ||   // англ. код
-      (row.name || '').toLowerCase().includes(emotionCodeVal) ||      // возможно имя в базе
-      (row.name || '').toLowerCase().includes(translatedName)         // перевод (флаги)
-    );
-  } else if (emotionTextVal) {
-    filtered = filtered.filter(row =>
-      (row.name || '').toLowerCase().includes(emotionTextVal) ||
-      (row.emotion || '').toLowerCase().includes(emotionTextVal)
-    );
-  }
-
-  if (semanticVal) {
-    filtered = filtered.filter(row =>
-      (row.semantic_role || '').toLowerCase().includes(semanticVal)
-    );
-  }
-
-  if (metaphorVal) {
-    filtered = filtered.filter(row =>
-      (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
-    );
-  }
-
-  if (submodelVal) {
-    filtered = filtered.filter(row =>
-      (row.submodel || '').toLowerCase().includes(submodelVal)
-    );
-  }
-
-  renderTable(filtered);
-}
-  if (searchBtn) searchBtn.addEventListener('click', unifiedSearch);
-
-  // ==== Модалки ====
- const showPublicationsBtn = document.getElementById('show-publications');
-const pdfModal = document.getElementById('pdf-modal');
-const closePdfModalBtn = document.getElementById('close-pdf-modal');
-const publicationsSection = document.getElementById('publications-section');
-
-// Если есть старая модалка — используем её
-if (showPublicationsBtn) {
-  if (pdfModal && closePdfModalBtn) {
-    showPublicationsBtn.addEventListener('click', () => {
-      pdfModal.classList.remove('hidden');
-    });
-    closePdfModalBtn.addEventListener('click', () => {
-      pdfModal.classList.add('hidden');
-    });
-    pdfModal.addEventListener('click', (e) => {
-      if (e.target === pdfModal) pdfModal.classList.add('hidden');
-    });
-  }
-  // Иначе — переключаем видимость простого блока publications-section
-  else if (publicationsSection) {
-    showPublicationsBtn.addEventListener('click', () => {
-      publicationsSection.classList.toggle('hidden');
-      // если открыли — плавно проскроллим к нему
-      if (!publicationsSection.classList.contains('hidden')) {
-        publicationsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // 🔥 карта "синоним → базовая эмоция"
+    const emotionMap = {};
+    allData.forEach(row => {
+      if (row.name && row.emotion) {
+        emotionMap[row.name.toLowerCase()] = row.emotion.toLowerCase();
       }
     });
-  } else {
-    // ни модалки, ни блока нет — выводим предупреждение в консоль
-    console.warn('Публикации: не найден ни #pdf-modal, ни #publications-section в HTML.');
-  }
-}
 
+    if (emotionCodeVal) {
+      // Если выбрали из списка — ищем по коду эмоции
+      filtered = filtered.filter(row =>
+        (row.emotion || '').toLowerCase() === emotionCodeVal
+      );
+    } else if (emotionTextVal) {
+      // Если ввели текст — проверяем, есть ли он в словаре
+      let baseEmotion = emotionMap[emotionTextVal];
+      if (baseEmotion) {
+        filtered = filtered.filter(row =>
+          (row.emotion || '').toLowerCase() === baseEmotion
+        );
+      } else {
+        // fallback: обычное вхождение
+        filtered = filtered.filter(row =>
+          (row.name || '').toLowerCase().includes(emotionTextVal) ||
+          (row.emotion || '').toLowerCase().includes(emotionTextVal)
+        );
+      }
+    }
+
+    if (semanticVal) {
+      filtered = filtered.filter(row =>
+        (row.semantic_role || '').toLowerCase().includes(semanticVal)
+      );
+    }
+
+    if (metaphorVal) {
+      filtered = filtered.filter(row =>
+        (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
+      );
+    }
+
+    if (submodelVal) {
+      filtered = filtered.filter(row =>
+        (row.submodel || '').toLowerCase().includes(submodelVal)
+      );
+    }
+
+    renderTable(filtered);
+  }
+  if (searchBtn) searchBtn.addEventListener('click', unifiedSearch);
+
+  // ==== Publications modal ====
+  const showPublicationsBtn = document.getElementById('show-publications');
+  const pdfModal = document.getElementById('pdf-modal');
+  const closePdfModalBtn = document.getElementById('close-pdf-modal');
+  const publicationsSection = document.getElementById('publications-section');
+
+  if (showPublicationsBtn) {
+    if (pdfModal && closePdfModalBtn) {
+      showPublicationsBtn.addEventListener('click', () => {
+        pdfModal.classList.remove('hidden');
+      });
+      closePdfModalBtn.addEventListener('click', () => {
+        pdfModal.classList.add('hidden');
+      });
+      pdfModal.addEventListener('click', (e) => {
+        if (e.target === pdfModal) pdfModal.classList.add('hidden');
+      });
+    } else if (publicationsSection) {
+      showPublicationsBtn.addEventListener('click', () => {
+        publicationsSection.classList.toggle('hidden');
+        if (!publicationsSection.classList.contains('hidden')) {
+          publicationsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    } else {
+      console.warn('Публикации: не найден ни #pdf-modal, ни #publications-section в HTML.');
+    }
+  }
+
+  // ==== About modal ====
   const aboutBtn = document.getElementById('about-btn');
   const aboutModal = document.getElementById('about-modal');
   const aboutClose = document.getElementById('about-close');
@@ -327,10 +338,10 @@ if (showPublicationsBtn) {
   let sortDir = 'asc';
 
   function updateLanguageUI() {
-     const pubTitle = document.getElementById('publications-title');
-  if (pubTitle) {
-    pubTitle.textContent = translations[currentLanguage].publications;
-  }
+    const pubTitle = document.getElementById('publications-title');
+    if (pubTitle) {
+      pubTitle.textContent = translations[currentLanguage].publications;
+    }
     const dbTitleEl = document.getElementById('db-title');
     if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
       dbTitleEl.textContent = translations[currentLanguage].dbTitle;
