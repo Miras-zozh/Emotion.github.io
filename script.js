@@ -303,6 +303,10 @@ unifiedSearch();
   let sortDir = 'asc';
 
   function updateLanguageUI() {
+     const pubTitle = document.getElementById('publications-title');
+  if (pubTitle) {
+    pubTitle.textContent = translations[currentLanguage].publications;
+  }
     const dbTitleEl = document.getElementById('db-title');
     if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
       dbTitleEl.textContent = translations[currentLanguage].dbTitle;
