@@ -219,11 +219,9 @@ quill = new Quill('#example-editor', {
     if (allDataFull === null) {
       const { data, error } = await supabaseClient.from('emotions').select('*');
       if (!error && data) {
-        allDataFull = data;
-      } else {
-        console.error('Ошибка загрузки данных для поиска:', error);
-        allDataFull = []; // предотвращаем повторные попытки в цикле
-      }
+        allData = data || [];
+  renderTable(allData); // сразу показываем все
+}
     }
   }
 
@@ -237,43 +235,42 @@ quill = new Quill('#example-editor', {
     const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
 
     // убедимся, что у нас есть полный набор данных для корректного поиска
-    await ensureAllDataFull();
-    let rows = Array.isArray(allDataFull) ? [...allDataFull] : [];
+    let filtered = [...allData];
 
-    // фильтрация по эмоции
-    if (emotionCodeVal) {
-      // выбран код (joy, anger, ...)
-      rows = rows.filter(r => (r.emotion || '').toLowerCase() === emotionCodeVal);
-    } else if (emotionTextVal) {
-      // сначала пробуем точное совпадение name -> выяснить базовую emotion
-      const exact = rows.find(r => (r.name || '').toLowerCase() === emotionTextVal);
-      if (exact && exact.emotion) {
-        const base = (exact.emotion || '').toLowerCase();
-        rows = rows.filter(r => (r.emotion || '').toLowerCase() === base);
-      } else {
-        // попробуем найти по вхождению в name или в коде
-        rows = rows.filter(r =>
-          (r.name || '').toLowerCase().includes(emotionTextVal) ||
-          (r.emotion || '').toLowerCase().includes(emotionTextVal)
-        );
-      }
-    }
-
-    // остальные фильтры (семантика, метафора, субмодель)
-    if (semanticVal) {
-      rows = rows.filter(r => (r.semantic_role || '').toLowerCase().includes(semanticVal));
-    }
-    if (metaphorVal) {
-      rows = rows.filter(r => (r.metaphorical_model || '').toLowerCase().includes(metaphorVal));
-    }
-    if (submodelVal) {
-      rows = rows.filter(r => (r.submodel || '').toLowerCase().includes(submodelVal));
-    }
-
-    // отобразить результаты
-    allData = rows; // обновим текущие данные (чтобы renderTable работала как раньше)
-    renderTable(rows);
+  if (emotionCodeVal) {
+    const translatedName = (translations[currentLanguage][emotionCodeVal] || '').toLowerCase();
+    filtered = filtered.filter(row =>
+      (row.emotion || '').toLowerCase() === emotionCodeVal ||
+      (row.name || '').toLowerCase().includes(emotionCodeVal) ||
+      (row.name || '').toLowerCase().includes(translatedName)
+    );
+  } else if (emotionTextVal) {
+    filtered = filtered.filter(row =>
+      (row.name || '').toLowerCase().includes(emotionTextVal) ||
+      (row.emotion || '').toLowerCase().includes(emotionTextVal)
+    );
   }
+
+  if (semanticVal) {
+    filtered = filtered.filter(row =>
+      (row.semantic_role || '').toLowerCase().includes(semanticVal)
+    );
+  }
+
+  if (metaphorVal) {
+    filtered = filtered.filter(row =>
+      (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
+    );
+  }
+
+  if (submodelVal) {
+    filtered = filtered.filter(row =>
+      (row.submodel || '').toLowerCase().includes(submodelVal)
+    );
+  }
+
+  renderTable(filtered);
+}
 
   if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSearch());
 
@@ -422,17 +419,17 @@ quill = new Quill('#example-editor', {
   document.querySelectorAll('.emotion-card').forEach(card => {
     card.addEventListener('click', async () => {
       currentEmotion = card.dataset.emotion;
-      modalTitle.textContent = card.querySelector('[data-i18n]')?.textContent || card.textContent;
-      modal.classList.remove('hidden');
-      showFormBtn.classList.toggle('hidden', !isAdmin);
-      addForm.classList.add('hidden');
-      // загрузим строки с этой эмоцией и отобразим
-      const { data } = await supabaseClient.from('emotions').select('*').eq('emotion', currentEmotion);
-      allData = data || [];
-      renderTable(allData);
-      updateLanguageUI();
-    });
+    modalTitle.textContent = card.querySelector('[data-i18n]')?.textContent || card.textContent;
+    modal.classList.remove('hidden');
+    showFormBtn.classList.toggle('hidden', !isAdmin);
+    addForm.classList.add('hidden');
+
+    // 🔥 теперь просто фильтруем allData
+    const filtered = allData.filter(row => (row.emotion || '').toLowerCase() === currentEmotion);
+    renderTable(filtered);
+    updateLanguageUI();
   });
+});
 
   if (closeModalBtn) closeModalBtn.onclick = () => modal.classList.add('hidden');
   if (showFormBtn) showFormBtn.onclick = () => { addForm.classList.remove('hidden'); showFormBtn.classList.add('hidden'); };
