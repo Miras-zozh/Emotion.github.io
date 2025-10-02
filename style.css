@@ -354,6 +354,7 @@ body {
   color: #007BFF;
   text-decoration: none;
   font-weight: bold;
+  font-size: 1.1em;
 }
 
 .pub-list a:hover {
