@@ -261,16 +261,38 @@ unifiedSearch();
   if (searchBtn) searchBtn.addEventListener('click', unifiedSearch);
 
   // ==== Модалки ====
-  const showPublicationsBtn = document.getElementById('show-publications');
-  const pdfModal = document.getElementById('pdf-modal');
-  const closePdfModalBtn = document.getElementById('close-pdf-modal');
-  if (showPublicationsBtn && pdfModal && closePdfModalBtn) {
-   showPublicationsBtn.addEventListener('click', () => {
-    publicationsSection.classList.toggle('hidden');
-  });
-    closePdfModalBtn.addEventListener('click', () => pdfModal.classList.add('hidden'));
-    pdfModal.addEventListener('click', (e) => { if (e.target === pdfModal) pdfModal.classList.add('hidden'); });
+ const showPublicationsBtn = document.getElementById('show-publications');
+const pdfModal = document.getElementById('pdf-modal');
+const closePdfModalBtn = document.getElementById('close-pdf-modal');
+const publicationsSection = document.getElementById('publications-section');
+
+// Если есть старая модалка — используем её
+if (showPublicationsBtn) {
+  if (pdfModal && closePdfModalBtn) {
+    showPublicationsBtn.addEventListener('click', () => {
+      pdfModal.classList.remove('hidden');
+    });
+    closePdfModalBtn.addEventListener('click', () => {
+      pdfModal.classList.add('hidden');
+    });
+    pdfModal.addEventListener('click', (e) => {
+      if (e.target === pdfModal) pdfModal.classList.add('hidden');
+    });
   }
+  // Иначе — переключаем видимость простого блока publications-section
+  else if (publicationsSection) {
+    showPublicationsBtn.addEventListener('click', () => {
+      publicationsSection.classList.toggle('hidden');
+      // если открыли — плавно проскроллим к нему
+      if (!publicationsSection.classList.contains('hidden')) {
+        publicationsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    });
+  } else {
+    // ни модалки, ни блока нет — выводим предупреждение в консоль
+    console.warn('Публикации: не найден ни #pdf-modal, ни #publications-section в HTML.');
+  }
+}
 
   const aboutBtn = document.getElementById('about-btn');
   const aboutModal = document.getElementById('about-modal');
