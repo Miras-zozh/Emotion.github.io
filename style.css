@@ -340,3 +340,23 @@ body {
   overflow-y: auto;
   margin-bottom: 12px;
 }
+.pub-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.pub-list li {
+  margin-bottom: 10px;
+}
+
+.pub-list a {
+  color: #007BFF;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.pub-list a:hover {
+  text-decoration: underline;
+}
+
