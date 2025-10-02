@@ -168,7 +168,7 @@ quill = new Quill('#example-editor', {
   });
 
   // ==== Элементы поиска ====
-  const emotionSearchInput = document.getElementById('emotion-search');
+   const emotionSearchInput = document.getElementById('emotion-search');
   const semanticSearch = document.getElementById('semantic-search');
   const metaphorSearch = document.getElementById('metaphor-search');
   const searchBtn = document.getElementById('search-btn');
@@ -176,7 +176,6 @@ quill = new Quill('#example-editor', {
   const submodelSearch = document.getElementById('submodel-search');
 
   // 🔥 Dropdown эмоций
- // 🔥 Dropdown эмоций
   function populateEmotionDropdown() {
     if (!emotionDropdown) return;
     const emotions = [
@@ -198,13 +197,14 @@ quill = new Quill('#example-editor', {
     });
   }
 
+  // Если выбираем из dropdown — подставляем локализованное имя в input и запускаем поиск
   if (emotionDropdown) {
-    emotionDropdown.addEventListener('change', () => {
+    emotionDropdown.addEventListener('change', async () => {
       const selectedText = emotionDropdown.options[emotionDropdown.selectedIndex].textContent;
       if (emotionSearchInput) {
         emotionSearchInput.value = selectedText;
       }
-      unifiedSearch();
+      await unifiedSearch();
     });
   }
 
@@ -214,68 +214,70 @@ quill = new Quill('#example-editor', {
     });
   }
 
-  // ====== Поиск ======
-  function unifiedSearch() {
+  // === Вспомогательная функция: загружает все данные в кеш при необходимости ===
+  async function ensureAllDataFull() {
+    if (allDataFull === null) {
+      const { data, error } = await supabaseClient.from('emotions').select('*');
+      if (!error && data) {
+        allDataFull = data;
+      } else {
+        console.error('Ошибка загрузки данных для поиска:', error);
+        allDataFull = []; // предотвращаем повторные попытки в цикле
+      }
+    }
+  }
+
+  // ====== Поиск (с поддержкой поиска по базовому ключу emotion) ======
+  async function unifiedSearch() {
+    // достаём значения
     const emotionTextVal = (emotionSearchInput?.value || '').trim().toLowerCase();
     const emotionCodeVal = (emotionDropdown?.value || '').trim().toLowerCase();
     const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
     const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
     const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
 
-    let filtered = [...allData];
+    // убедимся, что у нас есть полный набор данных для корректного поиска
+    await ensureAllDataFull();
+    let rows = Array.isArray(allDataFull) ? [...allDataFull] : [];
 
-    // 🔥 карта "синоним → базовая эмоция"
-    const emotionMap = {};
-    allData.forEach(row => {
-      if (row.name && row.emotion) {
-        emotionMap[row.name.toLowerCase()] = row.emotion.toLowerCase();
-      }
-    });
-
+    // фильтрация по эмоции
     if (emotionCodeVal) {
-      // Если выбрали из списка — ищем по коду эмоции
-      filtered = filtered.filter(row =>
-        (row.emotion || '').toLowerCase() === emotionCodeVal
-      );
+      // выбран код (joy, anger, ...)
+      rows = rows.filter(r => (r.emotion || '').toLowerCase() === emotionCodeVal);
     } else if (emotionTextVal) {
-      // Если ввели текст — проверяем, есть ли он в словаре
-      let baseEmotion = emotionMap[emotionTextVal];
-      if (baseEmotion) {
-        filtered = filtered.filter(row =>
-          (row.emotion || '').toLowerCase() === baseEmotion
-        );
+      // сначала пробуем точное совпадение name -> выяснить базовую emotion
+      const exact = rows.find(r => (r.name || '').toLowerCase() === emotionTextVal);
+      if (exact && exact.emotion) {
+        const base = (exact.emotion || '').toLowerCase();
+        rows = rows.filter(r => (r.emotion || '').toLowerCase() === base);
       } else {
-        // fallback: обычное вхождение
-        filtered = filtered.filter(row =>
-          (row.name || '').toLowerCase().includes(emotionTextVal) ||
-          (row.emotion || '').toLowerCase().includes(emotionTextVal)
+        // попробуем найти по вхождению в name или в коде
+        rows = rows.filter(r =>
+          (r.name || '').toLowerCase().includes(emotionTextVal) ||
+          (r.emotion || '').toLowerCase().includes(emotionTextVal)
         );
       }
     }
 
+    // остальные фильтры (семантика, метафора, субмодель)
     if (semanticVal) {
-      filtered = filtered.filter(row =>
-        (row.semantic_role || '').toLowerCase().includes(semanticVal)
-      );
+      rows = rows.filter(r => (r.semantic_role || '').toLowerCase().includes(semanticVal));
     }
-
     if (metaphorVal) {
-      filtered = filtered.filter(row =>
-        (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
-      );
+      rows = rows.filter(r => (r.metaphorical_model || '').toLowerCase().includes(metaphorVal));
     }
-
     if (submodelVal) {
-      filtered = filtered.filter(row =>
-        (row.submodel || '').toLowerCase().includes(submodelVal)
-      );
+      rows = rows.filter(r => (r.submodel || '').toLowerCase().includes(submodelVal));
     }
 
-    renderTable(filtered);
+    // отобразить результаты
+    allData = rows; // обновим текущие данные (чтобы renderTable работала как раньше)
+    renderTable(rows);
   }
-  if (searchBtn) searchBtn.addEventListener('click', unifiedSearch);
 
-  // ==== Publications modal ====
+  if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSearch());
+
+  // ==== Publications handler (поддержка старой модалки и нового блока) ====
   const showPublicationsBtn = document.getElementById('show-publications');
   const pdfModal = document.getElementById('pdf-modal');
   const closePdfModalBtn = document.getElementById('close-pdf-modal');
@@ -283,21 +285,13 @@ quill = new Quill('#example-editor', {
 
   if (showPublicationsBtn) {
     if (pdfModal && closePdfModalBtn) {
-      showPublicationsBtn.addEventListener('click', () => {
-        pdfModal.classList.remove('hidden');
-      });
-      closePdfModalBtn.addEventListener('click', () => {
-        pdfModal.classList.add('hidden');
-      });
-      pdfModal.addEventListener('click', (e) => {
-        if (e.target === pdfModal) pdfModal.classList.add('hidden');
-      });
+      showPublicationsBtn.addEventListener('click', () => pdfModal.classList.remove('hidden'));
+      closePdfModalBtn.addEventListener('click', () => pdfModal.classList.add('hidden'));
+      pdfModal.addEventListener('click', (e) => { if (e.target === pdfModal) pdfModal.classList.add('hidden'); });
     } else if (publicationsSection) {
       showPublicationsBtn.addEventListener('click', () => {
         publicationsSection.classList.toggle('hidden');
-        if (!publicationsSection.classList.contains('hidden')) {
-          publicationsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        }
+        if (!publicationsSection.classList.contains('hidden')) publicationsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
       });
     } else {
       console.warn('Публикации: не найден ни #pdf-modal, ни #publications-section в HTML.');
@@ -310,7 +304,7 @@ quill = new Quill('#example-editor', {
   const aboutClose = document.getElementById('about-close');
   const aboutContent = document.getElementById('about-content');
   function showAboutContent() {
-    aboutContent.innerHTML = translations[currentLanguage].aboutText;
+    if (aboutContent) aboutContent.innerHTML = translations[currentLanguage].aboutText;
   }
   if (aboutBtn) {
     aboutBtn.addEventListener('click', () => { showAboutContent(); aboutModal.classList.remove('hidden'); });
@@ -339,13 +333,9 @@ quill = new Quill('#example-editor', {
 
   function updateLanguageUI() {
     const pubTitle = document.getElementById('publications-title');
-    if (pubTitle) {
-      pubTitle.textContent = translations[currentLanguage].publications;
-    }
+    if (pubTitle) pubTitle.textContent = translations[currentLanguage].publications;
     const dbTitleEl = document.getElementById('db-title');
-    if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) {
-      dbTitleEl.textContent = translations[currentLanguage].dbTitle;
-    }
+    if (dbTitleEl && translations[currentLanguage] && translations[currentLanguage].dbTitle) dbTitleEl.textContent = translations[currentLanguage].dbTitle;
     document.querySelectorAll('[data-i18n]').forEach(el => {
       const key = el.getAttribute('data-i18n');
       if (translations[currentLanguage][key]) {
@@ -371,6 +361,7 @@ quill = new Quill('#example-editor', {
       if (vA > vB) return sortDir === 'asc' ? 1 : -1;
       return 0;
     });
+    if (!tableBody) return;
     tableBody.innerHTML = '';
     data.forEach(row => {
       const tr = document.createElement('tr');
@@ -389,16 +380,17 @@ quill = new Quill('#example-editor', {
       tableBody.appendChild(tr);
     });
 
+    // навешиваем edit/delete только после отрисовки
     if (isAdmin) {
       document.querySelectorAll('.edit-btn').forEach(btn => {
         btn.onclick = function() {
           const id = this.dataset.id;
-          const row = allData.find(r => String(r.id) === String(id));
+          const row = (allData || []).find(r => String(r.id) === String(id));
           if (row) {
             addForm.classList.remove('hidden');
             showFormBtn.classList.add('hidden');
             for (const key of ['name','metaphorical_model','submodel','semantic_role','verb_class','adj_class']) {
-              addForm.elements[key].value = row[key] || '';
+              if (addForm.elements[key]) addForm.elements[key].value = row[key] || '';
             }
             quill.root.innerHTML = row.example || '';
             addForm.dataset.editId = id;
@@ -411,12 +403,11 @@ quill = new Quill('#example-editor', {
         btn.onclick = async function() {
           const id = this.dataset.id;
           if (confirm('Удалить эту запись?')) {
-            const { error } = await supabaseClient
-              .from('emotions')
-              .delete()
-              .eq('id', id);
+            const { error } = await supabaseClient.from('emotions').delete().eq('id', id);
             if (!error) {
-              allData = allData.filter(r => String(r.id) !== String(id));
+              // обновим кеш и текущее отображение
+              if (Array.isArray(allDataFull)) allDataFull = allDataFull.filter(r => String(r.id) !== String(id));
+              allData = (allData || []).filter(r => String(r.id) !== String(id));
               renderTable(allData);
             } else {
               alert('Ошибка при удалении');
@@ -427,7 +418,7 @@ quill = new Quill('#example-editor', {
     }
   }
 
-  // ==== Эмоции (карточки) ====
+  // ==== Карточки эмоций ====
   document.querySelectorAll('.emotion-card').forEach(card => {
     card.addEventListener('click', async () => {
       currentEmotion = card.dataset.emotion;
@@ -435,6 +426,7 @@ quill = new Quill('#example-editor', {
       modal.classList.remove('hidden');
       showFormBtn.classList.toggle('hidden', !isAdmin);
       addForm.classList.add('hidden');
+      // загрузим строки с этой эмоцией и отобразим
       const { data } = await supabaseClient.from('emotions').select('*').eq('emotion', currentEmotion);
       allData = data || [];
       renderTable(allData);
@@ -468,6 +460,11 @@ quill = new Quill('#example-editor', {
         if (!error) {
           const idx = allData.findIndex(r => String(r.id) === String(editId));
           if (idx !== -1) allData[idx] = { ...allData[idx], ...newRow };
+          // обновим кеш если есть
+          if (Array.isArray(allDataFull)) {
+            const idx2 = allDataFull.findIndex(r => String(r.id) === String(editId));
+            if (idx2 !== -1) allDataFull[idx2] = { ...allDataFull[idx2], ...newRow };
+          }
           renderTable(allData);
           addForm.reset();
           addForm.classList.add('hidden');
@@ -479,6 +476,8 @@ quill = new Quill('#example-editor', {
         const { data, error } = await supabaseClient.from('emotions').insert([newRow]).select();
         if (!error && data && data.length > 0) {
           allData.push({ ...newRow, id: data[0].id });
+          // обновим кеш если есть
+          if (Array.isArray(allDataFull)) allDataFull.push({ ...newRow, id: data[0].id });
           renderTable(allData);
           addForm.reset();
           addForm.classList.add('hidden');
@@ -521,10 +520,11 @@ quill = new Quill('#example-editor', {
         adminLoginBtn.disabled = true;
         showFormBtn.classList.remove('hidden');
         if (!modal.classList.contains('hidden')) renderTable(allData);
-        deleteHeader.style.display = '';
+        if (deleteHeader) deleteHeader.style.display = '';
       } else adminError.style.display = 'block';
     };
   }
 
+  // начальная инициализация UI
   updateLanguageUI();
 });
