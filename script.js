@@ -6,11 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
   const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
   const ADMIN_PASSWORD = '12344';
-
-  let isAdmin = false;
-  let currentEmotion = '';
-  let allData = [];
-  let currentLanguage = 'en';
+  
+let allData = [];      // текущие данные (фильтрованные)
+let allDataFull = [];  // полная база (всегда хранится тут)
+let currentLanguage = 'en';
+let currentEmotion = null;
+let isAdmin = false;
 
   // ==== Переводы ====
   const translations = {
@@ -215,18 +216,19 @@ quill = new Quill('#example-editor', {
   }
 
   // === Вспомогательная функция: загружает все данные в кеш при необходимости ===
-  async function ensureAllDataFull() {
-    if (allDataFull === null) {
-      const { data, error } = await supabaseClient.from('emotions').select('*');
-      if (!error && data) {
-        allData = data || [];
-  renderTable(allData); // сразу показываем все
-}
+ async function ensureAllDataFull() {
+  if (allDataFull.length === 0) {
+    const { data, error } = await supabaseClient.from('emotions').select('*');
+    if (!error && data) {
+      allDataFull = data || [];
     }
   }
+}
 
   // ====== Поиск (с поддержкой поиска по базовому ключу emotion) ======
   async function unifiedSearch() {
+    await ensureAllDataFull();
+
     // достаём значения
     const emotionTextVal = (emotionSearchInput?.value || '').trim().toLowerCase();
     const emotionCodeVal = (emotionDropdown?.value || '').trim().toLowerCase();
@@ -235,7 +237,7 @@ quill = new Quill('#example-editor', {
     const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
 
     // убедимся, что у нас есть полный набор данных для корректного поиска
-    let filtered = [...allData];
+   let filtered = [...allDataFull];
 
   if (emotionCodeVal) {
     const translatedName = (translations[currentLanguage][emotionCodeVal] || '').toLowerCase();
@@ -256,13 +258,11 @@ quill = new Quill('#example-editor', {
       (row.semantic_role || '').toLowerCase().includes(semanticVal)
     );
   }
-
   if (metaphorVal) {
     filtered = filtered.filter(row =>
       (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
     );
   }
-
   if (submodelVal) {
     filtered = filtered.filter(row =>
       (row.submodel || '').toLowerCase().includes(submodelVal)
@@ -272,7 +272,8 @@ quill = new Quill('#example-editor', {
   renderTable(filtered);
 }
 
-  if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSearch());
+if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSearch());
+
 
   // ==== Publications handler (поддержка старой модалки и нового блока) ====
   const showPublicationsBtn = document.getElementById('show-publications');
@@ -416,16 +417,17 @@ quill = new Quill('#example-editor', {
   }
 
   // ==== Карточки эмоций ====
-  document.querySelectorAll('.emotion-card').forEach(card => {
-    card.addEventListener('click', async () => {
-      currentEmotion = card.dataset.emotion;
+ document.querySelectorAll('.emotion-card').forEach(card => {
+  card.addEventListener('click', async () => {
+    currentEmotion = (card.dataset.emotion || '').toLowerCase();
     modalTitle.textContent = card.querySelector('[data-i18n]')?.textContent || card.textContent;
     modal.classList.remove('hidden');
     showFormBtn.classList.toggle('hidden', !isAdmin);
     addForm.classList.add('hidden');
 
-    // 🔥 теперь просто фильтруем allData
-    const filtered = allData.filter(row => (row.emotion || '').toLowerCase() === currentEmotion);
+    await ensureAllDataFull();
+    const filtered = allDataFull.filter(row => (row.emotion || '').toLowerCase() === currentEmotion);
+    allData = filtered;
     renderTable(filtered);
     updateLanguageUI();
   });
