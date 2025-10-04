@@ -227,17 +227,18 @@ quill = new Quill('#example-editor', {
 
   // ====== Поиск (с поддержкой поиска по базовому ключу emotion) ======
   async function unifiedSearch() {
-    await ensureAllDataFull();
+  await ensureAllDataFull();
 
-    // достаём значения
-    const emotionTextVal = (emotionSearchInput?.value || '').trim().toLowerCase();
-    const emotionCodeVal = (emotionDropdown?.value || '').trim().toLowerCase();
-    const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
-    const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
-    const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
+  const emotionTextVal = (emotionSearchInput?.value || '').trim().toLowerCase();
+  const emotionCodeVal = (emotionDropdown?.value || '').trim().toLowerCase();
+  const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
+  const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
+  const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
 
-    // убедимся, что у нас есть полный набор данных для корректного поиска
-   let filtered = [...allDataFull];
+  let filtered = [...allDataFull];
+
+  // фильтруем сразу по языку
+  filtered = filtered.filter(row => (row.language || 'en') === currentLanguage);
 
   if (emotionCodeVal) {
     const translatedName = (translations[currentLanguage][emotionCodeVal] || '').toLowerCase();
@@ -254,19 +255,13 @@ quill = new Quill('#example-editor', {
   }
 
   if (semanticVal) {
-    filtered = filtered.filter(row =>
-      (row.semantic_role || '').toLowerCase().includes(semanticVal)
-    );
+    filtered = filtered.filter(row => (row.semantic_role || '').toLowerCase().includes(semanticVal));
   }
   if (metaphorVal) {
-    filtered = filtered.filter(row =>
-      (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
-    );
+    filtered = filtered.filter(row => (row.metaphorical_model || '').toLowerCase().includes(metaphorVal));
   }
   if (submodelVal) {
-    filtered = filtered.filter(row =>
-      (row.submodel || '').toLowerCase().includes(submodelVal)
-    );
+    filtered = filtered.filter(row => (row.submodel || '').toLowerCase().includes(submodelVal));
   }
 
   renderTable(filtered);
@@ -426,13 +421,15 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
     addForm.classList.add('hidden');
 
     await ensureAllDataFull();
-    const filtered = allDataFull.filter(row => (row.emotion || '').toLowerCase() === currentEmotion);
+    const filtered = allDataFull.filter(row => 
+      (row.emotion || '').toLowerCase() === currentEmotion &&
+      (row.language || 'en') === currentLanguage
+    );
     allData = filtered;
     renderTable(filtered);
     updateLanguageUI();
   });
 });
-
   if (closeModalBtn) closeModalBtn.onclick = () => modal.classList.add('hidden');
   if (showFormBtn) showFormBtn.onclick = () => { addForm.classList.remove('hidden'); showFormBtn.classList.add('hidden'); };
 
