@@ -235,17 +235,13 @@ quill = new Quill('#example-editor', {
   const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
   const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
 
-  let filtered = [...allDataFull];
-
-  // фильтруем сразу по языку
-  filtered = filtered.filter(row => (row.language || 'en') === currentLanguage);
+ let filtered = [...allDataFull].filter(
+    row => (row.language || 'en') === currentLanguage
+  );
 
   if (emotionCodeVal) {
-    const translatedName = (translations[currentLanguage][emotionCodeVal] || '').toLowerCase();
     filtered = filtered.filter(row =>
-      (row.emotion || '').toLowerCase() === emotionCodeVal ||
-      (row.name || '').toLowerCase().includes(emotionCodeVal) ||
-      (row.name || '').toLowerCase().includes(translatedName)
+      (row.emotion || '').toLowerCase() === emotionCodeVal
     );
   } else if (emotionTextVal) {
     filtered = filtered.filter(row =>
@@ -254,15 +250,18 @@ quill = new Quill('#example-editor', {
     );
   }
 
-  if (semanticVal) {
-    filtered = filtered.filter(row => (row.semantic_role || '').toLowerCase().includes(semanticVal));
-  }
-  if (metaphorVal) {
-    filtered = filtered.filter(row => (row.metaphorical_model || '').toLowerCase().includes(metaphorVal));
-  }
-  if (submodelVal) {
-    filtered = filtered.filter(row => (row.submodel || '').toLowerCase().includes(submodelVal));
-  }
+  if (semanticVal)
+    filtered = filtered.filter(row =>
+      (row.semantic_role || '').toLowerCase().includes(semanticVal)
+    );
+  if (metaphorVal)
+    filtered = filtered.filter(row =>
+      (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
+    );
+  if (submodelVal)
+    filtered = filtered.filter(row =>
+      (row.submodel || '').toLowerCase().includes(submodelVal)
+    );
 
   renderTable(filtered);
 }
