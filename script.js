@@ -230,8 +230,6 @@ const searchBtn = document.getElementById('search-btn');
   emptyOpt.textContent = '-- select emotion --';
   emotionSearchSelect.appendChild(emptyOpt);
 
-  const lang = normLangCode(currentLanguage);
-
   // показываем только варианты текущей карточки
   if (currentEmotion && emotionAliases[currentEmotion]) {
     const list = emotionAliases[currentEmotion][lang] || [];
@@ -285,6 +283,7 @@ const searchBtn = document.getElementById('search-btn');
 // ====== Поиск (работает в рамках выбранной карточки и языка) ======
 async function unifiedSearch() {
   await ensureAllDataFull();
+  const lang = normLangCode(currentLanguage);
 
   const emotionVal = (emotionSearchSelect?.value || '').trim().toLowerCase();
   const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
@@ -293,36 +292,26 @@ async function unifiedSearch() {
   const verbVal = (verbSearch?.value || '').trim().toLowerCase();
   const adjVal = (adjSearch?.value || '').trim().toLowerCase();
 
-
-  // определяем, какой код эмоции соответствует выбранному варианту
   let targetEmotion = currentEmotion;
   if (emotionVal) {
     const detected = detectEmotionCodeByAlias(emotionVal);
     if (detected) targetEmotion = detected;
   }
 
-  // фильтрация по языку и эмоции
   let filtered = allDataFull.filter(row => {
-    // язык
     const rowLang = (row.language || 'en').toLowerCase();
     if (rowLang !== lang) return false;
 
-    // если выбрана конкретная эмоция (из карточки или алиаса)
     if (targetEmotion) {
       const rowEmotion = (row.emotion || '').toLowerCase();
       if (rowEmotion === targetEmotion) return true;
-
-      // если emotionAliases совпадает с одним из алиасов
       const aliases = Object.values(emotionAliases[targetEmotion]).flat().map(a => a.toLowerCase());
       const rowName = (row.name || '').toLowerCase();
       return aliases.some(alias => rowName.includes(alias) || rowEmotion.includes(alias));
     }
-
-    // если targetEmotion нет, показываем все для выбранного языка
     return true;
   });
 
-  // дополнительные фильтры
   if (semanticVal)
     filtered = filtered.filter(r => (r.semantic_role || '').toLowerCase().includes(semanticVal));
   if (metaphorVal)
@@ -334,9 +323,9 @@ async function unifiedSearch() {
   if (adjVal)
     filtered = filtered.filter(r => (r.adj_class || '').toLowerCase().includes(adjVal));
 
+  allData = filtered;
   renderTable(filtered);
 }
-
 
 if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSearch());
 
