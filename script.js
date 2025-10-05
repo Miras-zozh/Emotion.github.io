@@ -467,7 +467,7 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
           }
         };
       });
-
+    };
       document.querySelectorAll('.delete-btn').forEach(btn => {
         btn.onclick = async function() {
           const id = this.dataset.id;
@@ -485,6 +485,7 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
         };
       });
     
+
   
 
   // ==== Карточки эмоций ====
