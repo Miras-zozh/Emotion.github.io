@@ -7,19 +7,42 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const ADMIN_PASSWORD = '12344';
   
-let allData = [];      // текущие данные (фильтрованные)
-let allDataFull = [];  // полная база (всегда хранится тут)
-let currentLanguage = 'en';
-let currentEmotion = null;
-let isAdmin = false;
+  let allDataFull = [];   // полный набор из БД
+  let currentLanguage = 'en';
+  let currentEmotion = null; // 'joy','fear',...
+  let isAdmin = false;
 
    const emotionAliases = {
-    joy: ['қуаныш', 'бақыт', 'шаттық', 'радость', 'happiness', 'joy', 'Freude'],
-    sadness: ['қайғы', 'мұң', 'печаль', 'грусть', 'sadness', 'Traurigkeit'],
-    fear: ['қорқыныш', 'үрей', 'страх', 'fear', 'Angst'],
-    anger: ['ашу', 'ыза', 'гнев', 'ярость', 'anger', 'Wut'],
-    surprise: ['таңданыс', 'таңғалу', 'удивление', 'surprise', 'Überraschung'],
-    disgust: ['жиіркену', 'жеккөру', 'отвращение', 'disgust', 'Ekel']
+    joy: {
+      en: ['happiness', 'joy', 'happy'],
+      ru: ['радость', 'счастье'],
+      kk: ['қуаныш', 'бақыт']
+    },
+    sadness: {
+      en: ['sadness', 'sad'],
+      ru: ['грусть', 'печаль'],
+      kk: ['қайғы', 'мұң']
+    },
+    fear: {
+      en: ['fear', 'scared'],
+      ru: ['страх', 'боязнь'],
+      kk: ['қорқыныш', 'үрей']
+    },
+    anger: {
+      en: ['anger', 'angry'],
+      ru: ['гнев', 'ярость'],
+      kk: ['ашу', 'ыза']
+    },
+    surprise: {
+      en: ['surprise', 'surprised'],
+      ru: ['удивление', 'сюрприз'],
+      kk: ['таңданыс', 'таңғалу']
+    },
+    disgust: {
+      en: ['disgust'],
+      ru: ['отвращение'],
+      kk: ['жиіркену']
+    }
   };
   
   // ==== Переводы ====
@@ -188,41 +211,65 @@ const adjSearch = document.getElementById('adj-search');
 const searchBtn = document.getElementById('search-btn');
 
   function populateEmotionSelect() {
-  if (!emotionSearchSelect) return;
+    if (!emotionSearchSelect) return;
 
-  // очищаем старое содержимое
-  emotionSearchSelect.innerHTML = '<option value="">-- Select emotion --</option>';
+    // очистка
+    emotionSearchSelect.innerHTML = '';
+    // Пустой вариант
+    const emptyOpt = document.createElement('option');
+    emptyOpt.value = '';
+    emptyOpt.textContent = '-- ' + (document.title || 'Select') + ' --';
+    emotionSearchSelect.appendChild(emptyOpt);
 
-  // если открыта конкретная карточка — показываем только слова для этой эмоции
-  if (currentEmotion && emotionAliases[currentEmotion]) {
-    emotionAliases[currentEmotion].forEach(word => {
-      const opt = document.createElement('option');
-      opt.value = word.toLowerCase();
-      opt.textContent = word;
-      emotionSearchSelect.appendChild(opt);
-    });
-  } else {
-    // иначе показываем все эмоции (все слова из всех групп)
-    for (const [code, list] of Object.entries(emotionAliases)) {
-      const group = document.createElement('optgroup');
-      group.label = code.toUpperCase();
-      list.forEach(word => {
+    const lang = normLangCode(currentLanguage);
+
+    if (currentEmotion && emotionAliases[currentEmotion]) {
+      // Показываем только алиасы текущей карточки и текущего языка (если есть),
+      // иначе все алиасы для этой карточки
+      const list = (emotionAliases[currentEmotion][lang] && emotionAliases[currentEmotion][lang].length)
+        ? emotionAliases[currentEmotion][lang]
+        : Object.values(emotionAliases[currentEmotion]).flat();
+      list.forEach(w => {
         const opt = document.createElement('option');
-        opt.value = word.toLowerCase();
-        opt.textContent = word;
-        group.appendChild(opt);
+        opt.value = w.toLowerCase();
+        opt.textContent = w;
+        emotionSearchSelect.appendChild(opt);
       });
-      emotionSearchSelect.appendChild(group);
+    } else {
+      // Нет выбранной карточки — группируем по emotion-коду (optgroup)
+      for (const code of Object.keys(emotionAliases)) {
+        const group = document.createElement('optgroup');
+        group.label = code.toUpperCase();
+        // попытка взять список для текущего языка, иначе объединяем все
+        const list = (emotionAliases[code][lang] && emotionAliases[code][lang].length)
+          ? emotionAliases[code][lang]
+          : Object.values(emotionAliases[code]).flat();
+        list.forEach(w => {
+          const opt = document.createElement('option');
+          opt.value = w.toLowerCase();
+          opt.textContent = w;
+          group.appendChild(opt);
+        });
+        emotionSearchSelect.appendChild(group);
+      }
     }
   }
-}
 
+  function detectEmotionCodeByAlias(valLower) {
+    if (!valLower) return null;
+    for (const [code, byLang] of Object.entries(emotionAliases)) {
+      for (const langList of Object.values(byLang)) {
+        if (langList.some(w => w.toLowerCase() === valLower)) return code;
+      }
+    }
+    return null;
+  }
 // когда пользователь выбирает эмоцию
-if (emotionSearchSelect) {
-  emotionSearchSelect.addEventListener('change', async () => {
-    await unifiedSearch();
-  });
-}
+ if (emotionSearchSelect) {
+    emotionSearchSelect.addEventListener('change', async () => {
+      await unifiedSearch();
+    });
+  }
 
 
   // 🔥 Dropdown 
@@ -230,11 +277,14 @@ if (emotionSearchSelect) {
   // Если выбираем из dropdown — подставляем локализованное имя в input и запускаем поиск
  
 
-  // === Вспомогательная функция: загружает все данные в кеш при необходимости ===
   async function ensureAllDataFull() {
     if (allDataFull.length === 0) {
       const { data, error } = await supabaseClient.from('emotions').select('*');
-      if (!error && data) allDataFull = data || [];
+      if (error) {
+        console.error('Supabase load error', error);
+        return;
+      }
+      allDataFull = data || [];
     }
   }
 
@@ -244,55 +294,54 @@ if (emotionSearchSelect) {
 // ====== Новый поиск ======
 // ====== Новый поиск (гибкий) ======
 async function unifiedSearch() {
-  await ensureAllDataFull();
+    await ensureAllDataFull();
 
-  const emotionVal = (emotionSearchSelect?.value || '').trim().toLowerCase();
-  const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
-  const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
-  const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
-  const verbVal = (verbSearch?.value || '').trim().toLowerCase();
-  const adjVal = (adjSearch?.value || '').trim().toLowerCase();
+    const emotionVal = (emotionSearchSelect?.value || '').trim().toLowerCase();
+    const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
+    const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
+    const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
+    const verbVal = (verbSearch?.value || '').trim().toLowerCase();
+    const adjVal = (adjSearch?.value || '').trim().toLowerCase();
 
-  // определяем emotion по слову (из select)
-  let matchedEmotionCode = null;
-  for (const [code, words] of Object.entries(emotionAliases)) {
-    if (words.some(w => w.toLowerCase() === emotionVal)) {
-      matchedEmotionCode = code;
-      break;
-    }
+    const lang = normLangCode(currentLanguage);
+
+    // если пользователь выбрал алиас в селекте — попробуем детектировать код эмоции
+    const matchedEmotionFromSelect = detectEmotionCodeByAlias(emotionVal);
+
+    // финальный targetEmotion: приоритет — выбранный алиас -> карточка -> null
+    const targetEmotion = matchedEmotionFromSelect || currentEmotion || null;
+
+    // фильтруем
+    let filtered = allDataFull.filter(row => {
+      // язык
+      const rowLang = (row.language || 'en').toLowerCase();
+      if (rowLang !== lang) return false;
+
+      // эмоция (если есть цель)
+      if (targetEmotion) {
+        const rowEmotion = (row.emotion || '').toLowerCase();
+        // 1) точно совпадает как код (например 'joy')
+        if (rowEmotion === targetEmotion) return true;
+        // 2) row.emotion может содержать перевод или алиас — проверим алиасы целевой эмоции
+        const aliasesForTarget = Object.values(emotionAliases[targetEmotion]).flat().map(a => a.toLowerCase());
+        if (aliasesForTarget.some(a => a === rowEmotion || (row.name || '').toLowerCase().includes(a) || rowEmotion.includes(a))) return true;
+        // 3) row.name содержит алиас
+        if ((row.name || '').toLowerCase().includes(targetEmotion)) return true; // на всякий случай
+        return false;
+      }
+      // если targetEmotion не задан — пропускаем (будут фильтры ниже)
+      return true;
+    });
+
+    // дополнительные фильтры (семантика, модель, и т.д.)
+    if (semanticVal) filtered = filtered.filter(r => (r.semantic_role || '').toLowerCase().includes(semanticVal));
+    if (metaphorVal) filtered = filtered.filter(r => (r.metaphorical_model || '').toLowerCase().includes(metaphorVal));
+    if (submodelVal) filtered = filtered.filter(r => (r.submodel || '').toLowerCase().includes(submodelVal));
+    if (verbVal) filtered = filtered.filter(r => (r.verb_class || '').toLowerCase().includes(verbVal));
+    if (adjVal) filtered = filtered.filter(r => (r.adj_class || '').toLowerCase().includes(adjVal));
+
+    renderTable(filtered);
   }
-
-  // если пользователь ничего не выбрал — используем текущую карточку
-  if (!matchedEmotionCode && currentEmotion) {
-    matchedEmotionCode = currentEmotion;
-  }
-
-  // гибкий фильтр
-  let filtered = allDataFull.filter(row => {
-    const langOk = !row.language || row.language.toLowerCase() === currentLanguage.toLowerCase();
-    const emoOk =
-      !matchedEmotionCode ||
-      (row.emotion || '').toLowerCase() === matchedEmotionCode ||
-      (emotionAliases[matchedEmotionCode] || []).some(alias =>
-        (row.emotion || '').toLowerCase().includes(alias.toLowerCase())
-      );
-    return langOk && emoOk;
-  });
-
-  // остальные фильтры
-  if (semanticVal)
-    filtered = filtered.filter(r => (r.semantic_role || '').toLowerCase().includes(semanticVal));
-  if (metaphorVal)
-    filtered = filtered.filter(r => (r.metaphorical_model || '').toLowerCase().includes(metaphorVal));
-  if (submodelVal)
-    filtered = filtered.filter(r => (r.submodel || '').toLowerCase().includes(submodelVal));
-  if (verbVal)
-    filtered = filtered.filter(r => (r.verb_class || '').toLowerCase().includes(verbVal));
-  if (adjVal)
-    filtered = filtered.filter(r => (r.adj_class || '').toLowerCase().includes(adjVal));
-
-  renderTable(filtered);
-}
 
 
 if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSearch());
@@ -394,13 +443,28 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
   }
 
   function renderTable(data) {
-    data = [...data].sort((a, b) => {
-      let vA = a[sortKey] || '';
-      let vB = b[sortKey] || '';
-      if (vA < vB) return sortDir === 'asc' ? -1 : 1;
-      if (vA > vB) return sortDir === 'asc' ? 1 : -1;
-      return 0;
+    if (!tableBody) return;
+    tableBody.innerHTML = '';
+    if (!data || data.length === 0) {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td colspan="7" style="opacity:0.7;">No results</td>`;
+      tableBody.appendChild(tr);
+      return;
+    }
+    data.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${row.name || ''}</td>
+        <td>${row.metaphorical_model || ''}</td>
+        <td>${row.submodel || ''}</td>
+        <td>${row.semantic_role || ''}</td>
+        <td>${row.example || ''}</td>
+        <td>${row.verb_class || ''}</td>
+        <td>${row.adj_class || ''}</td>
+      `;
+      tableBody.appendChild(tr);
     });
+  }
     
     // навешиваем edit/delete только после отрисовки
     if (isAdmin) {
@@ -443,20 +507,17 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
   // ==== Карточки эмоций ====
  document.querySelectorAll('.emotion-card').forEach(card => {
     card.addEventListener('click', async () => {
-      currentEmotion = (card.dataset.emotion || '').toLowerCase();
+      // код эмоции (ожидается, что в data-emotion у карточки стоит 'joy','fear' и т.д.)
+      currentEmotion = (card.dataset.emotion || '').toLowerCase() || null;
+      // обновляем заголовок модалки и селект алиасов
+      modalTitle.textContent = card.querySelector('[data-i18n]')?.textContent || card.textContent;
       populateEmotionSelect();
-      modalTitle.textContent = card.textContent.trim();
-      modal.classList.remove('hidden');
-      await ensureAllDataFull();
-      const filtered = allDataFull.filter(row =>
-        (row.emotion || '').toLowerCase() === currentEmotion &&
-        (row.language || 'en') === currentLanguage
-      );
-    allData = filtered;
-    renderTable(filtered);
-    updateLanguageUI();
+      if (modal) modal.classList.remove('hidden');
+      // показываем записи этой эмоции (и по текущему языку)
+      await unifiedSearch();
+    });
   });
-});
+
   if (closeModalBtn) closeModalBtn.onclick = () => modal.classList.add('hidden');
   if (showFormBtn) showFormBtn.onclick = () => { addForm.classList.remove('hidden'); showFormBtn.classList.add('hidden'); };
 
@@ -516,9 +577,11 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
     langSwitcher.addEventListener('click', (e) => {
       if (e.target.tagName === 'BUTTON') {
         const lang = e.target.getAttribute('data-lang');
-        if (lang && translations[lang]) {
+        if (lang) {
           currentLanguage = lang;
-          updateLanguageUI();
+          populateEmotionSelect(); // обновим варианты в селекте под язык
+          // если открыт модал — обновим текущую таблицу
+          unifiedSearch().catch(err => console.error(err));
         }
       }
     });
