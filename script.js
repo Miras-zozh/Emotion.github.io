@@ -225,25 +225,7 @@ if (emotionSearchSelect) {
 }
 
 
-  // 🔥 Dropdown эмоций
-  function populateEmotionDropdown() {
-    if (!emotionDropdown) return;
-    const emotions = [
-      { key: 'joy', value: 'joy' },
-      { key: 'sadness', value: 'sadness' },
-      { key: 'fear', value: 'fear' },
-      { key: 'anger', value: 'anger' },
-      { key: 'surprise', value: 'surprise' },
-      { key: 'disgust', value: 'disgust' }
-    ];
-    emotionDropdown.innerHTML = '<option value="">-- выберите эмоцию --</option>';
-    emotions.forEach(e => {
-      const opt = document.createElement('option');
-      opt.value = e.value;
-      opt.textContent = e.key.charAt(0).toUpperCase() + e.key.slice(1);
-      emotionDropdown.appendChild(opt);
-    });
-  }
+  // 🔥 Dropdown 
 
   // Если выбираем из dropdown — подставляем локализованное имя в input и запускаем поиск
    if (emotionDropdown) {
