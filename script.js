@@ -241,8 +241,11 @@ const emotionDropdown = document.getElementById('emotion-dropdown');
   const adjVal = (adjSearch?.value || '').trim().toLowerCase();  
 
  let filtered = [...allDataFull].filter(
-    row => (row.language || 'en') === currentLanguage
-  );
+  row =>
+    (row.language || 'en') === currentLanguage &&
+    (!currentEmotion || (row.emotion || '').toLowerCase() === currentEmotion)
+);
+
 
   if (emotionCodeVal) {
     filtered = filtered.filter(row =>
