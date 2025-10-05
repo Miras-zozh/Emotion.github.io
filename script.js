@@ -588,19 +588,28 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
   }
 
   // ==== Переключение языка ====
-  if (langSwitcher) {
-    langSwitcher.addEventListener('click', (e) => {
-      if (e.target.tagName === 'BUTTON') {
-        const lang = e.target.getAttribute('data-lang');
-        if (lang) {
-          currentLanguage = lang;
-          populateEmotionSelect(); // обновим варианты в селекте под язык
-          // если открыт модал — обновим текущую таблицу
-          unifiedSearch().catch(err => console.error(err));
+if (langSwitcher) {
+  langSwitcher.addEventListener('click', async (e) => {
+    if (e.target.tagName === 'BUTTON') {
+      const lang = e.target.getAttribute('data-lang');
+      if (lang && translations[lang]) {
+        currentLanguage = lang;
+        updateLanguageUI();
+
+        if (!modal.classList.contains('hidden') && currentEmotion) {
+          await ensureAllDataFull();
+          const filtered = allDataFull.filter(row =>
+            (row.emotion || '').toLowerCase() === currentEmotion &&
+            (row.language || 'en').toLowerCase() === currentLanguage
+          );
+          allData = filtered;
+          renderTable(filtered);
         }
       }
-    });
-  }
+    }
+  });
+}
+
 
   // ==== Логин админа ====
   if (adminLoginBtn) {
