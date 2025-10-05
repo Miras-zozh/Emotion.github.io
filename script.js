@@ -261,10 +261,12 @@ async function unifiedSearch() {
     }
   }
 
-  let filtered = [...allDataFull].filter(row =>
-    (row.language || 'en') === currentLanguage &&
-    (!currentEmotion || (row.emotion || '').toLowerCase() === currentEmotion)
-  );
+  let filtered = allDataFull.filter(row => {
+  const langOk = !row.language || row.language.toLowerCase() === currentLanguage.toLowerCase();
+  const emoOk = !currentEmotion || (row.emotion || '').toLowerCase() === currentEmotion.toLowerCase();
+  return langOk && emoOk;
+});
+
 
   // фильтрация по эмоции
   if (matchedEmotionCode) {
