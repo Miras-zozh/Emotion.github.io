@@ -485,7 +485,7 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
         };
       });
     }
-  }
+  
 
   // ==== Карточки эмоций ====
  document.querySelectorAll('.emotion-card').forEach(card => {
