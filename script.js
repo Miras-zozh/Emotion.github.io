@@ -44,7 +44,19 @@ document.addEventListener('DOMContentLoaded', () => {
       kk: ['жиіркену']
     }
   };
-  
+  function normLangCode(lang) {
+  return (lang || 'en').toLowerCase();
+}
+
+function detectEmotionCodeByAlias(word) {
+  const low = (word || '').toLowerCase();
+  for (const [code, aliases] of Object.entries(emotionAliases)) {
+    if (aliases.map(a => a.toLowerCase()).includes(low)) {
+      return code;
+    }
+  }
+  return null;
+}
   // ==== Переводы ====
   const translations = {
     en: {
@@ -281,7 +293,6 @@ async function unifiedSearch() {
   const verbVal = (verbSearch?.value || '').trim().toLowerCase();
   const adjVal = (adjSearch?.value || '').trim().toLowerCase();
 
-  const lang = normLangCode(currentLanguage);
 
   // определяем, какой код эмоции соответствует выбранному варианту
   let targetEmotion = currentEmotion;
