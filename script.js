@@ -379,7 +379,6 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
   const modal = document.getElementById('modal');
   const modalTitle = document.getElementById('modal-title');
   const closeModalBtn = document.getElementById('close-modal');
-  const tableBody = document.querySelector('#emotion-table tbody');
   const showFormBtn = document.getElementById('show-form');
   const addForm = document.getElementById('add-form');
   const langSwitcher = document.querySelector('.lang-switcher');
