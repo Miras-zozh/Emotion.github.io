@@ -229,60 +229,59 @@ const emotionDropdown = document.getElementById('emotion-dropdown');
 }
 
   // ====== Поиск (с поддержкой поиска по базовому ключу emotion) ======
-  async function unifiedSearch() {
+ // ====== Поиск (работает в рамках выбранной карточки и языка) ======
+async function unifiedSearch() {
   await ensureAllDataFull();
 
   const emotionTextVal = (emotionSearchInput?.value || '').trim().toLowerCase();
-  const emotionCodeVal = (emotionDropdown?.value || '').trim().toLowerCase();
   const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
   const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
   const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
   const verbVal = (verbSearch?.value || '').trim().toLowerCase();   
   const adjVal = (adjSearch?.value || '').trim().toLowerCase();  
 
- let filtered = [...allDataFull].filter(
-  row =>
+  // 🔥 Всегда ограничиваем по языку и текущей эмоции
+  let filtered = allDataFull.filter(row =>
     (row.language || 'en') === currentLanguage &&
-    (!currentEmotion || (row.emotion || '').toLowerCase() === currentEmotion)
-);
+    (row.emotion || '').toLowerCase() === (currentEmotion || '').toLowerCase()
+  );
 
-
-  if (emotionCodeVal) {
+  // 🔍 Поиск по названию эмоции
+  if (emotionTextVal) {
     filtered = filtered.filter(row =>
-      (row.emotion || '').toLowerCase() === emotionCodeVal
-    );
-  } else if (emotionTextVal) {
-    filtered = filtered.filter(row =>
-      (row.name || '').toLowerCase().includes(emotionTextVal) ||
-      (row.emotion || '').toLowerCase().includes(emotionTextVal)
+      (row.name || '').toLowerCase().includes(emotionTextVal)
     );
   }
 
+  // 🔍 Остальные фильтры
   if (semanticVal)
     filtered = filtered.filter(row =>
       (row.semantic_role || '').toLowerCase().includes(semanticVal)
     );
+
   if (metaphorVal)
     filtered = filtered.filter(row =>
       (row.metaphorical_model || '').toLowerCase().includes(metaphorVal)
     );
+
   if (submodelVal)
     filtered = filtered.filter(row =>
       (row.submodel || '').toLowerCase().includes(submodelVal)
     );
 
-   if (verbVal) {
-  filtered = filtered.filter(row => (row.verb_class || '').toLowerCase().includes(verbVal));
-}
+  if (verbVal)
+    filtered = filtered.filter(row =>
+      (row.verb_class || '').toLowerCase().includes(verbVal)
+    );
 
-if (adjVal) {
-  filtered = filtered.filter(row => (row.adj_class || '').toLowerCase().includes(adjVal));
-}
+  if (adjVal)
+    filtered = filtered.filter(row =>
+      (row.adj_class || '').toLowerCase().includes(adjVal)
+    );
 
-
-    
   renderTable(filtered);
 }
+
 
 if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSearch());
 
