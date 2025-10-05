@@ -106,11 +106,40 @@
       <h2 id="modal-title"></h2>
       <div class="modal-body">
       <div class="filter-sort" style="margin-bottom: 12px; display: flex; flex-wrap: wrap; gap: 8px;">
- <select id="emotion-dropdown" style="padding: 6px 10px; font-size: 1rem; width: 250px;">
-  <option value="">-- выберите эмоцию --</option>
-</select>
 
-  <select id="semantic-search" style="padding: 6px 10px; font-size: 1rem;">
+  <!-- 1️⃣ Emotion Name -->
+  <select id="emotion-dropdown" style="padding: 6px 10px; font-size: 1rem; width: 220px;">
+    <option value="">-- Emotion Name --</option>
+  </select>
+
+  <!-- 2️⃣ Metaphorical Model -->
+  <select id="metaphor-search" style="padding: 6px 10px; font-size: 1rem; width: 220px;">
+    <option value="">All Metaphorical Models</option>
+    <option value="EMOTION IS A FIRE">EMOTION IS A FIRE</option>
+    <option value="EMOTION IS A LIVING ORGANISM">EMOTION IS A LIVING ORGANISM</option>
+    <option value="EMOTION IS A BURDEN">EMOTION IS A BURDEN</option>
+    <option value="EMOTION IS A NATURAL FORCE">EMOTION IS A NATURAL FORCE</option>
+    <option value="EMOTION IS A BUILDING">EMOTION IS A BUILDING</option>
+    <option value="EMOTION IS A BOUNDED SPACE">EMOTION IS A BOUNDED SPACE</option>
+    <option value="EMOTION IS AN OBJECT">EMOTION IS AN OBJECT</option>
+    <option value="EMOTION IS AN ILLNESS">EMOTION IS AN ILLNESS</option>
+    <option value="EMOTION IS A SUBSTANCE">EMOTION IS A SUBSTANCE</option>
+    <option value="EMOTION IS A FOOD">EMOTION IS A FOOD</option>
+    <option value="EMOTION IS A LIGHT">EMOTION IS A LIGHT</option>
+    <option value="EMOTION IS A COMPANION">EMOTION IS A COMPANION</option>
+  </select>
+
+  <!-- 3️⃣ Submodel -->
+  <select id="submodel-search" style="padding: 6px 10px; font-size: 1rem; width: 220px;">
+    <option value="">All Submodels</option>
+    <option value="Plant">PLANT</option>
+    <option value="Animal">ANIMAL</option>
+    <option value="Liquid">LIQUID</option>
+    <option value="Gas">GAS</option>
+  </select>
+
+  <!-- 4️⃣ Semantic Role -->
+  <select id="semantic-search" style="padding: 6px 10px; font-size: 1rem; width: 220px;">
     <option value="">All Semantic Roles</option>
     <option value="Agent">Agent</option>
     <option value="Counteragent">Counteragent</option>
@@ -123,43 +152,24 @@
     <option value="Property">Property</option>
   </select>
 
-<select id="metaphor-search" style="padding: 6px 10px; font-size: 1rem;">
-  <option value="">All Metaphorical Models</option>
-  <option value="EMOTION IS A FIRE">EMOTION IS A FIRE</option>
-  <option value="EMOTION IS A LIVING ORGANISM">EMOTION IS A LIVING ORGANISM</option>
-  <option value="EMOTION IS A BURDEN">EMOTION IS A BURDEN</option>
-  <option value="EMOTION IS A NATURAL FORCE">EMOTION IS A NATURAL FORCE</option>
-  <option value="EMOTION IS A BUILDING">EMOTION IS A BUILDING</option>
-  <option value="EMOTION IS A BOUNDED SPACE">EMOTION IS A BOUNDED SPACE</option>
-  <option value="EMOTION IS AN OBJECT">EMOTION IS AN OBJECT</option>
-  <option value="EMOTION IS AN ILLNESS">EMOTION IS AN ILLNESS</option>
-  <option value="EMOTION IS A SUBSTANCE">EMOTION IS A SUBSTANCE</option>
-  <option value="EMOTION IS A FOOD">EMOTION IS A FOOD</option>
-  <option value="EMOTION IS A LIGHT">EMOTION IS A LIGHT</option>
-  <option value="EMOTION IS A COMPANION">EMOTION IS A COMPANION</option>
-</select>
+  <!-- 5️⃣ Example (по нему пока нет поиска, можно просто поле или потом сделаем фильтр) -->
+  <input id="example-search" type="text" placeholder="Example" 
+         style="padding: 6px 10px; font-size: 1rem; width: 220px; border-radius: 6px; border: 1px solid #ccc;">
 
+  <!-- 6️⃣ Thematic Verb Class -->
+  <input id="verb-search" type="text" placeholder="Thematic Verb Class" 
+         style="padding: 6px 10px; font-size: 1rem; width: 220px; border-radius: 6px; border: 1px solid #ccc;">
 
- <select id="submodel-search" style="padding: 6px 10px; font-size: 1rem;">
-  <option value="">All Submodels</option>
-  <option value="Plant">PLANT</option>
-  <option value="Animal">ANIMAL</option>
-  <option value="Liquid">LIQUID</option>
-  <option value="Gas">GAS</option>
-</select>
-        
-        <input id="verb-search" type="text" placeholder="Thematic Verb Class" 
-       style="padding: 6px 10px; font-size: 1rem; width: 220px; border-radius: 6px; border: 1px solid #ccc;">
-<input id="adj-search" type="text" placeholder="Thematic Adjective Class" 
-       style="padding: 6px 10px; font-size: 1rem; width: 220px; border-radius: 6px; border: 1px solid #ccc;">
+  <!-- 7️⃣ Thematic Adjective Class -->
+  <input id="adj-search" type="text" placeholder="Thematic Adjective Class" 
+         style="padding: 6px 10px; font-size: 1rem; width: 220px; border-radius: 6px; border: 1px solid #ccc;">
 
-
-  <button id="search-btn" 
+  <!-- 🔍 Search button -->
+  <button id="search-btn"
           style="padding: 6px 14px; cursor: pointer; background: #ff6f61; color: #fff; border: none; border-radius: 6px;">
     Найти
   </button>
 </div>
-
 
 
 
