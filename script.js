@@ -484,7 +484,7 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
           }
         };
       });
-    }
+    
   
 
   // ==== Карточки эмоций ====
