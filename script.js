@@ -423,25 +423,7 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
       if (vA > vB) return sortDir === 'asc' ? 1 : -1;
       return 0;
     });
-    if (!tableBody) return;
-    tableBody.innerHTML = '';
-    data.forEach(row => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.name || ''}</td>
-        <td>${row.metaphorical_model || ''}</td>
-        <td>${row.submodel || ''}</td>
-        <td>${row.semantic_role || ''}</td>
-        <td></td>
-        <td>${row.verb_class || ''}</td>
-        <td>${row.adj_class || ''}</td>
-        ${isAdmin ? `<td><button class="edit-btn" data-id="${row.id}">${translations[currentLanguage]?.edit || 'Edit'}</button>
-        <button class="delete-btn" data-id="${row.id}">${translations[currentLanguage].delete}</button></td>` : ''}
-      `;
-      tr.children[4].innerHTML = row.example || '';
-      tableBody.appendChild(tr);
-    });
-
+    
     // навешиваем edit/delete только после отрисовки
     if (isAdmin) {
       document.querySelectorAll('.edit-btn').forEach(btn => {
