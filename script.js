@@ -298,11 +298,6 @@ const searchBtn = document.getElementById('search-btn');
     }
   }
 
-
-  // ====== Поиск (с поддержкой поиска по базовому ключу emotion) ======
- // ====== Поиск (работает в рамках выбранной карточки и языка) ======
-// ====== Новый поиск ======
-// ====== Новый поиск (гибкий) ======
 // ====== Поиск (работает в рамках выбранной карточки и языка) ======
 async function unifiedSearch() {
   await ensureAllDataFull();
@@ -314,34 +309,36 @@ async function unifiedSearch() {
   const verbVal = (verbSearch?.value || '').trim().toLowerCase();
   const adjVal = (adjSearch?.value || '').trim().toLowerCase();
 
-  const dbLang = (langMap[currentLanguage] || currentLanguage).toLowerCase();
+  const lang = (currentLanguage || 'en').toLowerCase();
 
-  // начинаем с тех записей, которые соответствуют языку в UI
-  let filtered = allDataFull.filter(row => ((row.language || 'en').toLowerCase() === dbLang));
+  let filtered = allDataFull.filter(row => {
+    // Фильтр по языку
+    if ((row.language || '').toLowerCase() !== lang) return false;
 
-  // если открыта карточка — сначала ограничиваем emotion-ом карточки
-  if (currentEmotion) {
-    filtered = filtered.filter(row => (row.emotion || '').toLowerCase() === currentEmotion);
-  }
+    // Фильтр по эмоции
+    if (currentEmotion && (row.emotion || '').toLowerCase() !== currentEmotion) return false;
 
-  // если выбрали конкретный вариант в селекте (emotion name) — фильтруем *только* по нему (в контексте уже выбранной карточки)
-  if (emotionVal) {
-    filtered = filtered.filter(row => {
-      const name = (row.name || '').toLowerCase();
-      // строгое равенство OR contains (на случай небольших отличий)
-      return name === emotionVal || name.includes(emotionVal);
-    });
-  }
+    return true;
+  });
+  
+  if (emotionVal)
+    filtered = filtered.filter(r => (r.name || '').toLowerCase().includes(emotionVal));
+  if (semanticVal)
+    filtered = filtered.filter(r => (r.semantic_role || '').toLowerCase().includes(semanticVal));
+  if (metaphorVal)
+    filtered = filtered.filter(r => (r.metaphorical_model || '').toLowerCase().includes(metaphorVal));
+  if (submodelVal)
+    filtered = filtered.filter(r => (r.submodel || '').toLowerCase().includes(submodelVal));
 
-  // остальные фильтры (если заданы) работают поверх уже отфильтрованного набора
-  if (semanticVal) filtered = filtered.filter(r => (r.semantic_role || '').toLowerCase().includes(semanticVal));
-  if (metaphorVal) filtered = filtered.filter(r => (r.metaphorical_model || '').toLowerCase().includes(metaphorVal));
-  if (submodelVal) filtered = filtered.filter(r => (r.submodel || '').toLowerCase().includes(submodelVal));
-  if (verbVal) filtered = filtered.filter(r => (r.verb_class || '').toLowerCase().includes(verbVal));
-  if (adjVal) filtered = filtered.filter(r => (r.adj_class || '').toLowerCase().includes(adjVal));
+  // 🔥 Вот эти две строчки раньше не работали, теперь работают правильно:
+  if (verbVal)
+    filtered = filtered.filter(r => (r.verb_class || '').toLowerCase().includes(verbVal));
+  if (adjVal)
+    filtered = filtered.filter(r => (r.adj_class || '').toLowerCase().includes(adjVal));
 
   renderTable(filtered);
 }
+
 
 if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSearch());
 
