@@ -170,11 +170,14 @@ quill = new Quill('#example-editor', {
 
   // ==== Элементы поиска ====
    const emotionSearchInput = document.getElementById('emotion-search');
-  const semanticSearch = document.getElementById('semantic-search');
-  const metaphorSearch = document.getElementById('metaphor-search');
-  const searchBtn = document.getElementById('search-btn');
-  const emotionDropdown = document.getElementById('emotion-dropdown');
-  const submodelSearch = document.getElementById('submodel-search');
+const semanticSearch = document.getElementById('semantic-search');
+const metaphorSearch = document.getElementById('metaphor-search');
+const submodelSearch = document.getElementById('submodel-search');
+const verbSearch = document.getElementById('verb-search');
+const adjSearch = document.getElementById('adj-search');
+const searchBtn = document.getElementById('search-btn');
+const emotionDropdown = document.getElementById('emotion-dropdown');
+
 
   // 🔥 Dropdown эмоций
   function populateEmotionDropdown() {
@@ -263,6 +266,17 @@ quill = new Quill('#example-editor', {
       (row.submodel || '').toLowerCase().includes(submodelVal)
     );
 
+    if (verbSearch && verbSearch.value.trim() !== '') {
+  const verbVal = verbSearch.value.trim().toLowerCase();
+  filtered = filtered.filter(row => (row.verb_class || '').toLowerCase().includes(verbVal));
+}
+
+if (adjSearch && adjSearch.value.trim() !== '') {
+  const adjVal = adjSearch.value.trim().toLowerCase();
+  filtered = filtered.filter(row => (row.adj_class || '').toLowerCase().includes(adjVal));
+}
+
+    
   renderTable(filtered);
 }
 
