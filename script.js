@@ -14,33 +14,38 @@ document.addEventListener('DOMContentLoaded', () => {
 
    const emotionAliases = {
     joy: {
-      en: ['happiness', 'joy', 'happy'],
-      ru: ['радость', 'счастье'],
-      kk: ['қуаныш', 'бақыт']
+      en: ['happiness', 'pleasure', 'delight', 'joy'],
+      ru: ['радость', 'счастье', 'веселье','восторг'],
+      kk: ['қуаныш', 'бақыт'],
+      de: ['Glück', 'Freude']
     },
     sadness: {
-      en: ['sadness', 'sad'],
-      ru: ['грусть', 'печаль'],
-      kk: ['қайғы', 'мұң']
+      en: ['sadness', 'grief'],
+      ru: ['грусть', 'печаль', 'тоска','горе'],
+      kk: ['қайғы', 'мұң', 'уайым'],
+      de: ['Traurigkeit']
     },
     fear: {
-      en: ['fear', 'scared'],
-      ru: ['страх', 'боязнь'],
-      kk: ['қорқыныш', 'үрей']
+      en: ['fear', 'terror'],
+      ru: ['страх', 'ужас'],
+      kk: ['қорқыныш', 'үрей'],
+      de: ['Angst', 'Furcht']
     },
     anger: {
-      en: ['anger', 'angry'],
+      en: ['anger', 'angry', 'rage', 'fury'],
       ru: ['гнев', 'ярость'],
-      kk: ['ашу', 'ыза']
+      kk: ['ашу', 'ыза', 'қаһар'],
+      de: ['Zorn', 'Wut']
     },
     surprise: {
-      en: ['surprise', 'surprised'],
+      en: ['amazement', 'surprise', 'bewilderment'],
       ru: ['удивление', 'сюрприз'],
-      kk: ['таңданыс', 'таңғалу']
+      kk: ['таңданыс', 'таңғалу'],
+      de: ['Erstaunen']
     },
     disgust: {
-      en: ['disgust'],
-      ru: ['отвращение'],
+      en: ['disgust','loathing'],
+      ru: ['отвращение','неприязнь','омерзение'],
       kk: ['жиіркену']
     }
   };
