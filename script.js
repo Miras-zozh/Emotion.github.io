@@ -242,6 +242,7 @@ if (emotionSearchSelect) {
   // ====== Поиск (с поддержкой поиска по базовому ключу emotion) ======
  // ====== Поиск (работает в рамках выбранной карточки и языка) ======
 // ====== Новый поиск ======
+// ====== Новый поиск (гибкий) ======
 async function unifiedSearch() {
   await ensureAllDataFull();
 
@@ -252,7 +253,7 @@ async function unifiedSearch() {
   const verbVal = (verbSearch?.value || '').trim().toLowerCase();
   const adjVal = (adjSearch?.value || '').trim().toLowerCase();
 
-  // определяем emotion по слову
+  // определяем emotion по слову (из select)
   let matchedEmotionCode = null;
   for (const [code, words] of Object.entries(emotionAliases)) {
     if (words.some(w => w.toLowerCase() === emotionVal)) {
@@ -261,19 +262,22 @@ async function unifiedSearch() {
     }
   }
 
-  let filtered = allDataFull.filter(row => {
-  const langOk = !row.language || row.language.toLowerCase() === currentLanguage.toLowerCase();
-  const emoOk = !currentEmotion || (row.emotion || '').toLowerCase() === currentEmotion.toLowerCase();
-  return langOk && emoOk;
-});
-
-
-  // фильтрация по эмоции
-  if (matchedEmotionCode) {
-    filtered = filtered.filter(row =>
-      (row.emotion || '').toLowerCase() === matchedEmotionCode
-    );
+  // если пользователь ничего не выбрал — используем текущую карточку
+  if (!matchedEmotionCode && currentEmotion) {
+    matchedEmotionCode = currentEmotion;
   }
+
+  // гибкий фильтр
+  let filtered = allDataFull.filter(row => {
+    const langOk = !row.language || row.language.toLowerCase() === currentLanguage.toLowerCase();
+    const emoOk =
+      !matchedEmotionCode ||
+      (row.emotion || '').toLowerCase() === matchedEmotionCode ||
+      (emotionAliases[matchedEmotionCode] || []).some(alias =>
+        (row.emotion || '').toLowerCase().includes(alias.toLowerCase())
+      );
+    return langOk && emoOk;
+  });
 
   // остальные фильтры
   if (semanticVal)
@@ -289,6 +293,7 @@ async function unifiedSearch() {
 
   renderTable(filtered);
 }
+
 
 if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSearch());
 
