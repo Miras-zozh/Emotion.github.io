@@ -228,18 +228,7 @@ if (emotionSearchSelect) {
   // 🔥 Dropdown 
 
   // Если выбираем из dropdown — подставляем локализованное имя в input и запускаем поиск
-   if (emotionDropdown) {
-    emotionDropdown.addEventListener('change', async () => {
-      const selectedText = emotionDropdown.options[emotionDropdown.selectedIndex].textContent;
-      if (emotionSearchInput) emotionSearchInput.value = selectedText;
-      await unifiedSearch();
-    });
-  }
-  if (emotionSearchInput) {
-    emotionSearchInput.addEventListener('input', () => {
-      if (emotionDropdown) emotionDropdown.value = '';
-    });
-  }
+ 
 
   // === Вспомогательная функция: загружает все данные в кеш при необходимости ===
   async function ensureAllDataFull() {
@@ -394,7 +383,7 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
     if (showFormBtn) showFormBtn.textContent = translations[currentLanguage].addData;
     if (addForm) addForm.querySelector('.submit-btn').textContent = translations[currentLanguage].save;
     if (isAdmin && deleteHeader) deleteHeader.textContent = translations[currentLanguage].delete;
-    populateEmotionDropdown();
+
   }
 
   function renderTable(data) {
