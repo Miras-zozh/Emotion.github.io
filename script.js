@@ -223,14 +223,17 @@ const adjSearch = document.getElementById('adj-search');
 const searchBtn = document.getElementById('search-btn');
 
   function populateEmotionSelect() {
-    if (!emotionSearchSelect) return;
+  if (!emotionSearchSelect) return;
   emotionSearchSelect.innerHTML = '';
   const emptyOpt = document.createElement('option');
   emptyOpt.value = '';
   emptyOpt.textContent = '-- select emotion --';
   emotionSearchSelect.appendChild(emptyOpt);
 
-  // показываем только варианты текущей карточки
+  // 🟢 Добавлено: определяем язык корректно
+  const lang = normLangCode(currentLanguage);
+
+  // показываем только варианты текущей карточки и языка
   if (currentEmotion && emotionAliases[currentEmotion]) {
     const list = emotionAliases[currentEmotion][lang] || [];
     list.forEach(alias => {
@@ -241,6 +244,7 @@ const searchBtn = document.getElementById('search-btn');
     });
   }
 }
+
 
   function detectEmotionCodeByAlias(valLower) {
     if (!valLower) return null;
