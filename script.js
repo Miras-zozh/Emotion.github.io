@@ -237,6 +237,8 @@ const emotionDropdown = document.getElementById('emotion-dropdown');
   const semanticVal = (semanticSearch?.value || '').trim().toLowerCase();
   const metaphorVal = (metaphorSearch?.value || '').trim().toLowerCase();
   const submodelVal = (submodelSearch?.value || '').trim().toLowerCase();
+  const verbVal = (verbSearch?.value || '').trim().toLowerCase();   
+  const adjVal = (adjSearch?.value || '').trim().toLowerCase();  
 
  let filtered = [...allDataFull].filter(
     row => (row.language || 'en') === currentLanguage
@@ -266,15 +268,14 @@ const emotionDropdown = document.getElementById('emotion-dropdown');
       (row.submodel || '').toLowerCase().includes(submodelVal)
     );
 
-    if (verbSearch && verbSearch.value.trim() !== '') {
-  const verbVal = verbSearch.value.trim().toLowerCase();
+   if (verbVal) {
   filtered = filtered.filter(row => (row.verb_class || '').toLowerCase().includes(verbVal));
 }
 
-if (adjSearch && adjSearch.value.trim() !== '') {
-  const adjVal = adjSearch.value.trim().toLowerCase();
+if (adjVal) {
   filtered = filtered.filter(row => (row.adj_class || '').toLowerCase().includes(adjVal));
 }
+
 
     
   renderTable(filtered);
