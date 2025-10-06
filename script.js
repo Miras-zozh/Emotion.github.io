@@ -595,52 +595,62 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
   }
 
   // ==== Переключение языка ====
-if (langSwitcher) {
-  langSwitcher.addEventListener('click', async (e) => {
-    if (e.target.tagName === 'BUTTON') {
-      const lang = e.target.getAttribute('data-lang');
-      if (lang && translations[lang]) {
-        currentLanguage = lang;
-        updateLanguageUI();
+ if (langSwitcher) {
+    langSwitcher.addEventListener('click', async (e) => {
+      if (e.target.tagName === 'BUTTON') {
+        const lang = e.target.getAttribute('data-lang');
+        if (lang && translations[lang]) {
+          currentLanguage = lang;
+          updateLanguageUI();
 
-        if (!modal.classList.contains('hidden') && currentEmotion) {
-          await ensureAllDataFull();
-          const filtered = allDataFull.filter(row =>
-            (row.emotion || '').toLowerCase() === currentEmotion &&
-            (row.language || 'en').toLowerCase() === currentLanguage
-          );
-          allData = filtered;
-          renderTable(filtered);
+          // если открыта карточка эмоции — обновим данные и селект
+          if (!modal.classList.contains('hidden') && currentEmotion) {
+            await ensureAllDataFull();
+            const filtered = allDataFull.filter(row =>
+              (row.emotion || '').toLowerCase() === currentEmotion &&
+              (row.language || 'en').toLowerCase() === currentLanguage
+            );
+            allData = filtered;
+            renderTable(filtered);
+            populateEmotionSelect(); // сразу обновляем список вариантов
+          }
         }
       }
-    }
-  });
-}
+    });
+  }
 
 
   // ==== Логин админа ====
-  if (adminLoginBtn) {
+ if (adminLoginBtn) {
     adminLoginBtn.onclick = () => {
       adminModal.classList.remove('hidden');
       adminError.style.display = 'none';
       adminPasswordInput.value = '';
     };
   }
-  if (closeAdminModalBtn) closeAdminModalBtn.onclick = () => adminModal.classList.add('hidden');
+
+  if (closeAdminModalBtn)
+    closeAdminModalBtn.onclick = () => adminModal.classList.add('hidden');
+
   if (adminLoginForm) {
     adminLoginForm.onsubmit = (e) => {
       e.preventDefault();
-    if (adminPasswordInput.value === ADMIN_PASSWORD) {
-  isAdmin = true;
-  adminModal.classList.add('hidden');
-  adminLoginBtn.textContent = translations[currentLanguage].adminLogin + ' (admin)';
-  adminLoginBtn.disabled = true;
-  showFormBtn.classList.remove('hidden');
-  if (!modal.classList.contains('hidden')) renderTable(allData);
-  if (deleteHeader) deleteHeader.style.display = '';
-}
+      if (adminPasswordInput.value === ADMIN_PASSWORD) {
+        isAdmin = true;
+        adminModal.classList.add('hidden');
+        adminLoginBtn.textContent = translations[currentLanguage].adminLogin + ' (admin)';
+        adminLoginBtn.disabled = true;
 
+        // показываем форму добавления, если админ
+        showFormBtn.classList.remove('hidden');
+        if (deleteHeader) deleteHeader.style.display = '';
 
-  // начальная инициализация UI
-  updateLanguageUI();
+        // если таблица уже открыта — перерисуем её с кнопками
+        if (!modal.classList.contains('hidden')) renderTable(allData);
+      } else {
+        adminError.style.display = 'block';
+      }
+    };
+  }
+    updateLanguageUI();
 });
