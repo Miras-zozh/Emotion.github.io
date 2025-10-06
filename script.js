@@ -346,14 +346,14 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
   // === Таблица ===
   const tableBody = document.querySelector('#emotion-table tbody');
   
-  function renderTable(data) {
-   const tableBody = document.querySelector('#emotion-table tbody');
+ function renderTable(data) {
+  const tableBody = document.querySelector('#emotion-table tbody');
   if (!tableBody) return;
 
   // Сортировка (если нужно)
   data = [...data].sort((a, b) => {
-    let vA = a.name?.toLowerCase() || '';
-    let vB = b.name?.toLowerCase() || '';
+    let vA = (a.name || '').toLowerCase();
+    let vB = (b.name || '').toLowerCase();
     if (vA < vB) return -1;
     if (vA > vB) return 1;
     return 0;
@@ -374,7 +374,8 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
       <td>${row.verb_class || ''}</td>
       <td>${row.adj_class || ''}</td>
     `;
-   // 🔥 Если админ — добавляем кнопки редактирования и удаления
+
+    // Если админ — добавляем кнопки редактирования и удаления
     if (isAdmin) {
       const editTd = document.createElement('td');
       const delTd = document.createElement('td');
@@ -389,7 +390,7 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
     tableBody.appendChild(tr);
   });
 
-  // 🔁 После отрисовки снова навешиваем обработчики кнопок
+  // Навешиваем обработчики только если админ
   if (isAdmin) {
     document.querySelectorAll('.edit-btn').forEach(btn => {
       btn.addEventListener('click', () => {
@@ -407,10 +408,12 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
         quill.root.innerHTML = row.example || '';
 
         addForm.dataset.editId = id;
-        addForm.querySelector('.submit-btn').textContent = translations[currentLanguage]?.edit || 'Edit';
+        addForm.querySelector('.submit-btn').textContent =
+          translations[currentLanguage]?.edit || 'Edit';
       });
     });
-     document.querySelectorAll('.delete-btn').forEach(btn => {
+
+    document.querySelectorAll('.delete-btn').forEach(btn => {
       btn.addEventListener('click', async () => {
         const id = btn.dataset.id;
         if (confirm('Удалить эту запись?')) {
@@ -427,6 +430,7 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
     });
   }
 }
+
   // ==== Publications handler (поддержка старой модалки и нового блока) ====
   const showPublicationsBtn = document.getElementById('show-publications');
   const pdfModal = document.getElementById('pdf-modal');
