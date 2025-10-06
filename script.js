@@ -345,24 +345,88 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
 
   // === Таблица ===
   const tableBody = document.querySelector('#emotion-table tbody');
+  
   function renderTable(data) {
-    tableBody.innerHTML = '';
-    data.forEach(row => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.name || ''}</td>
-        <td>${row.metaphorical_model || ''}</td>
-        <td>${row.submodel || ''}</td>
-        <td>${row.semantic_role || ''}</td>
-        <td>${row.example || ''}</td>
-        <td>${row.verb_class || ''}</td>
-        <td>${row.adj_class || ''}</td>
-      `;
-      tableBody.appendChild(tr);
+   const tableBody = document.querySelector('#emotion-table tbody');
+  if (!tableBody) return;
+
+  // Сортировка (если нужно)
+  data = [...data].sort((a, b) => {
+    let vA = a.name?.toLowerCase() || '';
+    let vB = b.name?.toLowerCase() || '';
+    if (vA < vB) return -1;
+    if (vA > vB) return 1;
+    return 0;
+  });
+
+  tableBody.innerHTML = '';
+
+  data.forEach(row => {
+    const tr = document.createElement('tr');
+
+    // Основные колонки
+    tr.innerHTML = `
+      <td>${row.name || ''}</td>
+      <td>${row.metaphorical_model || ''}</td>
+      <td>${row.submodel || ''}</td>
+      <td>${row.semantic_role || ''}</td>
+      <td>${row.example || ''}</td>
+      <td>${row.verb_class || ''}</td>
+      <td>${row.adj_class || ''}</td>
+    `;
+   // 🔥 Если админ — добавляем кнопки редактирования и удаления
+    if (isAdmin) {
+      const editTd = document.createElement('td');
+      const delTd = document.createElement('td');
+
+      editTd.innerHTML = `<button class="edit-btn" data-id="${row.id}" style="padding:4px 8px;">✏️</button>`;
+      delTd.innerHTML = `<button class="delete-btn" data-id="${row.id}" style="padding:4px 8px;">🗑️</button>`;
+
+      tr.appendChild(editTd);
+      tr.appendChild(delTd);
+    }
+
+    tableBody.appendChild(tr);
+  });
+
+  // 🔁 После отрисовки снова навешиваем обработчики кнопок
+  if (isAdmin) {
+    document.querySelectorAll('.edit-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const row = allData.find(r => String(r.id) === String(id));
+        if (!row) return;
+
+        addForm.classList.remove('hidden');
+        showFormBtn.classList.add('hidden');
+
+        // Заполняем форму текущими значениями
+        ['name', 'metaphorical_model', 'submodel', 'semantic_role', 'verb_class', 'adj_class'].forEach(key => {
+          if (addForm.elements[key]) addForm.elements[key].value = row[key] || '';
+        });
+        quill.root.innerHTML = row.example || '';
+
+        addForm.dataset.editId = id;
+        addForm.querySelector('.submit-btn').textContent = translations[currentLanguage]?.edit || 'Edit';
+      });
+    });
+     document.querySelectorAll('.delete-btn').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        const id = btn.dataset.id;
+        if (confirm('Удалить эту запись?')) {
+          const { error } = await supabaseClient.from('emotions').delete().eq('id', id);
+          if (!error) {
+            allDataFull = allDataFull.filter(r => String(r.id) !== String(id));
+            allData = allData.filter(r => String(r.id) !== String(id));
+            renderTable(allData);
+          } else {
+            alert('Ошибка при удалении: ' + error.message);
+          }
+        }
+      });
     });
   }
-
-
+}
   // ==== Publications handler (поддержка старой модалки и нового блока) ====
   const showPublicationsBtn = document.getElementById('show-publications');
   const pdfModal = document.getElementById('pdf-modal');
@@ -438,65 +502,7 @@ if (searchBtn) searchBtn.addEventListener('click', async () => await unifiedSear
   populateEmotionSelect();
   }
 
-  function renderTable(data) {
-    if (!tableBody) return;
-    tableBody.innerHTML = '';
-    if (!data || data.length === 0) {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `<td colspan="7" style="opacity:0.7;">No results</td>`;
-      tableBody.appendChild(tr);
-      return;
-    }
-    data.forEach(row => {
-      const tr = document.createElement('tr');
-      tr.innerHTML = `
-        <td>${row.name || ''}</td>
-        <td>${row.metaphorical_model || ''}</td>
-        <td>${row.submodel || ''}</td>
-        <td>${row.semantic_role || ''}</td>
-        <td>${row.example || ''}</td>
-        <td>${row.verb_class || ''}</td>
-        <td>${row.adj_class || ''}</td>
-      `;
-      tableBody.appendChild(tr);
-    });
-  }
-    
-    // навешиваем edit/delete только после отрисовки
-    if (isAdmin) {
-      document.querySelectorAll('.edit-btn').forEach(btn => {
-        btn.onclick = function() {
-          const id = this.dataset.id;
-          const row = (allData || []).find(r => String(r.id) === String(id));
-          if (row) {
-            addForm.classList.remove('hidden');
-            showFormBtn.classList.add('hidden');
-            for (const key of ['name','metaphorical_model','submodel','semantic_role','verb_class','adj_class']) {
-              if (addForm.elements[key]) addForm.elements[key].value = row[key] || '';
-            }
-            quill.root.innerHTML = row.example || '';
-            addForm.dataset.editId = id;
-            addForm.querySelector('.submit-btn').textContent = translations[currentLanguage]?.edit || 'Edit';
-          }
-        };
-      });
-    };
-      document.querySelectorAll('.delete-btn').forEach(btn => {
-        btn.onclick = async function() {
-          const id = this.dataset.id;
-          if (confirm('Удалить эту запись?')) {
-            const { error } = await supabaseClient.from('emotions').delete().eq('id', id);
-            if (!error) {
-              // обновим кеш и текущее отображение
-              if (Array.isArray(allDataFull)) allDataFull = allDataFull.filter(r => String(r.id) !== String(id));
-              allData = (allData || []).filter(r => String(r.id) !== String(id));
-              renderTable(allData);
-            } else {
-              alert('Ошибка при удалении');
-            }
-          }
-        };
-      });
+
     
 
   
@@ -620,17 +626,16 @@ if (langSwitcher) {
   if (adminLoginForm) {
     adminLoginForm.onsubmit = (e) => {
       e.preventDefault();
-      if (adminPasswordInput.value === ADMIN_PASSWORD) {
-        isAdmin = true;
-        adminModal.classList.add('hidden');
-        adminLoginBtn.textContent = translations[currentLanguage].adminLogin + ' (admin)';
-        adminLoginBtn.disabled = true;
-        showFormBtn.classList.remove('hidden');
-        if (!modal.classList.contains('hidden')) renderTable(allData);
-        if (deleteHeader) deleteHeader.style.display = '';
-      } else adminError.style.display = 'block';
-    };
-  }
+    if (adminPasswordInput.value === ADMIN_PASSWORD) {
+  isAdmin = true;
+  adminModal.classList.add('hidden');
+  adminLoginBtn.textContent = translations[currentLanguage].adminLogin + ' (admin)';
+  adminLoginBtn.disabled = true;
+  showFormBtn.classList.remove('hidden');
+  if (!modal.classList.contains('hidden')) renderTable(allData);
+  if (deleteHeader) deleteHeader.style.display = '';
+}
+
 
   // начальная инициализация UI
   updateLanguageUI();
